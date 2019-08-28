@@ -2,16 +2,28 @@
   "name": "frontend",
   "version": "0.1.0",
   "private": true,
+  "proxy": "https://monitoramento-e9442.firebaseapp.com",
   "dependencies": {
-    "react": "^16.9.0",
-    "react-dom": "^16.9.0",
-    "react-scripts": "3.1.1"
+    "bootstrap": "^4.3.1",
+    "chart.js": "^2.8.0",
+    "concurrently": "^4.1.2",
+    "cors": "^2.8.5",
+    "firebase-tools": "^7.3.0",
+    "jquery": "^3.4.1",
+    "material-icons": "^0.3.1",
+    "popper.js": "^1.15.0",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
+    "react-router": "^5.0.1",
+    "react-router-dom": "^5.0.1",
+    "react-scripts": "^3.0.1"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "dev": "concurrently --kill-others-on-fail \"npm run server\" \"npm run client\""
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -27,5 +39,13 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  }
+  },
+  "devDependencies": {
+    "axios": "^0.19.0",
+    "react-chartjs-2": "^2.7.6",
+    "concurrently": "^4.1.2"
+  },
+  "main": "index.js",
+  "author": "Pedro Paes <pedromvpaes@gmail.com>",
+  "license": "MIT"
 }

@@ -1,0 +1,69 @@
+#painel-icon{
+	display: inline-flex;
+	vertical-align: middle;
+	position: relative;
+}
+
+.bd-placeholder-img {
+  font-size: 1.125rem;
+  text-anchor: middle;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+@media (min-width: 768px) {
+  .bd-placeholder-img-lg {
+    font-size: 3.5rem;
+  }
+}
+
+.orange {
+  background-color: #e87b00;
+}
+
+#header-img {
+    filter: brightness(60%);
+    transition-duration: 1.2s;
+}
+
+#footer {
+  background: #343a40;
+}
+
+#footer-inner-div {
+  color: #dadada;
+}
+
+body {
+  background-color: #343a40;
+}
+
+main {
+  background-color: white;
+}
+
+.title-bar-icon {
+  display: inline-flex;
+  vertical-align: middle
+}
+
+#SupportedContent{
+  transition: width 1s;
+  width: 200px
+}
+
+#dropdown-item {
+  color: white;
+}
+
+.painel-cards-wrapper {
+  width: 100% !important ;
+  height: 100%;
+  
+}
+
+#thead {
+  background-color: #f1f1f1;
+}
