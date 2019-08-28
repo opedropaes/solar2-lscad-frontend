@@ -2,7 +2,6 @@
   "name": "frontend",
   "version": "0.1.0",
   "private": true,
-  "proxy": "https://monitoramento-e9442.firebaseapp.com/",
   "dependencies": {
     "bootstrap": "^4.3.1",
     "chart.js": "^2.8.0",
