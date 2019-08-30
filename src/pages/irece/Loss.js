@@ -22,7 +22,7 @@ export default class Loss extends Component {
                   text="Mesa com tecnologia de silício microamorfo de baixa tensão, com 64 módulos e capacidade de geração de 10 kWp."
                   link="/irece/perdas/mesas/1"
                   buttonText="Monitorar perdas agora"
-                  buttonActive={false}
+                  buttonActive={true}
                   theme="loss"
                 />
               </div>
