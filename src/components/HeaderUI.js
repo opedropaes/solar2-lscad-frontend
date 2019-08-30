@@ -58,7 +58,7 @@ export default class HeaderUI extends Component {
 								<a className="nav-link" href="/contato">Contato</a>
 							</li>
 						</ul>
-						<a className="btn btn-warning orange text-white ml-auto mt-2 mb-2 " id="startPanel" href="/campo-grande/painel" role="button" type="button">
+						<a className="btn btn-warning orange text-white ml-auto mt-2 mb-2 " id="startPanel" href="https://solar2-users.auth.us-east-1.amazoncognito.com/login?response_type=token&client_id=sq0qbsvh23jgp1njocuufftl6&redirect_uri=https://solar2-lscad.herokuapp.com/campo-grande/painel" role="button" type="button">
 							<i className="material-icons pr-2 pb-1 pl-0 text-white outline-assessment" id="painel-icon">assessment</i>Acesse o painel
 					</a>
 					</div>
