@@ -229,7 +229,7 @@ export default class LossPerTable extends Component {
 
   }
 
-  componentWillUpdate(newProps, newState) {
+  UNSAFE_componentWillUpdate(newProps, newState) {
 
     if (!this._isUpdated) {
       let date = dateFormater(newState.day, newState.month, newState.year);
