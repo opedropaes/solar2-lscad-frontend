@@ -1,5 +1,6 @@
 import React from 'react';
 import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom';
+import isAuthenticated from './services/auth';
 
 import Home from './pages/Home';
 import About from './pages/About';
@@ -7,19 +8,32 @@ import Contact from './pages/Contact';
 import Info from './pages/Info';
 import Login from './pages/Login';
 import SignUp from './pages/SignUp';
+import CriateSupervisor from './pages/CreateSupervisor';
 
-import CampoGrandePainel from './pages/campo-grande/Painel';
+import Panel from './pages/Painel';
 import CampoGrandeProduction from './pages/campo-grande/Production';
 import CampoGrandeEnviromental from './pages/campo-grande/Enviromental';
 import CampoGrandeLoss from './pages/campo-grande/Loss';
 
-import IrecePainel from './pages/irece/Painel';
 import IreceProduction from './pages/irece/Production';
 import IreceEnviromental from './pages/irece/Enviromental';
 import IreceLoss from './pages/irece/Loss';
 import IreceLossTable from './pages/irece/LossPerTable';
 
-function App() {
+const PrivateRoute = ({ component: Component, ...rest }) => (
+	<Route 
+		{ ...rest }
+		render={props => 
+			isAuthenticated() ? (
+				<Component { ...props } />
+			) : (
+				<Redirect to={{ pathname: "/login", state: { from: props.location } }} />
+			)
+		}
+	/>
+);
+
+const App = () => {
   return (
     <BrowserRouter>
       <Switch>
@@ -27,19 +41,19 @@ function App() {
         <Route path="/sobre" component={About} />
         <Route path="/contato" component={Contact} />
         <Route path="/dados" component={Info} />
-        <Route path="/login" component={Login} />
+        <Route path="/login" exact component={Login} />
         <Route path="/cadastro" component={SignUp} />
-        <Route path="/campo-grande/painel" component={CampoGrandePainel} />
-        <Route path="/campo-grande/producao" component={CampoGrandeProduction} />
-        <Route path="/campo-grande/ambientais" exact component={CampoGrandeEnviromental} />
-        <Route path="/campo-grande/perdas" component={CampoGrandeLoss} />
-        <Route path="/irece/painel" component={IrecePainel} />
-        <Route path="/irece/producao" component={IreceProduction} />
-        <Route path="/irece/ambientais" component={IreceEnviromental} />
-        <Route path="/irece/perdas/mesas" exact component={IreceLoss} />
-        <Route path="/irece/perdas/mesas/:table" exact component={IreceLossTable} />
+		<PrivateRoute path="/criar-supervisor" component={CriateSupervisor} />
+        <PrivateRoute path="/painel" exact component={Panel} />
+        <PrivateRoute path="/campo-grande/producao" component={CampoGrandeProduction} />
+        <PrivateRoute path="/campo-grande/ambientais" exact component={CampoGrandeEnviromental} />
+        <PrivateRoute path="/campo-grande/perdas" component={CampoGrandeLoss} />
+        <PrivateRoute path="/irece/producao" component={IreceProduction} />
+        <PrivateRoute path="/irece/ambientais" component={IreceEnviromental} />
+        <PrivateRoute path="/irece/perdas/mesas" exact component={IreceLoss} />
+        <PrivateRoute path="/irece/perdas/mesas/:table" exact component={IreceLossTable} />
         
-        <Route path="/campo-grande" render={() => (
+        <PrivateRoute path="/campo-grande" render={() => (
           <Redirect to={"/campo-grande/painel"} />
         )} />
         {/* <Route path="/irece" render={() => (
@@ -48,7 +62,7 @@ function App() {
         {/* <Route path="/irece/producao" render={() => (
           <Redirect to={"/irece/producao/" + date} />
         )} /> */}
-        <Route path="/irece/perdas" render={() => (
+        <PrivateRoute path="/irece/perdas" render={() => (
           <Redirect to={"/irece/perdas/mesas"} />
         )} />
       

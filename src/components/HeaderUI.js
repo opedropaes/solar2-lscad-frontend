@@ -2,67 +2,116 @@
 /* eslint-disable no-unused-vars */
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
+import { CognitoUser, CognitoUserPool, AuthenticationDetails } from 'amazon-cognito-identity-js';
+import _config from '../services/_config';
 
 import '../../src/pages/styles/Home.css';
 
 export default class HeaderUI extends Component {
+	constructor(props) {
+		super(props);
+		this.state = {
+			user: "",
+		};
+	}
+
+	getUser = async () => {
+		return new Promise((resolve, reject) => {
+			let poolData = {
+				UserPoolId: _config.userPoolId,
+				ClientId: _config.clientId
+			};
+	
+			let userPool = new CognitoUserPool(poolData);
+			let cognitoUser = userPool.getCurrentUser();
+			
+			if (cognitoUser != null) {
+				cognitoUser.getSession(function(err, session) {
+					if (err) {
+						console.debug(err)
+						reject();
+					}			
+				});
+
+				cognitoUser.getUserAttributes(function(err, result) {
+					if (err) {
+						console.debug(err)
+						reject();
+					}
+					for (let i = 0; i < result.length; i++) {
+						if (result[i].getName() === "name") {
+							resolve(result[i].getValue());
+						}
+					}
+				});
+			}
+			
+		})
+	}
+
+	quit = () => {
+		localStorage.removeItem('accessToken');
+	}
+
+	async componentDidMount () {
+		let user = await this.getUser();
+		this.setState({ user });
+	}
+
 	render() {
-		switch (this.props.logged) {
-			case true:
-				if(this.props.ufv == "irece") {
-					return (
-						<React.Fragment>
-							<div className="collapse navbar-collapse" id="navbarCollapse"></div>
-							<div className="btn-group dropdown ml-auto pr-4" id="navbarSupportedContent">
-								<ul className="navbar-nav mr-auto">
-									<li className="nav-item dropdown">
-										<button className="nav-link dropdown-toggle btn btn-transparent" data-toggle="dropdown"
-											aria-haspopup="true" aria-expanded="false">UFV - Irecê</button>
-										<div className="dropdown-menu bg-dark">
-											<Link className="dropdown-item bg-dark" to="/campo-grande/painel" id="dropdown-item">UFV - UFMS</Link>
-										</div>
-									</li>
-								</ul>
-							</div>
-						</React.Fragment>
-					);
-				} else {
-					return (
-						<React.Fragment>
-							<div className="collapse navbar-collapse" id="navbarCollapse"></div>
-							<div className="btn-group dropdown ml-auto pr-4" id="navbarSupportedContent">
-								<ul className="navbar-nav mr-auto">
-									<li className="nav-item dropdown">
-										<button className="nav-link dropdown-toggle btn btn-transparent" data-toggle="dropdown"
-											aria-haspopup="true" aria-expanded="false">UFV - UFMS</button>
-										<div className="dropdown-menu bg-dark">
-											<Link className="dropdown-item bg-dark" to="/irece/painel" id="dropdown-item">UFV - Irecê</Link>
-										</div>
-									</li>
-								</ul>
-							</div>
-						</React.Fragment>
-					);
-				}
-			default:
+		if (this.props.logged) {
+			return (
+				<React.Fragment>
+					<div className="collapse navbar-collapse" id="navbarCollapse"></div>
+					<div className="dropdown my-2 mr-4">
+						<button className="btn btn-outline-secondary text-white dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						<i className="material-icons pr-2 pb-1 text-white outline-assessment" id="painel-icon">perm_identity</i>{this.state.user}
+  						</button>
+						<div className="dropdown-menu bg-dark text-white mx-auto" aria-labelledby="dropdownMenuButton">
+							<Link className="dropdown-item text-white text-right" to="/criar-supervisor">Criar supervisor</Link>
+							<div className="dropdown-divider mx-3 mt-3"></div>
+							<Link className="dropdown-item text-white text-right" to="/" onClick={this.quit}>Sair</Link>
+						</div>
+					</div>
+				</React.Fragment>
+			);
+		} else {
+			if (this.props.transition) {
+				return (
+					<div className="collapse navbar-collapse mx-auto" id="navbarCollapse">
+						<ul className="navbar-nav text-center mx-auto">
+							<li className="nav-item">
+								<Link className="nav-link" to="/">Home <span className="sr-only">(current)</span></Link>
+							</li>
+							<li className="nav-item">
+								<Link className="nav-link" to="/sobre">Quem somos</Link>
+							</li>
+							<li className="nav-item">
+								<Link className="nav-link" to="/contato">Contato</Link>
+							</li>
+						</ul>
+					</div>
+				);
+			} else {
 				return (
 					<div className="collapse navbar-collapse" id="navbarCollapse">
 						<ul className="navbar-nav mr-auto">
 							<li className="nav-item active">
-								<a className="nav-link" href="/">Home <span className="sr-only">(current)</span></a>
+								<Link className="nav-link" to="/">Home <span className="sr-only">(current)</span></Link>
 							</li>
 							<li className="nav-item">
-								<a className="nav-link" href="/sobre">Quem somos</a>
+								<Link className="nav-link" to="/sobre">Quem somos</Link>
 							</li>
 							<li className="nav-item">
-								<a className="nav-link" href="/contato">Contato</a>
+								<Link className="nav-link" to="/contato">Contato</Link>
 							</li>
 						</ul>
-						<a className="btn btn-warning orange text-white ml-auto mt-2 mb-2 " id="startPanel" href="https://solar2-users.auth.us-east-1.amazoncognito.com/login?response_type=token&client_id=sq0qbsvh23jgp1njocuufftl6&redirect_uri=https://solar2-lscad.herokuapp.com/campo-grande/painel" role="button" type="button">
+						<Link className="btn btn-warning orange text-white ml-auto mt-2 mb-2 " id="startPanel" to="/login">
 							<i className="material-icons pr-2 pb-1 pl-0 text-white outline-assessment" id="painel-icon">assessment</i>Acesse o painel
-					</a>
+						</Link>
 					</div>
 				);
+			}
 		}
 	}
 }

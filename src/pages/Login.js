@@ -1,49 +1,138 @@
 import React, { Component } from 'react';
-import { Link, Redirect } from 'react-router-dom';
-// import { Container } from './styles';
+import { Link, withRouter } from 'react-router-dom';
+import Header from '../components/HeaderWrapper';
+import FormButton from '../components/FormButton';
+import { CognitoUserPool, CognitoUser, AuthenticationDetails } from 'amazon-cognito-identity-js';
+import _config from '../services/_config';
+import * as AWS from 'aws-sdk/global';
 
-export default class Login extends Component {
+class Login extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			redirect: false
+			redirect: false,
+			logged: false,
 		};
 	}
 
-	setRedirect = () => {
-		this.setState({
-			redirect: true
-		})
+	login = e => {
+
+		this.setState({ loading: true });
+		e.preventDefault();
+
+		let { username, password } = this.state;
+
+		let authenticationData = {
+			Username: username,
+			Password: password
+		};
+
+		let authenticationDetails = new AuthenticationDetails(authenticationData);
+
+		localStorage.setItem('awsauthenticationdata', JSON.stringify(authenticationData));
+
+		let poolData = {
+			UserPoolId: _config.userPoolId,
+			ClientId: _config.clientId
+		};
+
+		let userPool = new CognitoUserPool(poolData);
+
+		let userData = {
+			Username: username,
+			Pool: userPool
+		};
+
+		let cognitoUser = new CognitoUser(userData);
+
+		cognitoUser.authenticateUser(authenticationDetails, {
+			onSuccess: (result) => {
+
+				localStorage.removeItem('accessToken');
+				let accessToken = result.getAccessToken().getJwtToken();
+				localStorage.setItem('accessToken', accessToken);
+
+				AWS.config.region = _config.region;
+
+				AWS.config.credentials = new AWS.CognitoIdentityCredentials({
+					IdentityPoolId: 'us-east-1:52bffe11-4e2e-4b34-8d21-4ea948340b2c',
+					Logins: {
+						'cognito-idp.us-east-1.amazonaws.com/us-east-1_mM4mx5nCj': result.getIdToken().getJwtToken()
+					}
+				});
+
+				AWS.config.credentials.refresh((error) => {
+					if (error) {
+						this.setState({ loading: false });
+					} else {
+
+						this.setState({ logged: true });
+						this.props.history.push({
+							pathname: "/painel",
+							state: { logged: true },
+							length: 1
+						})
+					}
+				});
+			},
+
+			onFailure: function (err) {
+				if (err.message === "User does not exist.") {
+					alert("Parece que seu usuário não existe! Crie uma conta e tente novamente.");
+				} else if (err.message === "Incorrect username or password.") {
+					alert("Essa senha não corresponde ao seu e-mail. Tente novamente.");
+				} else if (err.message === "User is not confirmed.") {
+					alert("Confirme seu cadastro no e-mail e tente novamente.");
+				}
+				else {
+					alert("Erro ", err.message || "Erro ", JSON.stringify(err));
+				}
+				this.setState({ loading: false });
+
+				return;
+			},
+
+		});
+
 	}
 
-	renderRedirect = () => {
-		if (this.state.redirect) {
-			return <Redirect to='/campo-grande/painel' />
-		}
+	handleClick = () => {
+		this.setState({ loading: true });
 	}
-	
+
 	render() {
 		return (
-			<div className="container-fluid my-5 form-wrapper">
-				<div className="card col-md-6 mx-auto">
-					<div className="card-title mx-auto">
-						<h4 className="card-title mt-4">Entrar</h4>
+			<React.Fragment>
+				<div style={{ position: "absolute", top: "40%", width: "100%", transform: "translateY(-50%)" }}>
+					<div className="container-fluid mb-1 mt-5 form-wrapper col-lg-8">
+						<div className="card col-md-6 mx-auto">
+							<div className="card-title mx-auto">
+								<h4 className="card-title mt-4">Entrar</h4>
+							</div>
+							<div className="card-body col-lg-10 mx-auto">
+								<form className="pl-0 form-group" onSubmit={this.login}>
+									<div className="form-group">
+										<input type="text" name="username" id="username" className="form-control" placeholder="E-mail" required
+											onInput={(e) => this.setState({ username: e.target.value })} />
+									</div>
+									<div className="form-group">
+										<input type="password" name="password" id="password" className="form-control" placeholder="Senha" required
+											onInput={(e) => this.setState({ password: e.target.value })} />
+									</div>
+									<FormButton loading={this.state.loading} label="Entrar" />
+									<div className="form-group text-center" >
+										<Link className="mt-5" to="/cadastro"><small className="form-text">Não tenho conta</small></Link>
+									</div>
+								</form>
+							</div>
+						</div>
 					</div>
-					<div className="card-body col-lg-10 mx-auto">
-					<form className="pl-0" action="/campo-grande/painel">
-							<label htmlFor="email">E-mail: </label>
-							<input type="email" name="email" id="email" className="form-control" required />
-							<br />
-							<label htmlFor="password">Senha: </label>
-							<input type="password" name="password" id="password" className="form-control" required />
-							<br />
-							<button className="btn btn-primary mb-2" id="submit" onClick={this.setRedirect}>Entrar</button>
-							<br/>
-							<Link className="mt-5" to="/cadastro">Não tenho conta</Link>
-						</form>
-					</div>
+					<Header logged={false} fixed={false} marginBottom={true} transition={true} />
 				</div>
-			</div>
+
+			</React.Fragment>
 		);
 	}
 }
+
+export default withRouter(Login);

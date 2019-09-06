@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-
+import { Link } from 'react-router-dom';
 import ufvUFMS from '../pages/imgs/ufvufms3.png';
 import ufvCandeias from '../pages/imgs/ufvcandeias1.png';
 import ufvIrece from '../pages/imgs/ufvirece1.png';
@@ -20,7 +20,7 @@ export default class Carousel extends Component {
 						<div className="carousel-caption text-left" id="containerSlide1">
 							<h1 id="carouselText1" className="d-none d-sm-inline-block">Controle total dos dados.</h1>
 							<p>Visualize, compare e monitore os dados da sua unidade fotovoltáica com facilidade.</p>
-							<p><a className="btn btn-lg btn-primary d-none d-sm-inline-block" href="/campo-grande/painel" role="button">Monitorar agora</a></p>
+							<p><Link className="btn btn-lg btn-primary d-none d-sm-inline-block" to="/painel" role="button">Monitorar agora</Link></p>
 						</div>
 					</div>
 				</div>
@@ -30,7 +30,7 @@ export default class Carousel extends Component {
 						<div className="carousel-caption">
 							<h1 id="carouselText2" className="d-none d-md-inline-block">Mantenha sempre limpo.</h1>
 							<p id="carouselP2">Monitore as ações do dispositivo de limpeza em tempo real, agende limpezas e solicite fotos do estado da sua planta fotovoltáica.</p>
-							<p><a className="btn btn-lg btn-primary d-none d-md-inline-block" href="/campo-grande/painel" role="button">Monitorar agora</a></p>
+							<p><Link className="btn btn-lg btn-primary d-none d-md-inline-block" to="/painel" role="button">Monitorar agora</Link></p>
 						</div>
 					</div>
 				</div>
@@ -40,19 +40,19 @@ export default class Carousel extends Component {
 						<div className="carousel-caption">
 							<h1 id="carouselText2" className="d-none d-md-inline-block">Acompanhe a situação de cada unidade.</h1>
 							<p id="carouselP2">Veja a produção do dia, dados energéticos e ambientais na sua unidade fotovoltáica.</p>
-							<p><a className="btn btn-lg btn-primary d-none d-md-inline-block" href="/campo-grande/painel" role="button">Monitorar agora</a></p>
+							<p><Link className="btn btn-lg btn-primary d-none d-md-inline-block" to="/painel" role="button">Monitorar agora</Link></p>
 						</div>
 					</div>
 				</div>
 			</div>
-			<a className="carousel-control-prev" href="#myCarousel" role="button" data-slide="prev">
+			<Link className="carousel-control-prev" to="#myCarousel" role="button" data-slide="prev">
 				<span className="carousel-control-prev-icon" aria-hidden="true"></span>
 				<span className="sr-only">Anterior</span>
-			</a>
-			<a className="carousel-control-next" href="#myCarousel" role="button" data-slide="next">
+			</Link>
+			<Link className="carousel-control-next" to="#myCarousel" role="button" data-slide="next">
 				<span className="carousel-control-next-icon" aria-hidden="true"></span>
 				<span className="sr-only">Próximo</span>
-			</a>
+			</Link>
 		</div>
 	);
   }
