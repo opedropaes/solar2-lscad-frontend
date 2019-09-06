@@ -28,14 +28,12 @@ export default class HeaderUI extends Component {
 			if (cognitoUser != null) {
 				cognitoUser.getSession(function(err, session) {
 					if (err) {
-						console.debug(err)
 						reject();
 					}			
 				});
 
 				cognitoUser.getUserAttributes(function(err, result) {
 					if (err) {
-						console.debug(err)
 						reject();
 					}
 					for (let i = 0; i < result.length; i++) {
@@ -63,7 +61,7 @@ export default class HeaderUI extends Component {
 			return (
 				<React.Fragment>
 					<div className="collapse navbar-collapse" id="navbarCollapse"></div>
-					<div className="dropdown my-2 mr-4">
+					<div className="dropdown my-2 mr-2">
 						<button className="btn btn-outline-secondary text-white dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 						<i className="material-icons pr-2 pb-1 text-white outline-assessment" id="painel-icon">perm_identity</i>{this.state.user}
   						</button>

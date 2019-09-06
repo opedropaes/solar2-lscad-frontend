@@ -9,7 +9,7 @@ export default class ToggleButton extends Component {
 	}
 
 	render() {
-		if (this.props.logged) {
+		if (!this.props.logged) {
 			return (
 				<React.Fragment>
 					<button className="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">

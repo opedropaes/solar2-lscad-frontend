@@ -30,6 +30,7 @@ export default class TitleBar extends Component {
                 <React.Fragment>
                     <div id="pac-hoje" className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 mb-1 ml-3 ">
                         <h3 className="h3" id="h3"><i className="material-icons md-24 title-bar-icon" >trending_down</i> {this.props.text}</h3>
+                        <h5 className="h5" id="loss-percentage">{this.props.lossPercentage}</h5>
                     </div>
                 </React.Fragment>
             );

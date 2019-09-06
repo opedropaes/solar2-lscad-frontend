@@ -30,7 +30,7 @@ export default class HeaderWrapper extends Component {
 					<div className="header-wrapper">
 						<header>
 							<nav className="navbar navbar-expand-lg navbar-dark bg-dark fixed-top mb-3">
-								<Link className="nav-link text-white pl-0 ml-3" to="/painel" alt="Home">SOLAR II</Link>
+								<Link className="nav-link text-white pl-0 ml-2" to="/painel" alt="Home">SOLAR II</Link>
 								<Toggle logged={this.props.logged} />
 								<HeaderUI logged={this.props.logged} ufv={this.props.ufv} />
 							</nav>
@@ -42,7 +42,7 @@ export default class HeaderWrapper extends Component {
 					<div className="header-wrapper">
 						<header>
 							<nav className="navbar navbar-expand-lg navbar-dark bg-dark mb-3">
-								<Link className="nav-link text-white pl-0 ml-3" to="/painel" alt="Home">SOLAR II</Link>
+								<Link className="nav-link text-white pl-0 ml-2" to="/painel" alt="Home">SOLAR II</Link>
 								<Toggle logged={this.props.logged} />
 								<HeaderUI logged={this.props.logged} ufv={this.props.ufv} />
 							</nav>
@@ -54,7 +54,7 @@ export default class HeaderWrapper extends Component {
 					<div className="header-wrapper">
 						<header>
 							<nav className="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
-								<Link className="nav-link text-white pl-0 ml-3" to="/painel" alt="Home">SOLAR II</Link>
+								<Link className="nav-link text-white pl-0 ml-2" to="/painel" alt="Home">SOLAR II</Link>
 								<Toggle logged={this.props.logged} />
 								<HeaderUI logged={this.props.logged} ufv={this.props.ufv} />
 							</nav>
@@ -66,7 +66,7 @@ export default class HeaderWrapper extends Component {
 					<div className="header-wrapper">
 						<header>
 							<nav className="navbar navbar-expand-lg navbar-dark bg-dark">
-								<Link className="nav-link text-white pl-0 ml-3" to="/painel" alt="Home">SOLAR II</Link>
+								<Link className="nav-link text-white pl-0 ml-2" to="/painel" alt="Home">SOLAR II</Link>
 								<Toggle logged={this.props.logged} />
 								<HeaderUI logged={this.props.logged} ufv={this.props.ufv} />
 							</nav>

@@ -66,13 +66,44 @@ export default class Enviromental extends Component {
 
   refreshState = async (res) => {
 
+	let head = [
+		'Temperatura média',
+		'Umidade relativa do ar',
+		'Precipitação acumulada',
+		'Velocidade do vento atual (última coleta)',
+		'Pressão atmosférica atual (última coleta)'
+	  ]
+  
+	  // const totalRainfall = res.rainfall.reduce(
+	  //   (accumulator, currentValue) => accumulator + currentValue
+	  // )
+  
+	  let windSpeed = res.windSpeed.pop() || 0
+	  let atmPressure = res.atmPressure.pop() || 0
+	  let temperature = res.temperature.pop() || 0
+	  let humidity = res.humidity.pop() || 0
+  
+	  let body = [[
+		parseFloat(temperature).toFixed(1) + " °C",
+		parseFloat(humidity).toFixed(1) + " %",
+		0 + " mm/m³",
+		parseFloat(windSpeed).toFixed(1) + " km/h",
+		parseInt(atmPressure) + " atm"
+	  ]]
+  
+	  let dataForTable = {
+		head,
+		body
+	  }
+
     return ({
       day: res.day,
       month: res.month,
       year: res.year,
       monthDay: res.monthDay,
       period: res.period,
-      interval: res.interval,
+	  interval: res.interval,
+	  dataForTable,
       data: {
         table1: {
           data: res.solarRadiation,
