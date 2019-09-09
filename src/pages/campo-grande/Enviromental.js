@@ -71,7 +71,7 @@ export default class Enviromental extends Component {
 	refreshState = async (res) => {
 
 		let head = [
-			'Temperatura média (°C)',
+			'Temperatura atual (°C)',
 			'Velocidade do vento atual (km/h)',
 			'Massa PM1 (μ/m³)',
 			'Massa PM2 (μ/m³)',
@@ -80,8 +80,7 @@ export default class Enviromental extends Component {
 		]
 
 
-		let totalTemperature = (res[1].temperatures.length) ? res[1].temperatures.reduce((acc, cur) => acc + cur ) : [0]
-		let temperature = totalTemperature / res[1].temperatures.length
+		let temperature = res[1].temperatures.pop()
 		let windSpeed = res[1].windSpeeds.pop()
 		let PM1 = res[1].PM1Particulates.pop()
 		let PM2 = res[1].PM2Particulates.pop()
