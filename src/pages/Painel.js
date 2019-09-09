@@ -43,7 +43,7 @@ export default class Painel extends Component {
 													text="Estação solarimétrica em desenvolvimento"
 													link="/campo-grande/ambientais"
 													buttonText="Monitorar agora"
-													buttonActive={false}
+													buttonActive={true}
 													theme="environmental"
 												/>
 											</div>

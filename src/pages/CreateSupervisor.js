@@ -38,8 +38,8 @@ class CriateSupervisor extends Component {
 		if(this.confirmPassword()) {
 
 			poolData = {
-				UserPoolId: _config.userPoolId, // Your user pool id here
-				ClientId: _config.clientId // Your client id here
+				UserPoolId: _config.userPoolId, 
+				ClientId: _config.clientId 
 			};
 	
 			let userPool = new CognitoUserPool(poolData);
@@ -48,7 +48,7 @@ class CriateSupervisor extends Component {
 	
 			let dataEmail = {
 				Name: 'email',
-				Value: email, //get from form field
+				Value: email, 
 			};
 	
 			let dataUsername = {
