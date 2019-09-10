@@ -346,7 +346,6 @@ export default class Enviromental extends Component {
 		response.push([
 			'Data',
 			'Horario',
-			'Irradiacao (W/m^3)',
 			'PM1 massa (mg/m^3)',
 			'PM2 massa (mg/m^3)',
 			'PM4 massa (mg/m^3)',
@@ -358,14 +357,15 @@ export default class Enviromental extends Component {
 			'Concentracao padrao (mg/m^3)',
 			'Temperatura (°C)',
 			'Direcao do vento (°)',
-			'Velocidade do vento km/h'
+			'Velocidade do vento km/h',
+			'Intervalo de irradiacao',
+			'Irradiacao (W/m^3)'
 		])
 
 		for (let i = 0; i < obj.interval.length; i++) {
 			response.push([
 				obj.date,
 				obj.interval[i],
-				(obj.irradiationInterval[i] == obj.interval[i]) ? obj.irradiation[i] : 0,
 				obj.PM1Particulates[i],
 				obj.PM2Particulates[i],
 				obj.PM4Particulates[i],
@@ -377,7 +377,9 @@ export default class Enviromental extends Component {
 				obj.averageSizes[i],
 				obj.temperatures[i],
 				obj.windDirections[i],
-				obj.windSpeeds[i]
+				obj.windSpeeds[i],
+				obj.irradiationInterval[i],
+				obj.irradiation[i]
 			])
 		}
 
