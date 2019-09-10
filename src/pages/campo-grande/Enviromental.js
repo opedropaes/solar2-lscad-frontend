@@ -438,7 +438,7 @@ export default class Enviromental extends Component {
 										className="btn btn-sm btn-info text-light mx-auto mb-3"
 										filename={this.state.monthDay + "-Campo-Grande-Ambientais.csv"}>
 										<i className="material-icons pr-2 pb-1 text-light outline-assessment" id="painel-icon">arrow_downward</i>
-										Donwload
+										Download
 									</CSVLink>
 								</div>
 							</main>
