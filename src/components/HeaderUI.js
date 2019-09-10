@@ -63,12 +63,16 @@ export default class HeaderUI extends Component {
 					<div className="collapse navbar-collapse" id="navbarCollapse"></div>
 					<div className="dropdown my-2 mr-2">
 						<button className="btn btn-outline-secondary text-white dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-						<i className="material-icons pr-2 pb-1 text-white outline-assessment" id="painel-icon">perm_identity</i>{this.state.user}
+							<i className="material-icons pr-2 pb-1 text-white outline-assessment" id="painel-icon">perm_identity</i>{this.state.user}
   						</button>
 						<div className="dropdown-menu bg-dark text-white mx-auto" aria-labelledby="dropdownMenuButton">
-							<Link className="dropdown-item text-white text-right" to="/criar-supervisor">Criar supervisor</Link>
+							<Link className="dropdown-item text-white text-right" to="/criar-supervisor">
+								<i className="material-icons pr-2 pb-1 text-white outline-assessment" id="painel-icon">add</i>Criar supervisor
+							</Link>
 							<div className="dropdown-divider mx-3 mt-3"></div>
-							<Link className="dropdown-item text-white text-right" to="/" onClick={this.quit}>Sair</Link>
+							<Link className="dropdown-item text-white text-right" to="/" onClick={this.quit}>
+								<i className="material-icons pr-2 pb-1 text-white outline-assessment" id="painel-icon">power_settings_new</i>Sair
+							</Link>
 						</div>
 					</div>
 				</React.Fragment>

@@ -10,6 +10,8 @@ import Footer from '../../components/FooterWrapper';
 import Table from '../../components/Table';
 
 import api from '../../services/api';
+import csvFormater from '../../utils/formatToDownload';
+import { CSVLink } from 'react-csv-3';
 
 import dateFormater from '../../utils/dateFormater';
 import howManyDaysThisMonth from '../../utils/daysInMonthDefiner';
@@ -49,6 +51,8 @@ export default class Enviromental extends Component {
 		let apiResponse = await api.get('/campo-grande/ambientais/' + date);
 		let newStateObject = await this.refreshState(apiResponse.data);
 
+		let toDonwload = await csvFormater.formatCSV(newStateObject.toDonwload, "campo-grande", "environmental");
+
 		if (this._isMounted || !this._isUpdated) {
 			this.setState({
 				day: newStateObject.day,
@@ -62,8 +66,10 @@ export default class Enviromental extends Component {
 				data: newStateObject.data,
 				dataForTable: newStateObject.dataForTable,
 				options: newStateObject.options,
+				toDonwload: toDonwload,
 				isLoading: false
 			});
+
 		}
 
 	}
@@ -73,10 +79,10 @@ export default class Enviromental extends Component {
 		let head = [
 			'Temperatura atual (°C)',
 			'Velocidade do vento atual (km/h)',
-			'Massa PM1 (μ/m³)',
-			'Massa PM2 (μ/m³)',
-			'Massa PM4 (μ/m³)',
-			'Massa PM10 (μ/m³)'
+			'Massa PM1 (μg/m³)',
+			'Massa PM2 (μg/m³)',
+			'Massa PM4 (μg/m³)',
+			'Massa PM10 (μg/m³)'
 		]
 
 
@@ -112,6 +118,24 @@ export default class Enviromental extends Component {
 			interval: res[1].interval,
 			quartersInterval: res[1].quartersInterval,
 			irradiationQuartersInterval: res[0].interval,
+			toDonwload: {
+				date: res[1].monthDay,
+				interval: res[1].interval,
+				PM1Particulates: res[1].PM1Particulates,
+				PM2Particulates: res[1].PM2Particulates,
+				PM4Particulates: res[1].PM4Particulates,
+				PM10Particulates: res[1].PM10Particulates,
+				PM1Numbers: res[1].PM1Numbers,
+				PM2Numbers: res[1].PM2Numbers,
+				PM4Numbers: res[1].PM4Numbers,
+				PM10Numbers: res[1].PM10Numbers,
+				averageSizes: res[1].averageSizes,
+				temperatures: res[1].temperatures,
+				windDirections: res[1].windDirections,
+				windSpeeds: res[1].windSpeeds,
+				irradiationInterval: res[0].completeInterval,
+				irradiation: res[0].completeIrradiation
+			},
 			dataForTable,
 			data: {
 				table1: {
@@ -363,7 +387,17 @@ export default class Enviromental extends Component {
 									</div>
 								</div>
 								<Table head={this.state.dataForTable.head} body={this.state.dataForTable.body} />
-
+								<strong ><hr className="mx-4"></hr></strong>
+								<div className="text-center mx-auto mb-2">{"Baixar dados de " + this.state.monthDay + " como CSV:"}</div>
+								<div className="container row flex-row mx-auto px-0">
+									<CSVLink 
+										data={this.state.toDonwload}
+										className="btn btn-sm btn-info text-light mx-auto mb-3"
+										filename={this.state.monthDay + "-Campo-Grande-Ambientais.csv"}>
+										<i className="material-icons pr-2 pb-1 text-light outline-assessment" id="painel-icon">arrow_downward</i>
+										Donwload
+									</CSVLink>
+								</div>
 							</main>
 						</div>
 					</div>
