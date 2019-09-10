@@ -10,7 +10,6 @@ import Footer from '../../components/FooterWrapper';
 import Table from '../../components/Table';
 
 import api from '../../services/api';
-import csvFormater from '../../utils/formatToDownload';
 import { CSVLink } from 'react-csv-3';
 
 import dateFormater from '../../utils/dateFormater';
@@ -51,7 +50,7 @@ export default class Enviromental extends Component {
 		let apiResponse = await api.get('/campo-grande/ambientais/' + date);
 		let newStateObject = await this.refreshState(apiResponse.data);
 
-		let toDonwload = await csvFormater.formatCSV(newStateObject.toDonwload, "campo-grande", "environmental");
+		let toDonwload = await this.formatCSV(newStateObject.toDonwload);
 
 		if (this._isMounted || !this._isUpdated) {
 			this.setState({
@@ -339,6 +338,50 @@ export default class Enviromental extends Component {
 
 	componentWillUnmount() {
 		this._isMounted = false;
+	}
+
+	formatCSV = (obj) => {
+		let response = []
+
+		response.push([
+			'Data',
+			'Horario',
+			'Irradiacao (W/m^3)',
+			'PM1 massa (mg/m^3)',
+			'PM2 massa (mg/m^3)',
+			'PM4 massa (mg/m^3)',
+			'PM10 massa (mg/m^3)',
+			'PM1 concentracao (mg/m^3)',
+			'PM2 concentracao (mg/m^3)',
+			'PM4 concentracao (mg/m^3)',
+			'PM10 concentracao (mg/m^3)',
+			'Concentracao padrao (mg/m^3)',
+			'Temperatura (°C)',
+			'Direcao do vento (°)',
+			'Velocidade do vento km/h'
+		])
+
+		for (let i = 0; i < obj.interval.length; i++) {
+			response.push([
+				obj.date,
+				obj.interval[i],
+				(obj.irradiationInterval[i] == obj.interval[i]) ? obj.irradiation[i] : 0,
+				obj.PM1Particulates[i],
+				obj.PM2Particulates[i],
+				obj.PM4Particulates[i],
+				obj.PM10Particulates[i],
+				obj.PM1Numbers[i],
+				obj.PM2Numbers[i],
+				obj.PM4Numbers[i],
+				obj.PM10Numbers[i],
+				obj.averageSizes[i],
+				obj.temperatures[i],
+				obj.windDirections[i],
+				obj.windSpeeds[i]
+			])
+		}
+
+		return response
 	}
 
 	render() {
