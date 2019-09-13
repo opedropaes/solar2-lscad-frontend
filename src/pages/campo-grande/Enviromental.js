@@ -110,7 +110,7 @@ export default class Enviromental extends Component {
 		let PM10 = res[1].PM10Particulates.pop();
 
 		let body = [[
-			( differentDay ) ? parseFloat(averageTemperature).toFixed(1) + " °C" : parseFloat(temperature).toFixed(1) + " °C)" || 0 + " °C",
+			( differentDay ) ? parseFloat(averageTemperature).toFixed(1) + " °C" : parseFloat(temperature).toFixed(1) + " °C" || 0 + " °C",
 			( differentDay ) ? parseFloat(windSpeedsAverage).toFixed(1) + " km/h"|| 0 + " km/h": parseFloat(windSpeed).toFixed(1) + " km/h"|| 0 + " km/h",
 			( differentDay ) ? parseFloat(PM1Average).toFixed(1) + " μg/m³" || 0 + " μg/m³": parseFloat(PM1).toFixed(1) + " μg/m³" || 0 + " μg/m³",
 			( differentDay ) ? parseFloat(PM2Average).toFixed(1) + " μg/m³" || 0 + " μg/m³": parseFloat(PM2).toFixed(1) + " μg/m³" || 0 + " μg/m³",
