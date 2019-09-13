@@ -36,6 +36,9 @@ export default class Enviromental extends Component {
 	actualDay = this.now.getDate();
 	actualMonth = this.now.getMonth() + 1;
 	actualYear = this.now.getFullYear();
+	currentDay = this.now.getDate();
+	currentMonth = this.now.getMonth() + 1;
+	currentYear = this.now.getFullYear();
 
 	componentDidMount() {
 
@@ -75,36 +78,50 @@ export default class Enviromental extends Component {
 
 	refreshState = async (res) => {
 
+		let differentDay = ( this.currentDay != res[1].day || this.currentMonth != res[1].month || this.currentYear != res[1].year );
+
 		let head = [
-			'Temperatura atual (°C)',
-			'Velocidade do vento atual (km/h)',
-			'Massa PM1 (μg/m³)',
-			'Massa PM2 (μg/m³)',
-			'Massa PM4 (μg/m³)',
-			'Massa PM10 (μg/m³)'
-		]
+			( differentDay ) ? 'Temperatura média' : 'Temperatura atual',
+			( differentDay ) ? 'Velocidade do vento média' : 'Velocidade do vento atual',
+			( differentDay ) ? 'Média de massa PM1 sobre a mesa': 'Massa PM1 sobre a mesa',
+			( differentDay ) ? 'Média de massa PM2 sobre a mesa' : 'Massa PM2 sobre a mesa',
+			( differentDay ) ? 'Média de massa PM4 sobre a mesa' : 'Massa PM4 sobre a mesa',
+			( differentDay ) ? 'Média de massa PM10 sobre a mesa' : 'Massa PM10 sobre a mesa'
+		];
 
+		let temperatureSum = ( res[1].temperatures.length ) ? res[1].temperatures.reduce( (acc, cur) => acc + cur ) : 0;
+		let averageTemperature = temperatureSum / (res[1].temperatures.length || 1);
+		let windSpeedsSum = ( res[1].windSpeeds.length ) ? res[1].windSpeeds.reduce( (acc, cur) => acc + cur ) : 0;
+		let windSpeedsAverage = windSpeedsSum / (res[1].windSpeeds.length || 1);
+		let PM1Sum = ( res[1].PM1Particulates.length ) ? res[1].PM1Particulates.reduce( (acc, cur) => acc + cur ) : 0;
+		let PM1Average = PM1Sum / (res[1].PM1Particulates.length || 1);
+		let PM2Sum = ( res[1].PM2Particulates.length ) ? res[1].PM2Particulates.reduce( (acc, cur) => acc + cur ) : 0;
+		let PM2Average = PM2Sum / (res[1].PM2Particulates.length || 1);
+		let PM4Sum = ( res[1].PM4Particulates.length ) ? res[1].PM4Particulates.reduce( (acc, cur) => acc + cur ) : 0;
+		let PM4Average = PM4Sum / (res[1].PM4Particulates.length || 1);
+		let PM10Sum = ( res[1].PM10Particulates.length ) ? res[1].PM10Particulates.reduce( (acc, cur) => acc + cur ) : 0;
+		let PM10Average = PM10Sum / (res[1].PM10Particulates.length || 1);
 
-		let temperature = res[1].temperatures.pop()
-		let windSpeed = res[1].windSpeeds.pop()
-		let PM1 = res[1].PM1Particulates.pop()
-		let PM2 = res[1].PM2Particulates.pop()
-		let PM4 = res[1].PM4Particulates.pop()
-		let PM10 = res[1].PM10Particulates.pop()
+		let temperature = res[1].temperatures.pop();
+		let windSpeed = res[1].windSpeeds.pop();
+		let PM1 = res[1].PM1Particulates.pop();
+		let PM2 = res[1].PM2Particulates.pop();
+		let PM4 = res[1].PM4Particulates.pop();
+		let PM10 = res[1].PM10Particulates.pop();
 
 		let body = [[
-			parseFloat(temperature).toFixed(1) || 0,
-			parseFloat(windSpeed).toFixed(1) || 0,
-			parseFloat(PM1) || 0,
-			parseFloat(PM2) || 0,
-			parseFloat(PM4) || 0,
-			parseFloat(PM10) || 0
-		]]
+			( differentDay ) ? parseFloat(averageTemperature).toFixed(1) + " °C" : parseFloat(temperature).toFixed(1) + " °C)" || 0 + " °C",
+			( differentDay ) ? parseFloat(windSpeedsAverage).toFixed(1) + " km/h"|| 0 + " km/h": parseFloat(windSpeed).toFixed(1) + " km/h"|| 0 + " km/h",
+			( differentDay ) ? parseFloat(PM1Average).toFixed(1) + " μg/m³" || 0 + " μg/m³": parseFloat(PM1).toFixed(1) + " μg/m³" || 0 + " μg/m³",
+			( differentDay ) ? parseFloat(PM2Average).toFixed(1) + " μg/m³" || 0 + " μg/m³": parseFloat(PM2).toFixed(1) + " μg/m³" || 0 + " μg/m³",
+			( differentDay ) ? parseFloat(PM4Average).toFixed(1) + " μg/m³" || 0 + " μg/m³": parseFloat(PM4).toFixed(1) + " μg/m³" || 0 + " μg/m³",
+			( differentDay ) ? parseFloat(PM10Average).toFixed(1) + " μg/m³" || 0 + " μg/m³": parseFloat(PM10).toFixed(1) + " μg/m³" || 0 + " μg/m³",
+		]];
 
 		let dataForTable = {
 			head,
 			body
-		}
+		};
 
 		let irradiation = res[0].irradiation.map(item => item * 1000);
 
@@ -247,7 +264,7 @@ export default class Enviromental extends Component {
 						beginAtZero: true,
 						ticks: {
 							callback: function (dataLabel, index) {
-								return index % 5 === 0 ? dataLabel : '';
+								return index % 10 === 0 ? dataLabel : '';
 							},
 							maxRotation: 0,
 						}

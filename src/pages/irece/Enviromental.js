@@ -34,6 +34,9 @@ export default class Enviromental extends Component {
   actualDay = this.now.getDate();
   actualMonth = this.now.getMonth() + 1;
   actualYear = this.now.getFullYear();
+  currentDay = this.now.getDate();
+  currentMonth = this.now.getMonth() + 1;
+  currentYear = this.now.getFullYear();
 
   componentDidMount() {
 
@@ -67,17 +70,24 @@ export default class Enviromental extends Component {
 
   refreshState = async (res) => {
 
-    let head = [
-      'Temperatura média',
-      'Umidade relativa do ar',
-      'Precipitação acumulada',
-      'Velocidade do vento atual (última coleta)',
-      'Pressão atmosférica atual (última coleta)'
-    ]
+	let differentDay = ( this.currentDay != res.day || this.currentMonth != res.month || this.currentYear != res.year );
 
-    // const totalRainfall = res.rainfall.reduce(
-    //   (accumulator, currentValue) => accumulator + currentValue
-    // )
+    let head = [
+      ( differentDay ) ? 'Temperatura média' : 'Temperatura atual',
+      ( differentDay ) ? 'Umidade média relativa do ar' : 'Umidade relativa do ar',
+      'Precipitação acumulada',
+      ( differentDay ) ? 'Velocidade do vento média' : 'Velocidade do vento atual',
+      ( differentDay ) ? 'Pressão atmosférica média' : 'Pressão atmosférica atual'
+	]
+	
+	let temperatureSum = res.temperature.reduce((acc, cur) => acc + cur);
+	let temperatureAverage = temperatureSum / res.temperature.length;
+	let humiditySum = res.humidity.reduce((acc, cur) => acc + cur);
+	let humidityAverage = humiditySum / res.humidity.length;
+	let windSpeedSum = res.windSpeed.reduce((acc, cur) => acc + cur);
+	let windSpeedAverage = windSpeedSum / res.windSpeed.length;
+	let atmPressureSum = res.atmPressure.reduce((acc, cur) => acc + cur);
+	let atmPressureAverage = atmPressureSum / res.atmPressure.length;
 
     let windSpeed = res.windSpeed.pop() || 0
     let atmPressure = res.atmPressure.pop() || 0
@@ -85,11 +95,11 @@ export default class Enviromental extends Component {
     let humidity = res.humidity.pop() || 0
 
     let body = [[
-      parseFloat(temperature).toFixed(1) + " °C",
-      parseFloat(humidity).toFixed(1) + " %",
+      ( differentDay ) ? parseFloat(temperatureAverage).toFixed(1) + " °C" : parseFloat(temperature).toFixed(1) + " °C",
+      ( differentDay ) ? parseFloat(humidityAverage).toFixed(1) + " %" : parseFloat(humidity).toFixed(1) + " %",
       0 + " mm/m³",
-      parseFloat(windSpeed).toFixed(1) + " km/h",
-      parseInt(atmPressure) + " atm"
+      ( differentDay ) ? parseFloat(windSpeedAverage).toFixed(1) + " km/h" : parseFloat(windSpeed).toFixed(1) + " km/h",
+      ( differentDay ) ? parseInt(atmPressureAverage) + " atm" : parseInt(atmPressure) + " atm"
     ]]
 
     let dataForTable = {
