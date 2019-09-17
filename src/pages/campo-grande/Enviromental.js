@@ -43,13 +43,13 @@ export default class Enviromental extends Component {
 	componentDidMount() {
 		let date = dateFormater(this.actualDay, this.actualMonth, this.actualYear);
 		this._isMounted = true;
-		this.fetchApiResponse(date, 'day');
+		this.fetchApiResponse(date);
 
 	}
 
-	fetchApiResponse = async (date, period) => {
+	fetchApiResponse = async (date) => {
 
-		let apiResponse = await api.get('/campo-grande/ambientais/' + date + '/' + period);
+		let apiResponse = await api.get('/campo-grande/ambientais/' + date);
 		let newStateObject = await this.refreshState(apiResponse.data);
 
 		let toDonwload = await this.formatCSV(newStateObject.toDonwload);
@@ -343,7 +343,7 @@ export default class Enviromental extends Component {
 
 		if (!this._isUpdated) {
 			let date = dateFormater(newState.day, newState.month, newState.year);
-			this.fetchApiResponse(date, this.state.period);
+			this.fetchApiResponse(date);
 		}
 
 	}
