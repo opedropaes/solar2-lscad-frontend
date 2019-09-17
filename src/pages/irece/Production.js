@@ -34,7 +34,8 @@ export default class Production extends Component {
 	_isMounted = false;
 	_isUpdated = true;
 	now = new Date();
-	actualDay = this.now.getDate();
+	// actualDay = this.now.getDate();
+	actualDay = 1;
 	actualMonth = this.now.getMonth() + 1;
 	actualYear = this.now.getFullYear();
 
@@ -42,13 +43,13 @@ export default class Production extends Component {
 
 		let date = dateFormater(this.actualDay, this.actualMonth, this.actualYear);
 		this._isMounted = true;
-		this.fetchApiResponse(date);
+		this.fetchApiResponse(date, 'day');
 
 	}
 
-	fetchApiResponse = async (date) => {
+	fetchApiResponse = async (date, period) => {
 
-		let apiResponse = await api.get('/irece/producao/' + date);
+		let apiResponse = await api.get('/irece/producao/' + date + '/' + period);
 		let newStateObject = await this.refreshState(apiResponse.data);
 
 		if (this._isMounted || !this._isUpdated) {
@@ -61,7 +62,7 @@ export default class Production extends Component {
 				labels: newStateObject.interval,
 				data: newStateObject.data,
 				options: newStateObject.options,
-				isLoading: false
+				isLoading: (!newStateObject.interval.length)
 			});
 		}
 
@@ -69,22 +70,16 @@ export default class Production extends Component {
 
 	refreshState = async (res) => {
 
-		let dataList = []
-
-		for (let item of res) {
-			dataList[item.table - 1] = item;
-		}
-
 		return ({
-			day: dataList[0].day,
-			month: dataList[0].month,
-			year: dataList[0].year,
-			monthDay: dataList[0].monthDay,
-			period: dataList[0].period,
-			interval: dataList[0].interval,
+			day: res.day || this.actualDay,
+			month: res.month || this.actualMonth,
+			year: res.year,
+			monthDay: res.monthDay,
+			period: res.period,
+			interval: res.interval,
 			data: {
 				table1: {
-					data: dataList[0].res,
+					data: res.table1,
 					lineTension: 0,
 					label: '#1: a-Si - Baixa tensão',
 					backgroundColor: 'rgba(255,48,48, 0)',
@@ -92,7 +87,7 @@ export default class Production extends Component {
 					pointBackgroundColor: 'rgba(255,48,48, 0.7)',
 				},
 				table2: {
-					data: dataList[1].res,
+					data: res.table2,
 					lineTension: 0,
 					label: '#2: a-Si - Alta tensão',
 					backgroundColor: 'rgba(255,166,0,0)',
@@ -100,7 +95,7 @@ export default class Production extends Component {
 					pointBackgroundColor: 'rgba(255,166,0, 0.7)'
 				},
 				table3: {
-					data: dataList[2].res,
+					data: res.table3,
 					lineTension: 0,
 					label: '#3: CdTe',
 					backgroundColor: 'rgba(66, 134, 244, 0)',
@@ -108,7 +103,7 @@ export default class Production extends Component {
 					pointBackgroundColor: 'rgba(66, 134, 244, 0.7)',
 				},
 				table4: {
-					data: dataList[3].res,
+					data: res.table4,
 					lineTension: 0,
 					label: '#4: CIGS',
 					backgroundColor: 'rgba(50,172,92, 0)',
@@ -116,7 +111,7 @@ export default class Production extends Component {
 					pointBackgroundColor: 'rgba(50,172,92, 0.7)',
 				},
 				table5: {
-					data: dataList[4].res,
+					data: res.table5,
 					lineTension: 0,
 					label: '#5: p-Si',
 					backgroundColor: 'rgba(255,48,48, 0)',
@@ -124,7 +119,7 @@ export default class Production extends Component {
 					pointBackgroundColor: 'rgba(255,48,48, 0.7)',
 				},
 				tableSum: {
-					data: dataList[5].res,
+					data: res.table6,
 					lineTension: 0,
 					label: 'Total',
 					backgroundColor: 'rgba(66,161,245,1.0)',
@@ -174,28 +169,47 @@ export default class Production extends Component {
 		let month = this.state.month;
 		let year = this.state.year;
 
-		if (year >= 2018 && month >= 1 && day >= 1) {
+		if (this.state.period == "day") {
+			if (year >= 2018 && month >= 1 && day >= 1) {
 
-			if (day > 1) {
-				day--;
-			} else if (day == 1 && month != 1) {
-				day = howManyDaysThisMonth(month - 1);
-				month--;
-			} else {
-				day = 31;
-				month = 12;
-				year--;
+				if (day > 1) {
+					day--;
+				} else if (day == 1 && month != 1) {
+					day = howManyDaysThisMonth(month - 1);
+					month--;
+				} else {
+					day = 31;
+					month = 12;
+					year--;
+				}
+	
+				this.setState({
+					day,
+					month,
+					year
+				});
+		
 			}
+		} else if (this.state.period == "month") {
+			if (year >= 2018 && month >= 1) {
 
-			this.setState({
-				day,
-				month,
-				year
-			});
-
-			this._isUpdated = false;
-
+				if (month > 1) {
+					month--;
+				} else {
+					month = 12;
+					year--;
+				}
+	
+				this.setState({
+					month,
+					year
+				});
+		
+			}
 		}
+
+		this._isUpdated = false;
+
 
 	}
 
@@ -205,30 +219,67 @@ export default class Production extends Component {
 		let month = this.state.month;
 		let year = this.state.year;
 
-		if (year < this.actualYear ||
-			(year == this.actualYear && month < this.actualMonth) ||
-			(year == this.actualYear && month == this.actualMonth && day < this.actualDay)) {
-
-			if (day == 31 && month == 12) {
-				day = 1;
-				month = 1;
-				year++;
-			} else if (day == howManyDaysThisMonth(month)) {
-				day = 1;
-				month++;
-			} else {
-				day++;
+		if (this.state.period == "day") {
+			if (year < this.actualYear ||
+				(year == this.actualYear && month < this.actualMonth) ||
+				(year == this.actualYear && month == this.actualMonth && day < this.actualDay)) {
+	
+				if (day == 31 && month == 12) {
+					day = 1;
+					month = 1;
+					year++;
+				} else if (day == howManyDaysThisMonth(month)) {
+					day = 1;
+					month++;
+				} else {
+					day++;
+				}
+	
+				this.setState({
+					day,
+					month,
+					year
+				});
+		
 			}
-
-			this.setState({
-				day,
-				month,
-				year
-			});
-
-			this._isUpdated = false;
-
+		} else if (this.state.period == "month") {
+			if (year < this.actualYear ||
+				(year == this.actualYear && month < this.actualMonth)) {
+	
+				if (month == 12) {
+					month = 1;
+					year++;
+				} else {
+					month++;
+				}
+	
+				this.setState({
+					month,
+					year
+				});
+		
+			}
 		}
+
+		this._isUpdated = false;
+
+	}
+
+	handleMonthRendering = () => {
+
+		let date = dateFormater(this.actualDay, this.actualMonth, this.actualYear);
+		this._isMounted = true;
+		this.fetchApiResponse(date, 'month');
+		this.setState({ monthActive: true });
+
+	}
+
+	handleDayRendering = () => {
+
+		let date = dateFormater(this.actualDay, this.actualMonth, this.actualYear);
+		this._isMounted = true;
+		this.fetchApiResponse(date, 'day');
+		this.setState({ monthActive: false });
 
 	}
 
@@ -236,7 +287,7 @@ export default class Production extends Component {
 
 		if (!this._isUpdated) {
 			let date = dateFormater(newState.day, newState.month, newState.year);
-			this.fetchApiResponse(date);
+			this.fetchApiResponse(date, this.state.period);
 		}
 
 	}
@@ -260,7 +311,15 @@ export default class Production extends Component {
 							<main className="col-lg-12 mx-auto p-0" role="main" id="main">
 
 								<TitleBar text="Produção - Irecê" theme="production" />
-								<Navigator date={this.state.monthDay} handlePrevDateNavigation={this.decrementDate} handleNextDateNavigation={this.incrementDate} />
+								<Navigator
+									date={this.state.monthDay}
+									handlePrevDateNavigation={this.decrementDate}
+									handleNextDateNavigation={this.incrementDate}
+									monthActive={this.state.monthActive}
+									month="allowed"
+									handleMonthRendering={this.handleMonthRendering}
+									handleDayRendering={this.handleDayRendering}
+								/>
 
 								<div className="row m-4 px-0 py-0" id="row-chart">
 									<div className="col-md-6 container-fluid pb-3 pt-0 py-0 mx-auto my-auto" id="canvas-container-sum">
@@ -318,7 +377,15 @@ export default class Production extends Component {
 							<main className="col-lg-12 mx-auto p-0" role="main" id="main">
 
 								<TitleBar text="Produção - Irecê" theme="production" />
-								<Navigator date={this.state.monthDay} handlePrevDateNavigation={this.decrementDate} handleNextDateNavigation={this.incrementDate} />
+								<Navigator
+									date={this.state.monthDay}
+									handlePrevDateNavigation={this.decrementDate}
+									handleNextDateNavigation={this.incrementDate}
+									monthActive={this.state.monthActive}
+									month="allowed"
+									handleMonthRendering={this.handleMonthRendering}
+									handleDayRendering={this.handleDayRendering}
+								/>
 
 								<div className="row m-4 px-0 py-0" id="row-chart">
 									<div className="col-md-6 container-fluid pb-3 pt-0 py-0 mx-auto my-auto" id="canvas-container-sum">

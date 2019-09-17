@@ -43,12 +43,16 @@ export default class Navigator extends Component {
                                 <span className="navbar-toggler-icon"></span>
                             </button>
 
-                            <NavBarDates date={this.props.date} handlePrevDateNavigation={this.props.handlePrevDateNavigation} handleNextDateNavigation={this.props.handleNextDateNavigation} />
+                            <NavBarDates
+								date={this.props.date}
+								handlePrevDateNavigation={this.props.handlePrevDateNavigation}
+								handleNextDateNavigation={this.props.handleNextDateNavigation}
+							/>
 
                             <div className="collapse navbar-collapse mx-auto" id="navbar-dates">
                                 <ul className="navbar-nav ml-auto">
-                                    <NavButton label="Dia" componentId="day-nav" />
-                                    <NavButton label="Mês" componentId="month-nav" />
+                                    <NavButton label="Dia" componentId="day-nav" active={!this.props.monthActive} handleDayRendering={this.props.handleDayRendering} />
+                                    <NavButton label="Mês" componentId="month-nav" active={this.props.monthActive} handleMonthRendering={this.props.handleMonthRendering} />
                                 </ul>
                             </div>
 

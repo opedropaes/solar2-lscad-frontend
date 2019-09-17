@@ -58,7 +58,7 @@ export default class LossPerTable extends Component {
 				dataForTable: newStateObject.dataForTable,
 				options: newStateObject.options,
 				table: newStateObject.table,
-				isLoading: false
+				isLoading: (!newStateObject.interval.length)
 			});
 		}
 

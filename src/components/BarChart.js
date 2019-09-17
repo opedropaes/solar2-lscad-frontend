@@ -16,6 +16,7 @@ export default class BarChart extends Component {
 				<Bar
 					data={this.props.data}
 					options={this.props.options}
+					id={this.props.id}
 				/>
 			</React.Fragment>
 		);

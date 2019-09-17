@@ -41,16 +41,15 @@ export default class Enviromental extends Component {
 	currentYear = this.now.getFullYear();
 
 	componentDidMount() {
-
 		let date = dateFormater(this.actualDay, this.actualMonth, this.actualYear);
 		this._isMounted = true;
-		this.fetchApiResponse(date);
+		this.fetchApiResponse(date, 'day');
 
 	}
 
-	fetchApiResponse = async (date) => {
+	fetchApiResponse = async (date, period) => {
 
-		let apiResponse = await api.get('/campo-grande/ambientais/' + date);
+		let apiResponse = await api.get('/campo-grande/ambientais/' + date + '/' + period);
 		let newStateObject = await this.refreshState(apiResponse.data);
 
 		let toDonwload = await this.formatCSV(newStateObject.toDonwload);
@@ -69,7 +68,7 @@ export default class Enviromental extends Component {
 				dataForTable: newStateObject.dataForTable,
 				options: newStateObject.options,
 				toDonwload: toDonwload,
-				isLoading: false
+				isLoading: (!newStateObject.interval.length)
 			});
 
 		}
@@ -130,7 +129,7 @@ export default class Enviromental extends Component {
 			month: res[1].month,
 			year: res[1].year,
 			monthDay: res[1].monthDay,
-			period: 'day',
+			period: res[1].period,
 			interval: res[1].interval,
 			quartersInterval: res[1].quartersInterval,
 			irradiationQuartersInterval: res[0].interval,
@@ -344,7 +343,7 @@ export default class Enviromental extends Component {
 
 		if (!this._isUpdated) {
 			let date = dateFormater(newState.day, newState.month, newState.year);
-			this.fetchApiResponse(date);
+			this.fetchApiResponse(date, this.state.period);
 		}
 
 	}
