@@ -29,8 +29,6 @@ class Login extends Component {
 
 		let authenticationDetails = new AuthenticationDetails(authenticationData);
 
-		// sessionStorage.setItem('awsauthenticationdata', JSON.stringify(authenticationData));
-
 		let poolData = {
 			UserPoolId: _config.userPoolId,
 			ClientId: _config.clientId
