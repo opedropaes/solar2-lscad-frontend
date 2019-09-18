@@ -102,7 +102,7 @@ export default class Enviromental extends Component {
 		let PM10Sum = ( res[1].PM10Particulates.length ) ? res[1].PM10Particulates.reduce( (acc, cur) => acc + cur ) : 0;
 		let PM10Average = PM10Sum / (res[1].PM10Particulates.length || 1);
 		let totalHumidity = ( res[1].humidity.length ) ? res[1].humidity.reduce( (acc, cur) => acc + cur ) : 0;
-		let averageHumidity = parseFloat((totalHumidity / (res[1].humidity.length || 1)).toFixed(1))
+		let averageHumidity = parseFloat((totalHumidity / (res[1].humidity.length || 1)).toFixed(1));
 
 		let temperature = res[1].temperatures.pop();
 		let windSpeed = res[1].windSpeeds.pop();

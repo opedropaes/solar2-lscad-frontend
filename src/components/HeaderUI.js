@@ -48,7 +48,7 @@ export default class HeaderUI extends Component {
 	}
 
 	quit = () => {
-		localStorage.removeItem('accessToken');
+		sessionStorage.removeItem('accessToken');
 	}
 
 	async componentDidMount () {

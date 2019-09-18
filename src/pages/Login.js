@@ -29,7 +29,7 @@ class Login extends Component {
 
 		let authenticationDetails = new AuthenticationDetails(authenticationData);
 
-		localStorage.setItem('awsauthenticationdata', JSON.stringify(authenticationData));
+		// sessionStorage.setItem('awsauthenticationdata', JSON.stringify(authenticationData));
 
 		let poolData = {
 			UserPoolId: _config.userPoolId,
@@ -48,9 +48,9 @@ class Login extends Component {
 		cognitoUser.authenticateUser(authenticationDetails, {
 			onSuccess: (result) => {
 
-				localStorage.removeItem('accessToken');
+				sessionStorage.removeItem('accessToken');
 				let accessToken = result.getAccessToken().getJwtToken();
-				localStorage.setItem('accessToken', accessToken);
+				sessionStorage.setItem('accessToken', accessToken);
 
 				AWS.config.region = _config.region;
 
