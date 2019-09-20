@@ -15,7 +15,8 @@ import CampoGrandeProduction from './pages/campo-grande/Production';
 import CampoGrandeEnviromental from './pages/campo-grande/Enviromental';
 import CampoGrandeLoss from './pages/campo-grande/Loss';
 
-import IreceProduction from './pages/irece/Production';
+import IreceProduction from './pages/irece/Productions';
+import IreceProductionTable from './pages/irece/ProductionPerTable';
 import IreceEnviromental from './pages/irece/Enviromental';
 import IreceLoss from './pages/irece/Loss';
 import IreceLossTable from './pages/irece/LossPerTable';
@@ -49,6 +50,7 @@ const App = () => {
         <PrivateRoute path="/campo-grande/ambientais" exact component={CampoGrandeEnviromental} />
         <PrivateRoute path="/campo-grande/perdas" component={CampoGrandeLoss} />
         <PrivateRoute path="/irece/producao" component={IreceProduction} />
+		<PrivateRoute path="/irece/producao/mesas/:table" exact component={IreceProductionTable} />
         <PrivateRoute path="/irece/ambientais" component={IreceEnviromental} />
         <PrivateRoute path="/irece/perdas/mesas" exact component={IreceLoss} />
         <PrivateRoute path="/irece/perdas/mesas/:table" exact component={IreceLossTable} />

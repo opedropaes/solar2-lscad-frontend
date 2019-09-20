@@ -15,7 +15,7 @@ import api from '../../services/api';
 import dateFormater from '../../utils/dateFormater';
 import howManyDaysThisMonth from '../../utils/daysInMonthDefiner';
 
-export default class Production extends Component {
+export default class ProductionPerTable extends Component {
 
 	constructor(props) {
 		super(props);
@@ -49,8 +49,9 @@ export default class Production extends Component {
 
 	fetchApiResponse = async (date, period) => {
 
-		let apiResponse = await api.get('/irece/producao/' + date + '/' + period);
-		let newStateObject = await this.refreshState(apiResponse.data);
+		const table = this.props.location.pathname;
+		let apiResponse = await api.get('/irece/producao/' + table + '/' + date + '/' + period);
+		let newStateObject = await this.refreshState(apiResponse.data, table, period);
 
 		if (this._isMounted || !this._isUpdated) {
 			this.setState({
@@ -68,98 +69,228 @@ export default class Production extends Component {
 
 	}
 
-	refreshState = async (res) => {
+	refreshState = async (res, table, period) => {
 
-		return ({
-			day: res.day || this.actualDay,
-			month: res.month || this.actualMonth,
-			year: res.year,
-			monthDay: res.monthDay,
-			period: res.period,
-			interval: res.interval,
-			data: {
-				table1: {
-					data: res.table1,
-					lineTension: 0,
-					label: '#1: a-Si - Baixa tensão',
-					backgroundColor: 'rgba(255,48,48, 0)',
-					borderColor: 'rgba(255,48,48, 1.0)',
-					pointBackgroundColor: 'rgba(255,48,48, 0.7)',
-				},
-				table2: {
-					data: res.table2,
-					lineTension: 0,
-					label: '#2: a-Si - Alta tensão',
-					backgroundColor: 'rgba(255,166,0,0)',
-					borderColor: 'rgba(255,166,0,1.0)',
-					pointBackgroundColor: 'rgba(255,166,0, 0.7)'
-				},
-				table3: {
-					data: res.table3,
-					lineTension: 0,
-					label: '#3: CdTe',
-					backgroundColor: 'rgba(66, 134, 244, 0)',
-					borderColor: 'rgba(66, 134, 244, 1.0)',
-					pointBackgroundColor: 'rgba(66, 134, 244, 0.7)',
-				},
-				table4: {
-					data: res.table4,
-					lineTension: 0,
-					label: '#4: CIGS',
-					backgroundColor: 'rgba(50,172,92, 0)',
-					borderColor: 'rgba(50,172,92, 1.0)',
-					pointBackgroundColor: 'rgba(50,172,92, 0.7)',
-				},
-				table5: {
-					data: res.table5,
-					lineTension: 0,
-					label: '#5: p-Si',
-					backgroundColor: 'rgba(255,48,48, 0)',
-					borderColor: 'rgba(255,48,48, 1.0)',
-					pointBackgroundColor: 'rgba(255,48,48, 0.7)',
-				},
-				tableSum: {
-					data: res.table6,
-					lineTension: 0,
-					label: 'Total',
-					backgroundColor: 'rgba(66,161,245,1.0)',
-					borderColor: 'rgba(66,161,245,1.0)',
-					pointBackgroundColor: 'rgba(66,161,245,1.0)',
-				}
-			},
-			options: {
-				animation: {
-					duration: 1000,
-				},
-				title: {
-					display: true,
-					fontsize: 24,
-					text: "Potência (kW)",
-				},
-				labels: {
-					fontStyle: 'bold',
-				},
-				scales: {
-					yAxes: [{
-						beginAtZero: true,
-						position: "left",
-						id: "performance"
+		let tablesLabel = ['#1: a-Si - Baixa tensão', '#2: a-Si - Alta tensão', '#3: CdTe', '#4: CIGS', '#5: p-Si', 'Total'];
+		let tablesBackgroundColor = ['rgba(255,48,48, 0)', 'rgba(255,166,0,0)', 'rgba(66, 134, 244, 0)', 'rgba(50,172,92, 0)', 'rgba(255,48,48, 0)', 'rgba(66,161,245,1.0)'];
+		let tablesBorderColor = ['rgba(255,48,48, 1.0)', 'rgba(255,166,0,1.0)', 'rgba(66, 134, 244, 1.0)', 'rgba(50,172,92, 1.0)', 'rgba(255,48,48, 1.0)', 'rgba(66,161,245,1.0)'];
+		let tablesPointBackgroundColor = ['rgba(255,48,48, 0.7)', 'rgba(255,166,0,0.7)', 'rgba(66, 134, 244, 0.7)', 'rgba(50,172,92, 0.7)', 'rgba(255,48,48, 0.7)', 'rgba(66,161,245,0.7)'];
+		
+		if (period == "day") {
+			if (table <= 6) {
+			
+				return ({
+					day: res.day || this.actualDay,
+					month: res.month || this.actualMonth,
+					year: res.year,
+					monthDay: res.monthDay,
+					period: res.period,
+					interval: res.interval,
+					data: {
+						tableData: {
+							data: res.tableData,
+							lineTension: 0,
+							label: tablesLabel[res.table-1],
+							backgroundColor: tablesBackgroundColor[res.table-1],
+							borderColor: tablesBorderColor[res.table-1],
+							pointBackgroundColor: tablesPointBackgroundColor[res.table-1],
+						},
 					},
-
-					],
-					xAxes: [{
-						beginAtZero: true,
-						ticks: {
-							callback: function (dataLabel, index) {
-								return index % 8 === 0 ? dataLabel : '';
+					options: {
+						animation: {
+							duration: 1000,
+						},
+						title: {
+							display: true,
+							fontsize: 24,
+							text: "Potência (kW)",
+						},
+						labels: {
+							fontStyle: 'bold',
+						},
+						scales: {
+							yAxes: [{
+								beginAtZero: true,
+								position: "left",
+								id: "performance"
 							},
-							maxRotation: 0,
-						}
-					}]
-				},
+		
+							],
+							xAxes: [{
+								beginAtZero: true,
+								ticks: {
+									callback: function (dataLabel, index) {
+										return index % 8 === 0 ? dataLabel : '';
+									},
+									maxRotation: 0,
+								}
+							}]
+						},
+					}
+		
+				})
+	
 			}
-
-		})
+	
+			else if (table == 6) {
+	
+				return ({
+					day: res.day || this.actualDay,
+					month: res.month || this.actualMonth,
+					year: res.year,
+					monthDay: res.monthDay,
+					period: res.period,
+					interval: res.interval,
+					data: {
+						table1: {
+							data: res.table1,
+							lineTension: 0,
+							borderWidth: 1,
+							pointHoverBorderWidth: 7,
+							label: tablesLabel[0],
+							backgroundColor: tablesBackgroundColor[0],
+							borderColor: tablesBorderColor[0],
+							pointBackgroundColor: tablesPointBackgroundColor[0],
+						},
+						table2: {
+							data: res.table2,
+							lineTension: 0,
+							borderWidth: 1,
+							pointHoverBorderWidth: 7,
+							label: tablesLabel[1],
+							backgroundColor: tablesBackgroundColor[1],
+							borderColor: tablesBorderColor[1],
+							pointBackgroundColor: tablesPointBackgroundColor[1],
+						},
+						table3: {
+							data: res.table3,
+							lineTension: 0,
+							borderWidth: 1,
+							pointHoverBorderWidth: 7,
+							label: tablesLabel[2],
+							backgroundColor: tablesBackgroundColor[2],
+							borderColor: tablesBorderColor[2],
+							pointBackgroundColor: tablesPointBackgroundColor[2],
+						},
+						table4: {
+							data: res.table4,
+							lineTension: 0,
+							borderWidth: 1,
+							pointHoverBorderWidth: 7,
+							label: tablesLabel[3],
+							backgroundColor: tablesBackgroundColor[3],
+							borderColor: tablesBorderColor[3],
+							pointBackgroundColor: tablesPointBackgroundColor[3],
+						},
+						table5: {
+							data: res.table5,
+							lineTension: 0,
+							borderWidth: 1,
+							pointHoverBorderWidth: 7,
+							label: tablesLabel[4],
+							backgroundColor: tablesBackgroundColor[4],
+							borderColor: tablesBorderColor[4],
+							pointBackgroundColor: tablesPointBackgroundColor[4],
+						},
+						tableSum: {
+							data: res.table6,
+							lineTension: 0,
+							borderWidth: 1,
+							label: tablesLabel[5],
+							backgroundColor: tablesBackgroundColor[5],
+							borderColor: tablesBorderColor[5],
+							pointBackgroundColor: tablesPointBackgroundColor[5],
+						},
+					},
+					options: {
+						animation: {
+							duration: 1000,
+						},
+						title: {
+							display: true,
+							fontsize: 24,
+							text: "Potência (kW)",
+						},
+						labels: {
+							fontStyle: 'bold',
+						},
+						scales: {
+							yAxes: [{
+								beginAtZero: true,
+								position: "left",
+								id: "performance"
+							},
+		
+							],
+							xAxes: [{
+								beginAtZero: true,
+								ticks: {
+									callback: function (dataLabel, index) {
+										return index % 8 === 0 ? dataLabel : '';
+									},
+									maxRotation: 0,
+								}
+							}]
+						},
+					}
+		
+				})
+	
+			}
+	
+			else {
+				return ({
+					day: this.actualDay,
+					month: this.actualMonth,
+					year: this.actualYear,
+					monthDay: this.actualDay + "/" + this.actualMonth + "/" + this.actualYear,
+					period: 'day',
+					interval: [0],
+					data: {
+						tableData: {
+							data: [0],
+							lineTension: 0,
+							label: 'undefined',
+							backgroundColor: 'rgba(255,48,48, 0)',
+							borderColor: 'rgba(255,48,48, 1.0)',
+							pointBackgroundColor: 'rgba(255,48,48, 0.7)',
+						},
+					},
+					options: {
+						animation: {
+							duration: 1000,
+						},
+						title: {
+							display: true,
+							fontsize: 24,
+							text: "undefined",
+						},
+						labels: {
+							fontStyle: 'bold',
+						},
+						scales: {
+							yAxes: [{
+								beginAtZero: true,
+								position: "left",
+								id: "performance"
+							},
+		
+							],
+							xAxes: [{
+								beginAtZero: true,
+								ticks: {
+									callback: function (dataLabel, index) {
+										return index % 8 === 0 ? dataLabel : '';
+									},
+									maxRotation: 0,
+								}
+							}]
+						},
+					}
+		
+				})
+			}
+		}
 
 	}
 
