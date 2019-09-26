@@ -49,7 +49,7 @@ const App = () => {
         <PrivateRoute path="/campo-grande/producao" component={CampoGrandeProduction} />
         <PrivateRoute path="/campo-grande/ambientais" exact component={CampoGrandeEnviromental} />
         <PrivateRoute path="/campo-grande/perdas" component={CampoGrandeLoss} />
-        <PrivateRoute path="/irece/producao" component={IreceProduction} />
+        <PrivateRoute path="/irece/producao" exact component={IreceProduction} />
 		<PrivateRoute path="/irece/producao/mesas/:table" exact component={IreceProductionTable} />
         <PrivateRoute path="/irece/ambientais" component={IreceEnviromental} />
         <PrivateRoute path="/irece/perdas/mesas" exact component={IreceLoss} />

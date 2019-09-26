@@ -83,7 +83,7 @@ export default class Productions extends Component {
                   text="Monitore toda a produção referentes à unidade de Irecê, em conjunto, comparando a produção das mesas uma a uma."
                   link="/irece/producao/mesas/total"
                   buttonText="Monitorar produção agora"
-                  buttonActive={false}
+                  buttonActive={true}
                   theme="production"
                 />
               </div>
