@@ -7,6 +7,9 @@ import Header from '../../components/HeaderWrapper';
 import Footer from '../../components/FooterWrapper';
 import IndividualProductionCharts from './IndividualProductions';
 import TotalProductionsChart from './TotalDailyProduction';
+import LineChart from '../../components/LineChart';
+import DoughnutChart from '../../components/DoughnutChart';
+import BarChart from '../../components/BarChart';
 
 import api from '../../services/api';
 
@@ -32,8 +35,8 @@ export default class ProductionPerTable extends Component {
 	_isMounted = false;
 	_isUpdated = true;
 	now = new Date();
-	// actualDay = this.now.getDate();
-	actualDay = 1;
+	actualDay = this.now.getDate();
+	// actualDay = 1;
 	actualMonth = this.now.getMonth() + 1;
 	actualYear = this.now.getFullYear();
 
@@ -421,111 +424,218 @@ export default class ProductionPerTable extends Component {
 		}
 
 		else if (res.period == "month") {
-			return ({
-				day: this.actualDay,
-				month: res.month,
-				year: res.year,
-				monthDay: res.monthDay,
-				period: res.period,
-				interval: res.interval,
-				data: {
-					table1: {
-						data: res.averages,
-						lineTension: 0,
-						label: 'Potência média produziada #1: p-Si (kWh)',
-						backgroundColor: 'rgba(66,161,245,1.0)',
-						borderColor: 'rgba(66,161,245,1.0)',
-						pointBackgroundColor: 'rgba(66,161,245,1.0)',
-						borderWidth: 3,
-						yAxisID: "performance",
-					},
-					table2: {
-						data: res.performanceRatioComparison,
-						lineTension: 0,
-						label: 'Percentual de performance ratio em relação ao ideal mensal',
-						backgroundColor: ['rgba(255,166,0,1.0)', 'rgba(66,161,245,0)'],
-						borderColor: ['rgba(255,166,0,1.0)', 'rgba(66,161,245,0)'],
-					},
-					table3: {
-						data: res.capacityFactor,
-						lineTension: 0,
-						label: 'Percentual médio de fator de capacidade',
-						backgroundColor: 'rgba(50,172,92,1.0)',
-						borderColor: 'rgba(50,172,92,1.0)',
-						pointBackgroundColor: 'rgba(50,172,92,1.0)'
-					},
-					table4: {
-						data: res.productions,
-						lineTension: 0,
-						label: 'Produção total diária (kW)',
-						backgroundColor: 'rgba(255,48,48,1.0)',
-						borderColor: 'rgba(255,48,48,1.0)',
-						pointBackgroundColor: 'rgba(255,48,48,0.7)',
-					},
-					table5: {
-						data: res.performances,
-						lineTension: 0,
-						label: 'Performance ratio diária',
-						borderColor: 'rgba(255,48,48,1.0)',
-						backgroundColor: 'rgba(255,48,48,0)',
-						borderWidth: 3,
-						yAxisID: "capacidade",
-						type: 'line'
-					}
-				},
-				options: {
-					animation: {
-						duration: 1000,
-					},
-					title: {
-						display: true,
-						fontsize: 24,
-						text: "Produção",
-					},
-					labels: {
-						fontStyle: 'bold',
-					},
-					scales: {
-						yAxes: [{
-
-							beginAtZero: true,
-							position: "left",
-							id: "performance"
+			if (table < 6) {
+				return ({
+					day: this.actualDay,
+					month: res.month,
+					year: res.year,
+					monthDay: res.monthDay,
+					period: res.period,
+					interval: res.interval,
+					data: {
+						table1: {
+							data: res.averages,
+							lineTension: 0,
+							label: 'Potência média produziada +' + tablesLabel[res.table - 1] + ' (kWh)',
+							backgroundColor: 'rgba(66,161,245,1.0)',
+							borderColor: 'rgba(66,161,245,1.0)',
+							pointBackgroundColor: 'rgba(66,161,245,1.0)',
+							borderWidth: 3,
+							yAxisID: "performance",
 						},
-						{
-							beginAtZero: false,
-							position: "right",
-							id: "capacidade"
+						table2: {
+							data: res.performanceRatioComparison,
+							lineTension: 0,
+							label: 'Percentual de performance ratio em relação ao ideal mensal',
+							backgroundColor: ['rgba(255,166,0,1.0)', 'rgba(66,161,245,0)'],
+							borderColor: ['rgba(255,166,0,1.0)', 'rgba(66,161,245,0)'],
+						},
+						table3: {
+							data: res.capacityFactor,
+							lineTension: 0,
+							label: 'Percentual médio de fator de capacidade',
+							backgroundColor: 'rgba(50,172,92,1.0)',
+							borderColor: 'rgba(50,172,92,1.0)',
+							pointBackgroundColor: 'rgba(50,172,92,1.0)'
+						},
+						table4: {
+							data: res.productions,
+							lineTension: 0,
+							label: 'Produção total diária (kW)',
+							backgroundColor: 'rgba(255,48,48,1.0)',
+							borderColor: 'rgba(255,48,48,1.0)',
+							pointBackgroundColor: 'rgba(255,48,48,0.7)',
+						},
+						table5: {
+							data: res.performances,
+							lineTension: 0,
+							label: 'Performance ratio diária',
+							borderColor: 'rgba(255,48,48,1.0)',
+							backgroundColor: 'rgba(255,48,48,0)',
+							borderWidth: 3,
+							yAxisID: "capacidade",
+							type: 'line'
 						}
+					},
+					options: {
+						barOptions: {
+							animation: {
+								duration: 1000,
+							},
+							title: {
+								display: true,
+								fontsize: 24,
+								text: "Produção",
+							},
+							labels: {
+								fontStyle: 'bold',
+							},
+							scales: {
+								yAxes: [{
 
-						],
-						xAxes: [{
-							beginAtZero: true,
-							ticks: {
-								callback: function (dataLabel, index) {
-									return index % 4 === 0 ? dataLabel : '';
+									beginAtZero: true,
+									position: "left",
+									id: "performance"
 								},
-								maxRotation: 0,
-							}
-						}]
-					},
-				},
-				doughnutOptions: {
-					animation: {
-						duration: 1000,
-					},
-					title: {
-						display: false,
-						fontsize: 24,
-						text: "Percentual de performance mensal",
-					},
-					labels: {
-						fontStyle: 'bold',
-					},
-					responsive: true,
-				}
+								{
+									beginAtZero: false,
+									position: "right",
+									id: "capacidade"
+								}
 
-			})
+								],
+								xAxes: [{
+									beginAtZero: true,
+									ticks: {
+										callback: function (dataLabel, index) {
+											return index % 4 === 0 ? dataLabel : '';
+										},
+										maxRotation: 0,
+									}
+								}]
+							},
+						},
+						doughnutOptions: {
+							animation: {
+								duration: 1000,
+							},
+							title: {
+								display: false,
+								fontsize: 24,
+								text: "Percentual de performance mensal",
+							},
+							labels: {
+								fontStyle: 'bold',
+							},
+							responsive: true,
+						}
+					}
+
+				})
+			}
+
+			else if (table == 6) {
+				return ({
+					day: this.actualDay,
+					month: res.month,
+					year: res.year,
+					monthDay: res.monthDay,
+					period: res.period,
+					interval: res.interval,
+					data: {
+						table1: {
+							data: res.table1,
+							lineTension: 0,
+							label: 'Potência média produziada ' + tablesLabel[0] + ' (kWh)',
+							backgroundColor: 'rgba(255,48,48, 1.0)',
+							borderColor: 'rgba(255,48,48, 0)',
+							pointBackgroundColor: 'rgba(255,48,48, 0.7)',
+							borderWidth: 1
+						},
+						table2: {
+							data: res.table2,
+							lineTension: 0,
+							label: 'Potência média produziada ' + tablesLabel[1] + ' (kWh)',
+							backgroundColor: 'rgba(255,166,0,1.0)',
+							borderColor: 'rgba(255,166,0,0)',
+							pointBackgroundColor: 'rgba(255,166,0,0.7)',
+							borderWidth: 1
+
+						},
+						table3: {
+							data: res.table3,
+							lineTension: 0,
+							label: 'Potência média produziada ' + tablesLabel[2] + ' (kWh)',
+							backgroundColor: 'rgba(66, 134, 244, 1.0)',
+							borderColor: 'rgba(66, 134, 244, 1.0)',
+							pointBackgroundColor: 'rgba(66, 134, 244, 0.7)',
+							borderWidth: 1
+
+						},
+						table4: {
+							data: res.table4,
+							lineTension: 0,
+							label: 'Potência média produziada ' + tablesLabel[3] + ' (kWh)',
+							backgroundColor: 'rgba(50,172,92, 1.0)',
+							borderColor: 'rgba(50,172,92, 1.0)',
+							pointBackgroundColor: 'rgba(50,172,92, 0.7)',
+							borderWidth: 1
+
+						},
+						table5: {
+							data: res.table5,
+							lineTension: 0,
+							label: 'Potência média produziada ' + tablesLabel[4] + ' (kWh)',
+							backgroundColor: 'rgba(255, 0, 140, 1.0)',
+							borderColor: 'rgba(255, 0, 140, 1.0)',
+							pointBackgroundColor: 'rgba(255, 0, 140, 0.7)',
+							borderWidth: 1
+
+						},
+						table6: {
+							data: res.table6,
+							lineTension: 0,
+							label: 'Potência total produziada (kWh)',
+							backgroundColor: tablesBackgroundColor[5],
+							borderColor: tablesBorderColor[5],
+							pointBackgroundColor: tablesPointBackgroundColor[5],
+							borderWidth: 1
+
+						}
+					},
+					options: {
+						animation: {
+							duration: 1000,
+						},
+						title: {
+							display: true,
+							fontsize: 24,
+							text: "Produção",
+						},
+						labels: {
+							fontStyle: 'bold',
+						},
+						scales: {
+							yAxes: [{
+
+								beginAtZero: true,
+								position: "left",
+								id: "performance"
+							}],
+							xAxes: [{
+								beginAtZero: true,
+								ticks: {
+									callback: function (dataLabel, index) {
+										return index % 4 === 0 ? dataLabel : '';
+									},
+									maxRotation: 0,
+								}
+							}]
+						},
+					},
+
+				})
+			}
 		}
 	}
 
@@ -683,7 +793,7 @@ export default class ProductionPerTable extends Component {
 										handlePrevDateNavigation={this.decrementDate}
 										handleNextDateNavigation={this.incrementDate}
 										monthActive={this.state.monthActive}
-										// month="allowed"
+										month="allowed"
 										handleMonthRendering={this.handleMonthRendering}
 										handleDayRendering={this.handleDayRendering}
 									/>
@@ -721,7 +831,7 @@ export default class ProductionPerTable extends Component {
 										handlePrevDateNavigation={this.decrementDate}
 										handleNextDateNavigation={this.incrementDate}
 										monthActive={this.state.monthActive}
-										// month="allowed"
+										month="allowed"
 										handleMonthRendering={this.handleMonthRendering}
 										handleDayRendering={this.handleDayRendering}
 									/>
@@ -747,7 +857,7 @@ export default class ProductionPerTable extends Component {
 				);
 			}
 
-		} else {
+		} else if (this.state.period == "month" && !this.state.isLoading) {
 			if (this.state.table < 6) {
 				return (
 					<React.Fragment>
@@ -767,25 +877,40 @@ export default class ProductionPerTable extends Component {
 										handleDayRendering={this.handleDayRendering}
 									/>
 
-									<IndividualProductionCharts
-										isLoading={this.state.isLoading}
-										labels={[]}
-										production={[]}
-										capacityFactor={[]}
-										productionOptions={[]}
-										generalOptions={[]}
-										alternateCurrent={[]}
-										alternateVoltage={[]}
-										continuousCurrent={[]}
-										continuousVoltage={[]}
-									/>
+									<div className="row m-4 px-0 py-0" id="row-chart">
+										<div className="col-md-6 container-fluid pb-3 pt-0 py-0 mx-auto my-auto" id="canvas-container-1">
+											<BarChart
+												data={{ labels: this.state.labels, datasets: [this.state.data.table5, this.state.data.table1] }}
+												options={this.state.options.barOptions}
+											/>
+										</div>
+										<div className="col-md-6 container-fluid pb-3 pt-0 py-0 mx-auto my-auto" id="canvas-container-2">
+											<DoughnutChart
+												data={{ labels: ['Performance Ratio Mensal'], datasets: [this.state.data.table2] }}
+												options={this.state.options.doughnutOptions}
+											/>
+										</div>
+										<div className="col-md-6 container-fluid pb-3 pt-0 py-0 mx-auto my-auto" id="canvas-container-3">
+											<BarChart
+												data={{ labels: this.state.labels, datasets: [this.state.data.table3] }}
+												options={this.state.options.barOptions}
+											/>
+										</div>
+										<div className="col-md-6 container-fluid pb-3 pt-0 py-0 mx-auto my-auto" id="canvas-container-4">
+											<BarChart
+												data={{ labels: this.state.labels, datasets: [this.state.data.table4] }}
+												options={this.state.options.barOptions}
+											/>
+										</div>
+									</div>
+
 								</main>
 							</div>
 						</div>
 						<Footer />
 					</React.Fragment>
 				)
-			} else {
+			} else if (this.state.table == 6) {
 				return (
 					<React.Fragment>
 						<Header logged={true} fixed={false} marginBottom={true} />
@@ -804,18 +929,44 @@ export default class ProductionPerTable extends Component {
 										handleDayRendering={this.handleDayRendering}
 									/>
 
-									<TotalProductionsChart
-										isLoading={this.state.isLoading}
-										labels={[]}
-										totalProduction={[]}
-										table1={[]}
-										table2={[]}
-										table3={[]}
-										table4={[]}
-										table5={[]}
-										totalOptions={[]}
-										comparisonOptions={[]}
-									/>
+									<div className="row m-4 px-0 py-0" id="row-chart">
+										<div className="col-md-6 container-fluid pb-3 pt-0 py-0 mx-auto my-auto" id="canvas-container-1">
+											<BarChart
+												data={{ labels: this.state.labels, datasets: [this.state.data.table6] }}
+												options={this.state.options}
+											/>
+										</div>
+										<div className="col-md-6 container-fluid pb-3 pt-0 py-0 mx-auto my-auto" id="canvas-container-2">
+											<BarChart
+												data={{ labels: this.state.labels, datasets: [this.state.data.table1] }}
+												options={this.state.options}
+											/>
+										</div>
+										<div className="col-md-6 container-fluid pb-3 pt-0 py-0 mx-auto my-auto" id="canvas-container-3">
+											<BarChart
+												data={{ labels: this.state.labels, datasets: [this.state.data.table2] }}
+												options={this.state.options}
+											/>
+										</div>
+										<div className="col-md-6 container-fluid pb-3 pt-0 py-0 mx-auto my-auto" id="canvas-container-4">
+											<BarChart
+												data={{ labels: this.state.labels, datasets: [this.state.data.table3] }}
+												options={this.state.options}
+											/>
+										</div>
+										<div className="col-md-6 container-fluid pb-3 pt-0 py-0 mx-auto my-auto" id="canvas-container-5">
+											<BarChart
+												data={{ labels: this.state.labels, datasets: [this.state.data.table4] }}
+												options={this.state.options}
+											/>
+										</div>
+										<div className="col-md-6 container-fluid pb-3 pt-0 py-0 mx-auto my-auto" id="canvas-container-6">
+											<BarChart
+												data={{ labels: this.state.labels, datasets: [this.state.data.table5] }}
+												options={this.state.options}
+											/>
+										</div>
+									</div>
 
 								</main>
 							</div>
@@ -824,6 +975,46 @@ export default class ProductionPerTable extends Component {
 					</React.Fragment>
 				)
 			}
+		}
+
+		else if (this.state.isLoading) {
+			return (
+				<React.Fragment>
+					<Header logged={true} fixed={false} marginBottom={true} />
+					<div className="row">
+						<div className="col-11 mx-auto">
+							<main className="col-lg-12 mx-auto p-0" role="main" id="main">
+
+								<TitleBar text="Produção - Irecê" theme="production" />
+								<Navigator
+									date={this.state.monthDay}
+									handlePrevDateNavigation={this.decrementDate}
+									handleNextDateNavigation={this.incrementDate}
+									monthActive={this.state.monthActive}
+									month="allowed"
+									handleMonthRendering={this.handleMonthRendering}
+									handleDayRendering={this.handleDayRendering}
+								/>
+
+								<div className="row m-4 px-0 py-0" id="row-chart">
+									<div className="col-md-6 container-fluid pb-3 pt-0 py-0 mx-auto my-auto" id="canvas-container-1">
+										<LineChart
+											data={{ labels: [], datasets: [] }}
+										/>
+									</div>
+									<div className="col-md-6 container-fluid pb-3 pt-0 py-0 mx-auto my-auto" id="canvas-container-2">
+										<LineChart
+											data={{ labels: [], datasets: [] }}
+										/>
+									</div>
+								</div>
+
+							</main>
+						</div>
+					</div>
+					<Footer />
+				</React.Fragment>
+			);
 		}
 
 	}
