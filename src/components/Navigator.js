@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import NavButton from './NavButton';
 import NavBarDates from './NavBarDates';
+import Spinner from './Spinner';
 // import { Container } from './styles';
 
 export default class Navigator extends Component {
@@ -24,6 +25,7 @@ export default class Navigator extends Component {
 
                             <div className="collapse navbar-collapse mx-auto" id="navbar-dates">
                                 <ul className="navbar-nav ml-auto">
+									<Spinner loading={this.props.isLoading} />
                                     <NavButton label="Dia" componentId="day-nav" />
                                     <NavButton label="Mês" componentId="month-nav" />
                                     <NavButton label="Ano" componentId="year-nav" />
@@ -51,6 +53,7 @@ export default class Navigator extends Component {
 
                             <div className="collapse navbar-collapse mx-auto" id="navbar-dates">
                                 <ul className="navbar-nav ml-auto">
+									<Spinner loading={this.props.isLoading} />
                                     <NavButton label="Dia" componentId="day-nav" active={!this.props.monthActive} handleDayRendering={this.props.handleDayRendering} />
                                     <NavButton label="Mês" componentId="month-nav" active={this.props.monthActive} handleMonthRendering={this.props.handleMonthRendering} />
                                 </ul>

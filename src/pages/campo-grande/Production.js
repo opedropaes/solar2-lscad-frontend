@@ -62,6 +62,7 @@ export default class Production extends Component {
 				options: newStateObject.options,
 				isLoading: (!newStateObject.interval.length)
 			});
+
 		}
 
 	}
