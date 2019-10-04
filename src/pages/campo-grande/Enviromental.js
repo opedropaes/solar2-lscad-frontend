@@ -44,7 +44,6 @@ export default class Enviromental extends Component {
 		let date = dateFormater(this.actualDay, this.actualMonth, this.actualYear);
 		this._isMounted = true;
 		this.fetchApiResponse(date, this.state.period);
-
 	}
 
 	fetchApiResponse = async (date, period) => {
@@ -180,67 +179,74 @@ export default class Enviromental extends Component {
 							data: res[1].PM1ParticulatesQuarters,
 							lineTension: 0,
 							label: 'Massa de particulados PM1 (μg/m³)',
-							backgroundColor: 'rgba(255,166,0,1.0)',
-							borderColor: 'rgba(255,166,0,1.0)',
-							pointBackgroundColor: 'rgba(255,166,0, 0.7)',
-							pointHoverRadius: 7
+							backgroundColor: 'rgba(66,161,245,1.0)',
+							borderColor: 'rgba(66,161,245,1.0)',
+							pointBackgroundColor: 'rgba(66,161,245,1.0)',
+							pointHoverRadius: 7,
+							yAxisID: 'left'
 						},
 						table3: {
 							data: res[1].PM2ParticulatesQuarters,
 							lineTension: 0,
 							label: 'Massa de particulados PM2 (μg/m³)',
-							backgroundColor: 'rgba(66, 134, 244, 1.0)',
-							borderColor: 'rgba(66, 134, 244, 1.0)',
-							pointBackgroundColor: 'rgba(66, 134, 244, 0.7)',
-							pointHoverRadius: 7
+							backgroundColor: 'rgba(66,161,245,1.0)',
+							borderColor: 'rgba(66,161,245,1.0)',
+							pointBackgroundColor: 'rgba(66,161,245,1.0)',
+							pointHoverRadius: 7,
+							yAxisID: 'left'
 						},
 						table4: {
 							data: res[1].PM4ParticulatesQuarters,
 							lineTension: 0,
 							label: 'Massa de particulados PM4 (μg/m³)',
-							backgroundColor: 'rgba(50,172,92, 1.0)',
-							borderColor: 'rgba(50,172,92, 1.0)',
-							pointBackgroundColor: 'rgba(50,172,92, 0.7)',
-							pointHoverRadius: 7
+							backgroundColor: 'rgba(66,161,245,1.0)',
+							borderColor: 'rgba(66,161,245,1.0)',
+							pointBackgroundColor: 'rgba(66,161,245,1.0)',
+							pointHoverRadius: 7,
+							yAxisID: 'left'
 						},
 						table5: {
 							data: res[1].PM10ParticulatesQuarters,
 							lineTension: 0,
 							label: 'Massa de particulados PM10 (μg/m³)',
-							backgroundColor: 'rgba(255,48,48, 1.0)',
-							borderColor: 'rgba(255,48,48, 1.0)',
-							pointBackgroundColor: 'rgba(255,48,48, 0.7)',
-							pointHoverRadius: 7
+							backgroundColor: 'rgba(66,161,245,1.0)',
+							borderColor: 'rgba(66,161,245,1.0)',
+							pointBackgroundColor: 'rgba(66,161,245,1.0)',
+							pointHoverRadius: 7,
+							yAxisID: 'left'
 						},
 						table6: {
 							type: 'line',
 							data: res[1].PM1NumbersQuarters,
 							lineTension: 0,
 							label: 'Concentração de particulados PM1 (μ/m³)',
-							backgroundColor: 'rgba(255,166,0,0)',
-							borderColor: 'rgba(255,166,0,1.0)',
-							pointBackgroundColor: 'rgba(255,166,0, 0.7)',
-							pointHoverRadius: 7
+							backgroundColor: 'rgba(255,48,48, 0)',
+							borderColor: 'rgba(255,48,48, 1.0)',
+							pointBackgroundColor: 'rgba(255,48,48, 0.7)',
+							pointHoverRadius: 7,
+							yAxisID: 'right'
 						},
 						table7: {
 							type: 'line',
 							data: res[1].PM2NumbersQuarters,
 							lineTension: 0,
 							label: 'Concentração de particulados PM2 (μ/m³)',
-							backgroundColor: 'rgba(66, 134, 244, 0)',
-							borderColor: 'rgba(66, 134, 244, 1.0)',
-							pointBackgroundColor: 'rgba(66, 134, 244, 0.7)',
-							pointHoverRadius: 7
+							backgroundColor: 'rgba(255,48,48, 0)',
+							borderColor: 'rgba(255,48,48, 1.0)',
+							pointBackgroundColor: 'rgba(255,48,48, 0.7)',
+							pointHoverRadius: 7,
+							yAxisID: 'right'
 						},
 						table8: {
 							type: 'line',
 							data: res[1].PM4NumbersQuarters,
 							lineTension: 0,
 							label: 'Concentração de particulados PM4 (μ/m³)',
-							backgroundColor: 'rgba(50,172,92, 0)',
-							borderColor: 'rgba(50,172,92, 1.0)',
-							pointBackgroundColor: 'rgba(50,172,92, 0.7)',
-							pointHoverRadius: 7
+							backgroundColor: 'rgba(255,48,48, 0)',
+							borderColor: 'rgba(255,48,48, 1.0)',
+							pointBackgroundColor: 'rgba(255,48,48, 0.7)',
+							pointHoverRadius: 7,
+							yAxisID: 'right'
 						},
 						table9: {
 							type: 'line',
@@ -250,7 +256,8 @@ export default class Enviromental extends Component {
 							backgroundColor: 'rgba(255,48,48, 0)',
 							borderColor: 'rgba(255,48,48, 1.0)',
 							pointBackgroundColor: 'rgba(255,48,48, 0.7)',
-							pointHoverRadius: 7
+							pointHoverRadius: 7,
+							yAxisID: 'right'
 						},
 					},
 					options: {
@@ -297,7 +304,14 @@ export default class Enviromental extends Component {
 							},
 							scales: {
 								yAxes: [{
-									beginAtZero: true,
+									beginAtZero: false,
+									position: "left",
+									id: "left"
+								},
+								{
+									beginAtZero: false,
+									position: "right",
+									id: "right"
 								},
 	
 								],
@@ -305,7 +319,7 @@ export default class Enviromental extends Component {
 									beginAtZero: true,
 									ticks: {
 										callback: function (dataLabel, index) {
-											return index % 10 === 0 ? dataLabel : '';
+											return index % 5 === 0 ? dataLabel : '';
 										},
 										maxRotation: 0,
 									}
@@ -871,25 +885,25 @@ export default class Enviromental extends Component {
 										</div>
 										<div className="col-md-6 container-fluid pb-3 pt-0 py-0 mx-auto my-auto" id="canvas-container-2">
 											<BarChart
-												data={{ labels: this.state.quarterLabels, datasets: [this.state.data.table2, this.state.data.table6] }}
+												data={{ labels: this.state.quarterLabels, datasets: [this.state.data.table6, this.state.data.table2] }}
 												options={this.state.options.particulateOptions}
 											/>
 										</div>
 										<div className="col-md-6 container-fluid pb-3 pt-0 py-0 mx-auto my-auto" id="canvas-container-3">
 											<BarChart
-												data={{ labels: this.state.quarterLabels, datasets: [this.state.data.table3, this.state.data.table7] }}
+												data={{ labels: this.state.quarterLabels, datasets: [this.state.data.table7, this.state.data.table3] }}
 												options={this.state.options.particulateOptions}
 											/>
 										</div>
 										<div className="col-md-6 container-fluid pb-3 pt-0 py-0 mx-auto my-auto" id="canvas-container-4">
 											<BarChart
-												data={{ labels: this.state.quarterLabels, datasets: [this.state.data.table4, this.state.data.table8] }}
+												data={{ labels: this.state.quarterLabels, datasets: [this.state.data.table8, this.state.data.table4] }}
 												options={this.state.options.particulateOptions}
 											/>
 										</div>
 										<div className="col-md-6 container-fluid pb-3 pt-0 py-0 mx-auto my-auto" id="canvas-container-5">
 											<BarChart
-												data={{ labels: this.state.quarterLabels, datasets: [this.state.data.table5, this.state.data.table9] }}
+												data={{ labels: this.state.quarterLabels, datasets: [this.state.data.table9, this.state.data.table5] }}
 												options={this.state.options.particulateOptions}
 											/>
 										</div>
@@ -948,7 +962,7 @@ export default class Enviromental extends Component {
 			}
 		}
 
-		else if (this.state.period == "month") {
+		else if (this.state.period === "month") {
 
 			if (!this.state.isLoading && this.state.labels != undefined) {
 				return (

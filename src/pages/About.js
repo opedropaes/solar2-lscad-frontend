@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom'
+import { Link, Redirect } from 'react-router-dom'
 
 import Header from '../components/HeaderWrapper';
 import Footer from '../components/FooterWrapper';
@@ -46,82 +46,110 @@ export default class About extends Component {
                   <h1 className="h1">Financiadores</h1>
                   <p className="pb-3 text-justify">
                     Esse projeto é financiado pelas empresas&nbsp;
-                    <Link to="https://globalparticipacoesenergia.com.br/energia/cec-companhia-energetica-candeias/"
-                      target="_blank" className="text-dark font-italic">
-                      Companhia Energética Candeias
-                    </Link>
+                    <a href={"https://www.globalparticipacoesenergia.com.br/energia/cec-companhia-energetica-candeias/"}
+                    	className="text-dark font-italic"
+						target="_blank"
+						rel="noopener noreferrer">
+                      	Companhia Energética Candeias
+                    </a>
                     ,&nbsp;
-                    <Link to="https://globalparticipacoesenergia.com.br/energia/companhia-energetica-manauara-s-a-cem/"
-                      target="_blank" className="text-dark font-italic">
+                    <a href="https://www.globalparticipacoesenergia.com.br/energia/companhia-energetica-manauara-s-a-cem/"
+					  target="_blank"
+					  rel="noopener noreferrer"
+					  className="text-dark font-italic">
                       Companhia Energética Manauara&nbsp;
-                    </Link>
+                    </a>
                     e&nbsp;
-                    <Link to="https://globalparticipacoesenergia.com.br/energia/companhia-energetica-potiguar/"
-                      target="_blank" className="text-dark font-italic">
+                    <a href="https://www.globalparticipacoesenergia.com.br/energia/companhia-energetica-potiguar/"
+					  target="_blank" 
+					  rel="noopener noreferrer"
+					  className="text-dark font-italic">
                       Companhia Energética Potiguar
-                  </Link>
+                  </a>
                     , no âmbito do programa de&nbsp;
-                  <Link to="http://www.aneel.gov.br/programa-de-p-d"
-                      target="_blank" className="text-dark font-italic">
+                  <a href="http://www.aneel.gov.br/programa-de-p-d"
+					  target="_blank" 
+					  rel="noopener noreferrer"
+					  className="text-dark font-italic">
                       P&D Aneel.
-                  </Link>
+                  </a>
                   </p>
 
                   <h1 className="h1">Executores</h1>
                   <p className="pb-3 text-justify">
                     As instituições executoras desse projeto são a&nbsp;
-                  <Link to="https://www.ufms.br/" target="_blank" className="text-dark font-italic">
+				  <a href="https://www.ufms.br/" 
+					  target="_blank"
+					  rel="noopener noreferrer"
+					  className="text-dark font-italic">
                       Universidade Federal de Mato Grosso do Sul,
-                  </Link>
+                  </a>
                   &nbsp;a empresa&nbsp;
-                  <Link to="http://nexsolar.com.br/" target="_blank" className="text-dark font-italic">
+				  <a href="http://nexsolar.com.br/" 
+					  target="_blank"
+					  rel="noopener noreferrer"
+					  className="text-dark font-italic">
                       NexSolar Ltda,&nbsp;
-                  </Link>
-                    <Link to="http://portal.ifba.edu.br/" target="_blank" className="text-dark font-italic">
+                  </a>
+					<a href="http://portal.ifba.edu.br/" 
+						target="_blank"
+						rel="noopener noreferrer"
+						className="text-dark font-italic">
                       Instituto Federal da Bahia&nbsp;
-                  </Link>
+                  </a>
                     e&nbsp;
-                  <Link to="http://www.ifms.edu.br/" target="_blank" className="text-dark font-italic">
+				  <a href="http://www.ifms.edu.br/"
+					  target="_blank" 
+					  rel="noopener noreferrer"
+					  className="text-dark font-italic">
                       Instituto Federal de Mato Grosso do Sul.
-                  </Link>
+                  </a>
                   </p>
 
                 </div>
 
                 <div className="col-lg-6">
                   <div className="text-center pb-3 p-0">
-                    <Link to="http://www.aneel.gov.br/programa-de-p-d" target="_blank">
+                    <a href="http://www.aneel.gov.br/programa-de-p-d" target="_blank" 
+					  rel="noopener noreferrer">
                       <img src={aneel} alt="ANEEL P&D" className="rounded pb-3 shrink img-fluid mx-4"></img>
-                    </Link>
-                    <Link to="https://globalparticipacoesenergia.com.br/energia/cec-companhia-energetica-candeias/"
-                      target="_blank">
+                    </a>
+                    <a href="https://globalparticipacoesenergia.com.br/energia/cec-companhia-energetica-candeias/"
+                      target="_blank" 
+					  rel="noopener noreferrer">
                       <img src={cec} alt="Companhia Energética Candeias"
                         className="rounded py-3 shrink img-fluid mx-2"></img>
-                    </Link>
-                    <Link to="https://globalparticipacoesenergia.com.br/energia/companhia-energetica-potiguar/" target="_blank">
+                    </a>
+                    <a href="https://globalparticipacoesenergia.com.br/energia/companhia-energetica-potiguar/" target="_blank" 
+					  rel="noopener noreferrer">
                       <img src={cep} alt="Companhia Energética Potiguar"
                         className="rounded pb-3 shrink img-fluid"></img>
-                    </Link>
-                    <Link to="https://globalparticipacoesenergia.com.br/energia/companhia-energetica-manauara-s-a-cem/"
-                      target="_blank">
+                    </a>
+                    <a href="https://globalparticipacoesenergia.com.br/energia/companhia-energetica-manauara-s-a-cem/"
+                      target="_blank" 
+					  rel="noopener noreferrer">
                       <img src={manauara} alt="Companhia Energética Manauara"
                         className="rounded shrink img-fluid"></img>
-                    </Link>
-                    <Link to="http://portal.ifba.edu.br/" target="_blank">
+                    </a>
+                    <a href="http://portal.ifba.edu.br/" target="_blank" 
+					  rel="noopener noreferrer">
                       <img src={ifba} alt="Instituto Federal da Bahia"
                         className="rounded shrink img-fluid"></img>
-                    </Link>
-                    <Link to="http://www.ifms.edu.br/" target="_blank">
+                    </a>
+                    <a href="http://www.ifms.edu.br/" target="_blank" 
+					  rel="noopener noreferrer">
                       <img src={ifms} alt="Instituto Federal de Mato Grosso do Sul"
                         className="rounded shrink img-fluid mx-3"></img>
-                    </Link>
-                    <Link to="https://www.ufms.br/" target="_blank">
+                    </a>
+                    <a href="https://www.ufms.br/" target="_blank" 
+					  rel="noopener noreferrer">
                       <img src={ufms} alt="Universidade Federal de Mato Grosso do Sul"
                         className="rounded shrink img-fluid mx-3 mt-3 mb-0"></img>
-                    </Link>
-                    <Link to="http://nexsolar.com.br/" target="_blank">
+                    </a>
+                    <a href="http://nexsolar.com.br/" target="_blank" 
+					  rel="noopener noreferrer">
                       <img src={nexsolar} alt="Nexsolar Ltda." className="rounded shrink img-fluid"></img>
-                    </Link>
+                    </a>
                   </div>
                 </div>
 
