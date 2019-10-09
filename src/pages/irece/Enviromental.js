@@ -171,8 +171,7 @@ export default class Enviromental extends Component {
 					}
 		
 				})
-			}
-	
+			}	
 			else if (period === "month") {
 
 				let items = {

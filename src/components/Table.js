@@ -42,8 +42,8 @@ export default class Table extends Component {
 
         return (
             <React.Fragment>
-                <div className="col-lg-11 container-fluid py-0 pb-0 mx-auto my-auto px-0 py-3">
-                    <table className="table table-borderless table-hover table-sm table-light mx-auto col-lg-12">
+				<div className="col-lg-11 container-fluid py-0 pb-0 mx-auto my-auto px-0 py-3">
+					<table className="table table-borderless table-hover table-sm table-light mx-auto col-lg-12">
                         <thead id="thead">
                             <tr  className="mx-auto text-center">
                                 {
