@@ -83,7 +83,7 @@ export default class Loss extends Component {
                   text="Monitore todas as perdas referentes à unidade de Irecê, em conjunto, comparando a produção das mesas uma a uma."
                   link="/irece/perdas/mesas/perdas-totais"
                   buttonText="Monitorar perdas agora"
-                  buttonActive={false}
+                  buttonActive={true}
                   theme="loss"
                 />
               </div>
