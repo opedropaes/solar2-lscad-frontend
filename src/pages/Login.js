@@ -12,6 +12,7 @@ class Login extends Component {
 		this.state = {
 			redirect: false,
 			logged: false,
+			errMessage: ""
 		};
 	}
 
@@ -74,18 +75,17 @@ class Login extends Component {
 				});
 			},
 
-			onFailure: function (err) {
-				if (err.message === "User does not exist.") {
-					alert("Parece que seu usuário não existe! Crie uma conta e tente novamente.");
-				} else if (err.message === "Incorrect username or password.") {
-					alert("Essa senha não corresponde ao seu e-mail. Tente novamente.");
-				} else if (err.message === "User is not confirmed.") {
-					alert("Confirme seu cadastro no e-mail e tente novamente.");
-				}
-				else {
-					alert("Erro ", err.message || "Erro ", JSON.stringify(err));
-				}
+			onFailure: (err) => {
+
 				this.setState({ loading: false });
+				
+				if (err.message === "User does not exist.") {
+					this.setState({ errMessage: "Parece que seu usuário não existe! Crie uma conta e tente novamente." })
+				} else if (err.message === "Incorrect username or password.") {
+					this.setState({ errMessage: "Essa senha não corresponde ao seu e-mail. Tente novamente." })
+				} else if (err.message === "User is not confirmed.") {
+					this.setState({ errMessage: "Confirme seu cadastro no e-mail e tente novamente." })
+				}
 
 				return;
 			},
@@ -116,6 +116,9 @@ class Login extends Component {
 									<div className="form-group">
 										<input type="password" name="password" id="password" className="form-control" placeholder="Senha" required
 											onInput={(e) => this.setState({ password: e.target.value })} />
+									</div>
+									<div className="text-red">
+										<small>{this.state.errMessage}</small>
 									</div>
 									<FormButton loading={this.state.loading} label="Entrar" />
 									<div className="form-group text-center" >
