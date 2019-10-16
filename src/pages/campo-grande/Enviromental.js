@@ -54,8 +54,6 @@ export default class Enviromental extends Component {
 			.then(async (newStateObject) => {
 				let toDonwload = {}
 				
-				console.log(newStateObject.toDonwload)
-
 				if (period === "day") {
 					toDonwload = this.formatCSV(newStateObject.toDonwload);
 				}
