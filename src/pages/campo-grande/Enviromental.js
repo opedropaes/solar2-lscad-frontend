@@ -53,9 +53,11 @@ export default class Enviromental extends Component {
 		this.refreshState(apiResponse.data, period)
 			.then(async (newStateObject) => {
 				let toDonwload = {}
+				
+				console.log(newStateObject.toDonwload)
 
 				if (period === "day") {
-					toDonwload = await this.formatCSV(newStateObject.toDonwload);
+					toDonwload = this.formatCSV(newStateObject.toDonwload);
 				}
 
 				if (this._isMounted || !this._isUpdated) {
@@ -85,7 +87,7 @@ export default class Enviromental extends Component {
 		return new Promise((resolve, reject) => {
 			if (period === "day") {
 
-				let differentDay = (this.currentDay != res[1].day || this.currentMonth != res[1].month || this.currentYear != res[1].year);
+				let differentDay = (this.currentDay != res.day || this.currentMonth != res.month || this.currentYear != res.year);
 
 				let head = [
 					(differentDay) ? 'Temperatura média' : 'Temperatura atual',
@@ -97,28 +99,28 @@ export default class Enviromental extends Component {
 					(differentDay) ? 'Média de massa PM10 sobre a mesa' : 'Massa PM10 sobre a mesa'
 				];
 
-				let temperatureSum = (res[1].temperatures.length) ? res[1].temperatures.reduce((acc, cur) => acc + cur) : 0;
-				let averageTemperature = temperatureSum / (res[1].temperatures.length || 1);
-				let windSpeedsSum = (res[1].windSpeeds.length) ? res[1].windSpeeds.reduce((acc, cur) => acc + cur) : 0;
-				let windSpeedsAverage = windSpeedsSum / (res[1].windSpeeds.length || 1);
-				let PM1Sum = (res[1].PM1Particulates.length) ? res[1].PM1Particulates.reduce((acc, cur) => acc + cur) : 0;
-				let PM1Average = PM1Sum / (res[1].PM1Particulates.length || 1);
-				let PM2Sum = (res[1].PM2Particulates.length) ? res[1].PM2Particulates.reduce((acc, cur) => acc + cur) : 0;
-				let PM2Average = PM2Sum / (res[1].PM2Particulates.length || 1);
-				let PM4Sum = (res[1].PM4Particulates.length) ? res[1].PM4Particulates.reduce((acc, cur) => acc + cur) : 0;
-				let PM4Average = PM4Sum / (res[1].PM4Particulates.length || 1);
-				let PM10Sum = (res[1].PM10Particulates.length) ? res[1].PM10Particulates.reduce((acc, cur) => acc + cur) : 0;
-				let PM10Average = PM10Sum / (res[1].PM10Particulates.length || 1);
-				let totalHumidity = (res[1].humidity.length) ? res[1].humidity.reduce((acc, cur) => acc + cur) : 0;
-				let averageHumidity = parseFloat((totalHumidity / (res[1].humidity.length || 1)).toFixed(1));
+				let temperatureSum = (res.temperatures.length) ? res.temperatures.reduce((acc, cur) => acc + cur) : 0;
+				let averageTemperature = temperatureSum / (res.temperatures.length || 1);
+				let windSpeedsSum = (res.windSpeeds.length) ? res.windSpeeds.reduce((acc, cur) => acc + cur) : 0;
+				let windSpeedsAverage = windSpeedsSum / (res.windSpeeds.length || 1);
+				let PM1Sum = (res.PM1Particulates.length) ? res.PM1Particulates.reduce((acc, cur) => acc + cur) : 0;
+				let PM1Average = PM1Sum / (res.PM1Particulates.length || 1);
+				let PM2Sum = (res.PM2Particulates.length) ? res.PM2Particulates.reduce((acc, cur) => acc + cur) : 0;
+				let PM2Average = PM2Sum / (res.PM2Particulates.length || 1);
+				let PM4Sum = (res.PM4Particulates.length) ? res.PM4Particulates.reduce((acc, cur) => acc + cur) : 0;
+				let PM4Average = PM4Sum / (res.PM4Particulates.length || 1);
+				let PM10Sum = (res.PM10Particulates.length) ? res.PM10Particulates.reduce((acc, cur) => acc + cur) : 0;
+				let PM10Average = PM10Sum / (res.PM10Particulates.length || 1);
+				let totalHumidity = (res.humidity.length) ? res.humidity.reduce((acc, cur) => acc + cur) : 0;
+				let averageHumidity = parseFloat((totalHumidity / (res.humidity.length || 1)).toFixed(1));
 
-				let temperature = res[1].temperatures.pop();
-				let windSpeed = res[1].windSpeeds.pop();
-				let PM1 = res[1].PM1Particulates.pop();
-				let PM2 = res[1].PM2Particulates.pop();
-				let PM4 = res[1].PM4Particulates.pop();
-				let PM10 = res[1].PM10Particulates.pop();
-				let humidity = res[1].humidity.pop();
+				let temperature = res.temperatures.pop();
+				let windSpeed = res.windSpeeds.pop();
+				let PM1 = res.PM1Particulates.pop();
+				let PM2 = res.PM2Particulates.pop();
+				let PM4 = res.PM4Particulates.pop();
+				let PM10 = res.PM10Particulates.pop();
+				let humidity = res.humidity.pop();
 
 				let body = [[
 					(differentDay) ? parseFloat(averageTemperature).toFixed(1) + " °C" : parseFloat(temperature).toFixed(1) + " °C" || 0 + " °C",
@@ -135,39 +137,38 @@ export default class Enviromental extends Component {
 					body
 				};
 
-				let irradiation = res[0].irradiation.map(item => item * 1000);
+				// let irradiation = res.irradiation.map(item => item * 1000);
 
 				let items = {
-					day: res[1].day,
-					month: res[1].month,
-					year: res[1].year,
-					monthDay: res[1].monthDay,
-					period: res[1].period,
-					interval: res[1].interval,
-					quartersInterval: res[1].quartersInterval,
-					irradiationQuartersInterval: res[0].interval,
+					day: res.day,
+					month: res.month,
+					year: res.year,
+					monthDay: res.monthDay,
+					period: res.period,
+					interval: res.interval,
+					quartersInterval: res.quartersInterval,
+					irradiationQuartersInterval: res.irradiationInterval,
 					toDonwload: {
-						date: res[1].monthDay,
-						interval: res[1].interval,
-						PM1Particulates: res[1].PM1Particulates,
-						PM2Particulates: res[1].PM2Particulates,
-						PM4Particulates: res[1].PM4Particulates,
-						PM10Particulates: res[1].PM10Particulates,
-						PM1Numbers: res[1].PM1Numbers,
-						PM2Numbers: res[1].PM2Numbers,
-						PM4Numbers: res[1].PM4Numbers,
-						PM10Numbers: res[1].PM10Numbers,
-						averageSizes: res[1].averageSizes,
-						temperatures: res[1].temperatures,
-						windDirections: res[1].windDirections,
-						windSpeeds: res[1].windSpeeds,
-						irradiationInterval: res[0].completeInterval,
-						irradiation: res[0].completeIrradiation
+						date: res.monthDay,
+						interval: res.interval,
+						irradiations: res.irradiation,
+						PM1Particulates: res.PM1Particulates,
+						PM2Particulates: res.PM2Particulates,
+						PM4Particulates: res.PM4Particulates,
+						PM10Particulates: res.PM10Particulates,
+						PM1Numbers: res.PM1Numbers,
+						PM2Numbers: res.PM2Numbers,
+						PM4Numbers: res.PM4Numbers,
+						PM10Numbers: res.PM10Numbers,
+						averageSizes: res.averageSizes,
+						temperatures: res.temperatures,
+						windDirections: res.windDirections,
+						windSpeeds: res.windSpeeds,
 					},
 					dataForTable,
 					data: {
 						table1: {
-							data: irradiation,
+							data: res.irradiation,
 							lineTension: 0,
 							label: 'Irradiação inclinada sobre a mesa (W/m²)',
 							backgroundColor: 'rgba(66,161,245,0)',
@@ -176,7 +177,7 @@ export default class Enviromental extends Component {
 							pointHoverRadius: 7
 						},
 						table2: {
-							data: res[1].PM1ParticulatesQuarters,
+							data: res.PM1ParticulatesQuarters,
 							lineTension: 0,
 							label: 'Massa de particulados PM1 (μg/m³)',
 							backgroundColor: 'rgba(66,161,245,1.0)',
@@ -186,7 +187,7 @@ export default class Enviromental extends Component {
 							yAxisID: 'left'
 						},
 						table3: {
-							data: res[1].PM2ParticulatesQuarters,
+							data: res.PM2ParticulatesQuarters,
 							lineTension: 0,
 							label: 'Massa de particulados PM2 (μg/m³)',
 							backgroundColor: 'rgba(66,161,245,1.0)',
@@ -196,7 +197,7 @@ export default class Enviromental extends Component {
 							yAxisID: 'left'
 						},
 						table4: {
-							data: res[1].PM4ParticulatesQuarters,
+							data: res.PM4ParticulatesQuarters,
 							lineTension: 0,
 							label: 'Massa de particulados PM4 (μg/m³)',
 							backgroundColor: 'rgba(66,161,245,1.0)',
@@ -206,7 +207,7 @@ export default class Enviromental extends Component {
 							yAxisID: 'left'
 						},
 						table5: {
-							data: res[1].PM10ParticulatesQuarters,
+							data: res.PM10ParticulatesQuarters,
 							lineTension: 0,
 							label: 'Massa de particulados PM10 (μg/m³)',
 							backgroundColor: 'rgba(66,161,245,1.0)',
@@ -217,7 +218,7 @@ export default class Enviromental extends Component {
 						},
 						table6: {
 							type: 'line',
-							data: res[1].PM1NumbersQuarters,
+							data: res.PM1NumbersQuarters,
 							lineTension: 0,
 							label: 'Concentração de particulados PM1 (μ/m³)',
 							backgroundColor: 'rgba(255,48,48, 0)',
@@ -228,7 +229,7 @@ export default class Enviromental extends Component {
 						},
 						table7: {
 							type: 'line',
-							data: res[1].PM2NumbersQuarters,
+							data: res.PM2NumbersQuarters,
 							lineTension: 0,
 							label: 'Concentração de particulados PM2 (μ/m³)',
 							backgroundColor: 'rgba(255,48,48, 0)',
@@ -239,7 +240,7 @@ export default class Enviromental extends Component {
 						},
 						table8: {
 							type: 'line',
-							data: res[1].PM4NumbersQuarters,
+							data: res.PM4NumbersQuarters,
 							lineTension: 0,
 							label: 'Concentração de particulados PM4 (μ/m³)',
 							backgroundColor: 'rgba(255,48,48, 0)',
@@ -250,7 +251,7 @@ export default class Enviromental extends Component {
 						},
 						table9: {
 							type: 'line',
-							data: res[1].PM10NumbersQuarters,
+							data: res.PM10NumbersQuarters,
 							lineTension: 0,
 							label: 'Concentração de particulados PM10 (μ/m³)',
 							backgroundColor: 'rgba(255,48,48, 0)',
@@ -835,6 +836,7 @@ export default class Enviromental extends Component {
 			response.push([
 				obj.date,
 				obj.interval[i],
+				obj.irradiations[i],
 				obj.PM1Particulates[i],
 				obj.PM2Particulates[i],
 				obj.PM4Particulates[i],
@@ -847,8 +849,6 @@ export default class Enviromental extends Component {
 				obj.temperatures[i],
 				obj.windDirections[i],
 				obj.windSpeeds[i],
-				obj.irradiationInterval[i],
-				obj.irradiation[i]
 			])
 		}
 
