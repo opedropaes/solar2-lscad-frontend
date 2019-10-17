@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 
 import LineChart from '../../components/LineChart';
 import BarChart from '../../components/BarChart';
+import RadarChart from '../../components/RadarChart';
 import TitleBar from '../../components/TitleBar';
 import Navigator from '../../components/Navigator';
 import Header from '../../components/HeaderWrapper';
@@ -66,6 +67,7 @@ export default class Enviromental extends Component {
 						monthDay: newStateObject.monthDay,
 						period: newStateObject.period,
 						labels: newStateObject.interval,
+						radarLabels: ["N", "NE", "L", "SE", "S", "SO", "O", "NO"],
 						quarterLabels: newStateObject.quartersInterval || [0],
 						irradiationQuartersLabels: newStateObject.irradiationQuartersInterval || [0],
 						data: newStateObject.data,
@@ -258,6 +260,24 @@ export default class Enviromental extends Component {
 							pointHoverRadius: 7,
 							yAxisID: 'right'
 						},
+						windDirection: {
+							data: [
+								res.eachWindDirectionPercentage.north,
+								res.eachWindDirectionPercentage.northEast,
+								res.eachWindDirectionPercentage.east,
+								res.eachWindDirectionPercentage.southEast,
+								res.eachWindDirectionPercentage.south,
+								res.eachWindDirectionPercentage.southWest,
+								res.eachWindDirectionPercentage.west,
+								res.eachWindDirectionPercentage.northWest
+							],
+							lineTension: 0,
+							label: 'Percentagem nesta direção durante o dia',
+							backgroundColor: 'rgba(66,161,245,0)',
+							borderColor: 'rgba(66,161,245,1.0)',
+							pointBackgroundColor: 'rgba(66,161,245,1.0)',
+							pointHoverRadius: 7
+						}
 					},
 					options: {
 						irradiationOptions: {
@@ -318,12 +338,33 @@ export default class Enviromental extends Component {
 									beginAtZero: true,
 									ticks: {
 										callback: function (dataLabel, index) {
-											return index % 5 === 0 ? dataLabel : '';
+											return index % 10 === 0 ? dataLabel : '';
 										},
 										maxRotation: 0,
 									}
 								}]
 							},
+						},
+						windDirectionOptions: {
+							animation: {
+								duration: 1000,
+							},
+							title: {
+								display: true,
+								fontsize: 24,
+								text: "Direção do vento",
+							},
+							labels: {
+								fontStyle: 'bold',
+							},
+							tooltips: {
+								enabled: true,
+								callbacks: {
+									label: function(tooltipItem, data) {
+										return data.datasets[tooltipItem.datasetIndex].label + ' : ' + data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
+									}
+								}
+							}
 						}
 					}
 
@@ -875,10 +916,16 @@ export default class Enviromental extends Component {
 										handleDayRendering={this.handleDayRendering}
 									/>
 									<div className="row m-4 px-0 py-0" id="row-chart">
-										<div className="col-md-10 container-fluid pb-3 pt-0 py-0 mx-auto my-auto" id="canvas-container-1">
+										<div className="col-md-6 container-fluid pb-3 pt-0 py-0 mx-auto my-auto" id="canvas-container-1">
 											<LineChart
 												data={{ labels: this.state.irradiationQuartersLabels, datasets: [this.state.data.table1] }}
 												options={this.state.options.irradiationOptions}
+											/>
+										</div>
+										<div className="col-md-6 container-fluid pb-3 pt-0 py-0 mx-auto my-auto" id="canvas-container-1">
+											<RadarChart
+												data={{ labels: this.state.radarLabels, datasets: [this.state.data.windDirection] }}
+												options={this.state.options.windDirectionOptions}
 											/>
 										</div>
 										<div className="col-md-6 container-fluid pb-3 pt-0 py-0 mx-auto my-auto" id="canvas-container-2">
