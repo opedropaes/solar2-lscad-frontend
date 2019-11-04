@@ -31,7 +31,7 @@ const formatCSV = async (obj, ufv, type) => {
 				response.push([
 					obj.date,
 					obj.interval[i],
-					(obj.irradiationInterval[i] == obj.interval[i]) ? obj.irradiation[i] : 0,
+					obj.irradiation[i], 
 					obj.PM1Particulates[i],
 					obj.PM2Particulates[i],
 					obj.PM4Particulates[i],
