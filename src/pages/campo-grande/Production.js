@@ -22,9 +22,12 @@ export default class Production extends Component {
 			day: 0,
 			monthDay: 'carregando...',
 			period: 'day',
+			dayActive: true,
 			labels: [],
 			data: [],
-			isLoading: true
+			isLoading: true,
+			rightNavigationDisabled: true,
+			leftNavigationDisabled: false
 		};
 
 	}
@@ -51,20 +54,18 @@ export default class Production extends Component {
 
 		if (this._isMounted || !this._isUpdated) {
 			this.setState({
+				period: newStateObject.period,
 				day: newStateObject.day,
 				month: newStateObject.month,
 				year: newStateObject.year,
 				monthDay: newStateObject.monthDay,
-				period: newStateObject.period,
 				labels: newStateObject.interval,
 				data: newStateObject.data,
 				performanceRatio: newStateObject.performanceRatio,
 				options: newStateObject.options,
 				isLoading: (!newStateObject.interval.length)
 			});
-
 		}
-
 	}
 
 	refreshState = async (res) => {
@@ -276,6 +277,190 @@ export default class Production extends Component {
 				}
 
 			})
+		} else if (res.period == "year") {
+			return ({
+				day: this.actualDay,
+				month: this.actualMonth,
+				year: res.year,
+				monthDay: res.year,
+				period: res.period,
+				interval: res.yearInterval,
+				data: {
+					averageProductions: {
+						data: res.averageProductions,
+						lineTension: 0,
+						label: 'Média #1: p-Si (kWh)',
+						backgroundColor: 'rgba(66,161,245,1.0)',
+						borderColor: 'rgba(66,161,245,1.0)',
+						pointBackgroundColor: 'rgba(66,161,245,1.0)',
+						borderWidth: 3,
+						yAxisID: "performance",
+					},
+					capacityFactorAverages: {
+						data: res.capacityFactorAverages,
+						lineTension: 0,
+						label: 'Percentual de PR',
+						borderColor: 'rgba(255,48,48,1.0)',
+						backgroundColor: 'rgba(255,48,48,0)',
+						borderWidth: 3,
+						yAxisID: "capacidade",
+						type: 'line'
+					},
+					higherAverages: {
+						data: res.higherAverages,
+						lineTension: 0,
+						label: 'Maior potência (kW)',
+						backgroundColor: 'rgba(66,161,245,1.0)',
+						borderColor: 'rgba(66,161,245,1.0)',
+						pointBackgroundColor: 'rgba(66,161,245,1.0)',
+						yAxisID: "performance",
+					},
+					higherAverageDays: {
+						data: res.higherAverageDays,
+						lineTension: 0,
+						label: 'Dia',
+						borderColor: 'rgba(255,48,48,1.0)',
+						backgroundColor: 'rgba(255,48,48,0)',
+						borderWidth: 3,
+						yAxisID: "capacidade",
+						type: 'line'
+					},
+					performancesAverages: {
+						data: res.performancesAverages,
+						lineTension: 0,
+						label: 'Média de PR',
+						borderColor: 'rgba(255,48,48,1.0)',
+						backgroundColor: 'rgba(255,48,48,0)',
+						borderWidth: 3,
+						yAxisID: "capacidade",
+						type: 'line'
+					},
+					totalProductionAverages: {
+						data: res.totalProductionAverages,
+						lineTension: 0,
+						label: 'Produção total',
+						backgroundColor: 'rgba(66,161,245,1.0)',
+						borderColor: 'rgba(66,161,245,1.0)',
+						pointBackgroundColor: 'rgba(66,161,245,1.0)',
+						yAxisID: "performance",
+					}
+				},
+				options: {
+					production: {
+						animation: {
+							duration: 1000,
+						},
+						title: {
+							display: true,
+							fontsize: 24,
+							text: "Produção",
+						},
+						labels: {
+							fontStyle: 'bold',
+						},
+						scales: {
+							yAxes: [{
+	
+								beginAtZero: true,
+								position: "left",
+								id: "performance"
+							},
+							{
+								beginAtZero: false,
+								position: "right",
+								id: "capacidade"
+							}
+	
+							],
+							xAxes: [{
+								beginAtZero: true,
+								ticks: {
+									callback: function (dataLabel, index) {
+										return index % 4 === 0 ? dataLabel : '';
+									},
+									maxRotation: 0,
+								}
+							}]
+						},
+					},
+					power: {
+						animation: {
+							duration: 1000,
+						},
+						title: {
+							display: true,
+							fontsize: 24,
+							text: "Potência média alcançada",
+						},
+						labels: {
+							fontStyle: 'bold',
+						},
+						scales: {
+							yAxes: [{
+	
+								beginAtZero: true,
+								position: "left",
+								id: "performance"
+							},
+							{
+								beginAtZero: false,
+								position: "right",
+								id: "capacidade"
+							}
+	
+							],
+							xAxes: [{
+								beginAtZero: true,
+								ticks: {
+									callback: function (dataLabel, index) {
+										return index % 4 === 0 ? dataLabel : '';
+									},
+									maxRotation: 0,
+								}
+							}]
+						},
+					},
+					performance: {
+						animation: {
+							duration: 1000,
+						},
+						title: {
+							display: true,
+							fontsize: 24,
+							text: "Produção total vs. Performance ratio média",
+						},
+						labels: {
+							fontStyle: 'bold',
+						},
+						scales: {
+							yAxes: [{
+	
+								beginAtZero: true,
+								position: "left",
+								id: "performance"
+							},
+							{
+								beginAtZero: false,
+								position: "right",
+								id: "capacidade"
+							}
+	
+							],
+							xAxes: [{
+								beginAtZero: true,
+								ticks: {
+									callback: function (dataLabel, index) {
+										return index % 4 === 0 ? dataLabel : '';
+									},
+									maxRotation: 0,
+								}
+							}]
+						},
+					},
+				},
+
+
+			})
 		}
 
 	}
@@ -287,7 +472,7 @@ export default class Production extends Component {
 		let year = this.state.year;
 
 		if (this.state.period == "day") {
-			if (year >= 2018 && month >= 1 && day >= 1) {
+			if (year >= 2018 && month >= 9 && day >= 1) {
 
 				if (day > 1) {
 					day--;
@@ -299,16 +484,21 @@ export default class Production extends Component {
 					month = 12;
 					year--;
 				}
+
+				if (year == 2018 && month == 9 && day == 1) {
+					this.setState({ leftNavigationDisabled: true });
+				}
 	
 				this.setState({
 					day,
 					month,
-					year
+					year,
+					rightNavigationDisabled: false
 				});
 		
 			}
 		} else if (this.state.period == "month") {
-			if (year >= 2018 && month >= 1) {
+			if (year >= 2018 && month >= 9) {
 
 				if (month > 1) {
 					month--;
@@ -319,14 +509,31 @@ export default class Production extends Component {
 	
 				this.setState({
 					month,
-					year
+					year,
+					rightNavigationDisabled: false
 				});
+
+				if (year == 2018 && month == 9) {
+					this.setState({ leftNavigationDisabled: true });
+				}
 		
+			} 
+		} else if (this.state.period == "year") {
+			if (year > 2018) {
+				year--;
+				this.setState({
+					year,
+					rightNavigationDisabled: false
+				});
+
+				if (year == 2018){
+					this.setState({ leftNavigationDisabled: true })
+				}
+
 			}
 		}
 
 		this._isUpdated = false;
-
 
 	}
 
@@ -355,10 +562,15 @@ export default class Production extends Component {
 				this.setState({
 					day,
 					month,
-					year
+					year,
+					leftNavigationDisabled: false
 				});
+
+				if (year == this.actualYear && month == this.actualMonth && day == this.actualDay) {
+					this.setState({ rightNavigationDisabled: true })
+				}
 		
-			}
+			} 
 		} else if (this.state.period == "month") {
 			if (year < this.actualYear ||
 				(year == this.actualYear && month < this.actualMonth)) {
@@ -372,22 +584,29 @@ export default class Production extends Component {
 	
 				this.setState({
 					month,
-					year
+					year,
+					leftNavigationDisabled: false
 				});
+
+				if (month == this.actualMonth && year == this.actualYear) {
+					this.setState({ rightNavigationDisabled: true })
+				}
 		
+			} 
+		} else if (this.state.period == "year") {
+			if (year < this.actualYear) {
+				year++;
+				this.setState({ 
+					year,
+					leftNavigationDisabled: false
+				});
+				if (year == this.actualYear) {
+					this.setState({ rightNavigationDisabled: true })
+				}
 			}
 		}
 
 		this._isUpdated = false;
-
-	}
-
-	handleMonthRendering = () => {
-
-		let date = dateFormater(this.actualDay, this.actualMonth, this.actualYear);
-		this._isMounted = true;
-		this.fetchApiResponse(date, 'month');
-		this.setState({ monthActive: true });
 
 	}
 
@@ -396,7 +615,43 @@ export default class Production extends Component {
 		let date = dateFormater(this.actualDay, this.actualMonth, this.actualYear);
 		this._isMounted = true;
 		this.fetchApiResponse(date, 'day');
-		this.setState({ monthActive: false });
+		this.setState({ 
+			dayActive: true,
+			monthActive: false,
+			yearActive: false,
+			leftNavigationDisabled: false,
+			rightNavigationDisabled: true
+		});
+
+	}
+
+	handleMonthRendering = () => {
+
+		let date = dateFormater(this.actualDay, this.actualMonth, this.actualYear);
+		this._isMounted = true;
+		this.fetchApiResponse(date, 'month');
+		this.setState({
+			dayActive: false,
+			monthActive: true,
+			yearActive: false,
+			leftNavigationDisabled: false,
+			rightNavigationDisabled: true
+		});
+
+	}
+
+	handleYearRendering = () => {
+
+		let date = dateFormater(this.actualDay, this.actualMonth, this.actualYear);
+		this._isMounted = true;
+		this.fetchApiResponse(date, 'year');
+		this.setState({
+			dayActive: false,
+			monthActive: false,
+			yearActive: true,
+			leftNavigationDisabled: false,
+			rightNavigationDisabled: true
+		 });
 
 	}
 
@@ -419,7 +674,7 @@ export default class Production extends Component {
 
 	render() {
 
-		if (this.state.period == 'day') {
+		if (this.state.period == "day") {
 			let pr = (typeof this.state.performanceRatio == "number") ? this.state.performanceRatio : 0
 
 			if (!this.state.isLoading && this.state.labels != undefined) {
@@ -435,10 +690,16 @@ export default class Production extends Component {
 										date={this.state.monthDay}
 										handlePrevDateNavigation={this.decrementDate}
 										handleNextDateNavigation={this.incrementDate}
+										yearActive={this.state.yearActive}
 										monthActive={this.state.monthActive}
+										dayActive={this.state.dayActive}
 										month="allowed"
+										year="allowed"
+										handleYearRendering={this.handleYearRendering}										
 										handleMonthRendering={this.handleMonthRendering}
 										handleDayRendering={this.handleDayRendering}
+										leftNavigationDisabled={this.state.leftNavigationDisabled}
+										rightNavigationDisabled={this.state.rightNavigationDisabled}
 									/>
 									<div className="row m-4 px-0 py-0" id="row-chart">
 										<div className="col-md-10 container-fluid pb-3 pt-0 py-0 mx-auto my-auto" id="canvas-container-1">
@@ -492,10 +753,16 @@ export default class Production extends Component {
 										date={this.state.monthDay}
 										handlePrevDateNavigation={this.decrementDate}
 										handleNextDateNavigation={this.incrementDate}
+										yearActive={this.state.yearActive}
 										monthActive={this.state.monthActive}
+										dayActive={this.state.dayActive}
 										month="allowed"
+										year="allowed"
+										handleYearRendering={this.handleYearRendering}		
 										handleMonthRendering={this.handleMonthRendering}
 										handleDayRendering={this.handleDayRendering}
+										leftNavigationDisabled={this.state.leftNavigationDisabled}
+										rightNavigationDisabled={this.state.rightNavigationDisabled}
 									/>
 
 									<div className="row m-4 px-0 py-0" id="row-chart">
@@ -548,10 +815,16 @@ export default class Production extends Component {
 										date={this.state.monthDay}
 										handlePrevDateNavigation={this.decrementDate}
 										handleNextDateNavigation={this.incrementDate}
+										yearActive={this.state.yearActive}
 										monthActive={this.state.monthActive}
+										dayActive={this.state.dayActive}
 										month="allowed"
+										year="allowed"
+										handleYearRendering={this.handleYearRendering}			
 										handleMonthRendering={this.handleMonthRendering}
 										handleDayRendering={this.handleDayRendering}
+										leftNavigationDisabled={this.state.leftNavigationDisabled}
+										rightNavigationDisabled={this.state.rightNavigationDisabled}
 									/>
 									<div className="row m-4 px-0 py-0" id="row-chart">
 										<div className="col-md-6 container-fluid pb-3 pt-0 py-0 mx-auto my-auto" id="canvas-container-1">
@@ -600,10 +873,125 @@ export default class Production extends Component {
 										date={this.state.monthDay}
 										handlePrevDateNavigation={this.decrementDate}
 										handleNextDateNavigation={this.incrementDate}
+										yearActive={this.state.yearActive}
 										monthActive={this.state.monthActive}
+										dayActive={this.state.dayActive}
 										month="allowed"
+										year="allowed"
+										handleYearRendering={this.handleYearRendering}			
 										handleMonthRendering={this.handleMonthRendering}
 										handleDayRendering={this.handleDayRendering}
+										leftNavigationDisabled={this.state.leftNavigationDisabled}
+										rightNavigationDisabled={this.state.rightNavigationDisabled}
+									/>
+
+									<div className="row m-4 px-0 py-0" id="row-chart">
+										<div className="col-md-6 container-fluid pb-3 pt-0 py-0 mx-auto my-auto" id="canvas-container-1">
+											<LineChart
+												data={{ labels: [], datasets: [] }}
+											/>
+										</div>
+										<div className="col-md-6 container-fluid pb-3 pt-0 py-0 mx-auto my-auto" id="canvas-container-2">
+											<LineChart
+												data={{ labels: [], datasets: [] }}
+											/>
+										</div>
+										<div className="col-md-6 container-fluid pb-3 pt-0 py-0 mx-auto my-auto" id="canvas-container-3">
+											<LineChart
+												data={{ labels: [], datasets: [] }}
+											/>
+										</div>
+										<div className="col-md-6 container-fluid pb-3 pt-0 py-0 mx-auto my-auto" id="canvas-container-4">
+											<LineChart
+												data={{ labels: [], datasets: [] }}
+											/>
+										</div>
+									</div>
+
+								</main>
+							</div>
+						</div>
+						<Footer />
+					</React.Fragment>
+				)
+			}
+		} else if (this.state.period == "year") {
+
+			if (!this.state.isLoading && this.state.labels != undefined) {
+				return (
+					<React.Fragment>
+						<Header logged={true} fixed={false} marginBottom={true} />
+						<div className="row">
+							<div className="col-11 mx-auto">
+								<main className="col-lg-12 mx-auto p-0" role="main" id="main">
+
+									<TitleBar text="Produção - Campo Grande" theme="production" />
+									<Navigator
+										date={this.state.monthDay}
+										handlePrevDateNavigation={this.decrementDate}
+										handleNextDateNavigation={this.incrementDate}
+										yearActive={this.state.yearActive}
+										monthActive={this.state.monthActive}
+										dayActive={this.state.dayActive}
+										month="allowed"
+										year="allowed"
+										handleYearRendering={this.handleYearRendering}
+										handleMonthRendering={this.handleMonthRendering}
+										handleDayRendering={this.handleDayRendering}
+										leftNavigationDisabled={this.state.leftNavigationDisabled}
+										rightNavigationDisabled={this.state.rightNavigationDisabled}
+									/>
+									<div className="row m-4 px-0 py-0" id="row-chart">
+										<div className="col-md-10 container-fluid pb-3 pt-0 py-0 mx-auto my-auto" id="canvas-container-1">
+											<BarChart
+												data={{ labels: this.state.labels, datasets: [this.state.data.capacityFactorAverages, this.state.data.averageProductions] }}
+												options={this.state.options.production}
+											/>
+										</div>
+										<div className="col-md-5 container-fluid pb-3 pt-0 py-0 mx-auto my-auto" id="canvas-container-2">
+											<BarChart
+												data={{ labels: this.state.labels, datasets: [this.state.data.higherAverageDays, this.state.data.higherAverages] }}
+												options={this.state.options.power}
+											/>
+										</div>
+										<div className="col-md-5 container-fluid pb-3 pt-0 py-0 mx-auto my-auto" id="canvas-container-3">
+											<BarChart
+												data={{ labels: this.state.labels, datasets: [this.state.data.performancesAverages, this.state.data.totalProductionAverages] }}
+												options={this.state.options.performance}
+											/>
+										</div>
+									</div>
+
+								</main>
+							</div>
+						</div>
+						<Footer />
+					</React.Fragment>
+				);
+
+			} else {
+				return (
+					<React.Fragment>
+						<Header logged={true} fixed={false} marginBottom={true} />
+						<div className="row">
+							<div className="col-11 mx-auto">
+								<main className="col-lg-12 mx-auto p-0" role="main" id="main">
+
+									<TitleBar text="Produção - Campo Grande" theme="production" />
+									<Navigator
+										date={this.state.monthDay}
+										handlePrevDateNavigation={this.decrementDate}
+										handleNextDateNavigation={this.incrementDate}
+										yearActive={this.state.yearActive}
+										monthActive={this.state.monthActive}
+										dayActive={this.state.dayActive}
+										month="allowed"
+										year="allowed"
+										handleYearRendering={this.handleYearRendering}			
+										handleMonthRendering={this.handleMonthRendering}
+										handleDayRendering={this.handleDayRendering}
+										leftNavigationDisabled={this.state.leftNavigationDisabled}
+										rightNavigationDisabled={this.state.rightNavigationDisabled}
 									/>
 
 									<div className="row m-4 px-0 py-0" id="row-chart">

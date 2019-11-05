@@ -36,6 +36,14 @@ export default class NavButton extends Component {
 						</li>
 					</button>
 				);
+			}  else if (this.props.label == "Ano") {
+				return (
+					<button className="btn btn-outline-light nav-link" onClick={this.props.handleYearRendering}>
+						<li className="nav-item mx-auto" id={this.props.componentId}>
+							{this.props.label}
+						</li>
+					</button>
+				);
 			}
 		}
     }
