@@ -18,7 +18,7 @@ export default class LossPerTable extends Component {
 		this.state = {
 			day: 0,
 			yearMonth: 'carregando...',
-			period: 'day',
+			period: 'month',
 			labels: [],
 			data: [],
 			isLoading: true
@@ -43,7 +43,7 @@ export default class LossPerTable extends Component {
 	fetchApiResponse = async (date) => {
 
 		const path = (this.props.location.pathname === "/irece/perdas/mesas/perdas-totais") ? "/irece/perdas/mesas/total" : this.props.location.pathname;
-		let apiResponse = await api.get(path + "/" + date);
+		let apiResponse = await api.get(path + "/" + date + "/" + this.state.period);
 		
 		this.refreshState(apiResponse.data)
 			.then(newStateObject => {

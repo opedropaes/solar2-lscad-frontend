@@ -36,7 +36,6 @@ export default class ProductionPerTable extends Component {
 	_isUpdated = true;
 	now = new Date();
 	actualDay = this.now.getDate();
-	// actualDay = 1;
 	actualMonth = this.now.getMonth() + 1;
 	actualYear = this.now.getFullYear();
 
