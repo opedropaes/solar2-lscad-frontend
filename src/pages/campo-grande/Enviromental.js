@@ -1,3 +1,5 @@
+/* eslint-disable array-callback-return */
+/* eslint-disable no-unused-vars */
 /* eslint-disable eqeqeq */
 import React, { Component } from 'react';
 
@@ -664,6 +666,465 @@ export default class Enviromental extends Component {
 							},
 						},
 						pm2Options: {
+							animation: {
+								duration: 1000,
+							},
+							title: {
+								display: true,
+								fontsize: 24,
+								text: "Particulados PM2",
+							},
+							labels: {
+								fontStyle: 'bold',
+							},
+							scales: {
+								yAxes: [{
+									beginAtZero: true,
+									position: "left",
+									id: "left"
+								},
+								{
+									beginAtZero: true,
+									position: "right",
+									id: "right"
+								},
+	
+								],
+								xAxes: [{
+									beginAtZero: true,
+									ticks: {
+										callback: function (dataLabel, index) {
+											return index % 4 === 0 ? dataLabel : '';
+										},
+										maxRotation: 0,
+									}
+								}]
+							},
+						},
+					}
+
+				}
+
+				resolve(items)
+
+			}
+
+			else if (period === "year") {
+
+				const {
+					irradiations,
+					temperatures,
+					windSpeeds,
+					rainfalls,
+					PM1Array,
+					PM2Array,
+					yearInterval,
+					year,
+					period
+				} = res;
+
+				let higherIrradiations = [];
+				let averageIrradiations = [];
+				
+				let lowerTemperature = [];
+				let higherTemperature = [];
+				let averageTemperature = [];
+
+				let averageWindSpeed = [];
+				let higherWindSpeed = [];
+
+				let accumulateRainfall = [];
+				let higherAccumulateRainfall = [];
+
+				let averagePM1 = [];
+				let accPM1 = [];
+				let higherPM1Concentration = [];
+
+				let averagePM2 = [];
+				let accPM2 = [];
+				let higherPM2Concentration = [];
+
+				irradiations.map(item => {
+					higherIrradiations.push(item.higherIrradiationDay + ": " + item.higherIrradiation );
+					averageIrradiations.push(item.averageIrradiation);
+				});
+
+				temperatures.map(item => {
+					lowerTemperature.push(item.lowerTemperatureDay + ": " + item.lowerTemperature);
+					higherTemperature.push(item.higherTemperatureDay + ": " + item.higherTemperature);
+					averageTemperature.push(item.averageTemperature);
+				});
+
+				windSpeeds.map(item => {
+					let day = ((item.higherWindSpeedDay === 'null') ? 0 : item.higherWindSpeedDay);
+					averageWindSpeed.push(item.averageWindSpeed);
+					higherWindSpeed.push(day + ": " + item.higherWindSpeed);
+				});
+
+				rainfalls.map(item => {
+					higherAccumulateRainfall.push(item.higherAccumulateRainfallDay + ": " + item.higherAccumulateRainfallDay + ": " + item.higherAccumulateRainfall);
+					accumulateRainfall.push(item.accumulateRainfall);
+				});
+
+				PM1Array.map(item => {
+					higherPM1Concentration.push(item.higherPM1ConcentrationDay + ": " + item.higherPM1Concentration);
+					averagePM1.push(item.averagePM1);
+					accPM1.push(item.accPM1);
+				});
+
+				PM2Array.map(item => {
+					higherPM2Concentration.push(item.higherPM2ConcentrationDay + ": " + item.higherPM2Concentration);
+					averagePM2.push(item.averagePM2);
+					accPM2.push(item.accPM2);
+				});
+
+				let items = {
+					day: this.actualDay,
+					month: this.actualMonth,
+					year: year,
+					monthDay: year,
+					period: period,
+					interval: yearInterval,
+					data: {
+						irradiations: {
+							averageIrradiations: {
+								data: averageIrradiations,
+								lineTension: 0,
+								label: 'Média (W/m²)',
+								backgroundColor: 'rgba(66,161,245,1.0)',
+								borderColor: 'rgba(66,161,245,1.0)',
+								pointBackgroundColor: 'rgba(66,161,245,1.0)',
+								pointHoverRadius: 7
+							},
+							higherIrradiations: {
+								type: 'line',
+								data: higherIrradiations,
+								lineTension: 0,
+								label: 'Pico mensal - Dia (W/m³)',
+								borderWidth: 3,
+								backgroundColor: 'rgba(255,48,48, 0)',
+								borderColor: 'rgba(255,48,48, 1.0)',
+								pointBackgroundColor: 'rgba(255,48,48, 0.7)',
+								pointHoverRadius: 7
+							},
+						},
+						temperatures: {
+							averageTemperature: {
+								data: averageTemperature,
+								lineTension: 0,
+								label: 'Média (°C)',
+								backgroundColor: 'rgba(66, 134, 244, 1.0)',
+								borderColor: 'rgba(66, 134, 244, 1.0)',
+								pointBackgroundColor: 'rgba(66, 134, 244, 0.7)',
+								pointHoverRadius: 7
+							},
+							lowerTemperature: {
+								type: 'line',
+								data: lowerTemperature,
+								lineTension: 0,
+								label: 'Menor temperatura (°C)',
+								borderWidth: 3,
+								backgroundColor: 'rgba(255,166,0,0)',
+								borderColor: 'rgba(255,166,0,1.0)',
+								pointBackgroundColor: 'rgba(255,166,0, 0.7)',
+								pointHoverRadius: 7,
+								yAxisID: "right"
+							},
+							higherTemperature: {
+								type: 'line',
+								data: higherTemperature,
+								lineTension: 0,
+								label: 'Maior temperatura (°C)',
+								borderWidth: 3,
+								backgroundColor: 'rgba(255,48,48, 0)',
+								borderColor: 'rgba(255,48,48, 1.0)',
+								pointBackgroundColor: 'rgba(255,48,48, 0.7)',
+								pointHoverRadius: 7,
+								yAxisID: "right"
+							}
+						},
+						windSpeeds: {
+							averageWindSpeed: {
+								data: averageWindSpeed,
+								lineTension: 0,
+								borderWidth: 3,
+								label: 'Média (km/h)',
+								backgroundColor: 'rgba(255,166,0, 0)',
+								borderColor: 'rgba(255,166,0,1.0)',
+								pointBackgroundColor: 'rgba(255,166,0, 0.7)',
+								pointHoverRadius: 7
+							},
+							higherWindSpeed: {
+								type: 'line',
+								data: higherWindSpeed,
+								lineTension: 0,
+								label: 'Maior temperatura (km/h)',
+								borderWidth: 3,
+								backgroundColor: 'rgba(255,48,48, 0)',
+								borderColor: 'rgba(255,48,48, 1.0)',
+								pointBackgroundColor: 'rgba(255,48,48, 0.7)',
+								pointHoverRadius: 7,
+								yAxisID: "right"
+							}
+						},
+						rainfalls: {
+							higherAccumulateRainfall: {
+								type: 'line',
+								data: higherAccumulateRainfall,
+								lineTension: 0,
+								label: 'Pico mensal (mm/m³ - Dia)',
+								borderWidth: 3,
+								backgroundColor: 'rgba(255,48,48, 0)',
+								borderColor: 'rgba(255,48,48, 1.0)',
+								pointBackgroundColor: 'rgba(255,48,48, 0.7)',
+								pointHoverRadius: 7,
+								yAxisID: "right"
+							},
+							accumulateRainfall: {
+								data: accumulateRainfall,
+								lineTension: 0,
+								borderWidth: 3,
+								label: 'Total (mm/m³)',
+								backgroundColor: 'rgba(255,166,0, 0)',
+								borderColor: 'rgba(255,166,0,1.0)',
+								pointBackgroundColor: 'rgba(255,166,0, 0.7)',
+								pointHoverRadius: 7
+							}
+						},
+						PM1: {
+							higherPM1Concentration: {
+								type: 'line',
+								data: higherPM1Concentration,
+								lineTension: 0,
+								label: 'Concentração (#/m³)',
+								backgroundColor: 'rgba(255,48,48, 0)',
+								borderColor: 'rgba(255,48,48, 1.0)',
+								pointBackgroundColor: 'rgba(255,48,48, 0.7)',
+								pointHoverRadius: 7,
+								yAxisID: "left"
+							},
+							averagePM1: {
+								type: 'line',
+								data: averagePM1,
+								lineTension: 0,
+								label: 'Média (μg/m³)',
+								backgroundColor: 'rgba(255,48,48, 0)',
+								borderColor: 'rgba(255,48,48, 1.0)',
+								pointBackgroundColor: 'rgba(255,48,48, 0.7)',
+								pointHoverRadius: 7,
+								yAxisID: "left"
+							},
+							accPM1: {
+								data: accPM1,
+								lineTension: 0,
+								label: 'Massa (#/m³)',
+								backgroundColor: 'rgba(66,161,245,1.0)',
+								borderColor: 'rgba(66,161,245,1.0)',
+								pointBackgroundColor: 'rgba(66,161,245,1.0)',
+								pointHoverRadius: 7,
+								yAxisID: "right",
+							}
+						},
+						PM2: {
+							higherPM2Concentration: {
+								type: 'line',
+								data: higherPM2Concentration,
+								lineTension: 0,
+								label: 'Concentração (#/m³)',
+								backgroundColor: 'rgba(255,48,48, 0)',
+								borderColor: 'rgba(255,48,48, 1.0)',
+								pointBackgroundColor: 'rgba(255,48,48, 0.7)',
+								pointHoverRadius: 7,
+								yAxisID: "left"
+							},
+							averagePM2: {
+								type: 'line',
+								data: averagePM2,
+								lineTension: 0,
+								label: 'Média (μg/m³)',
+								backgroundColor: 'rgba(255,48,48, 0)',
+								borderColor: 'rgba(255,48,48, 1.0)',
+								pointBackgroundColor: 'rgba(255,48,48, 0.7)',
+								pointHoverRadius: 7,
+								yAxisID: "left"
+							},
+							accPM2: {
+								data: accPM2,
+								lineTension: 0,
+								label: 'Massa (#/m³)',
+								backgroundColor: 'rgba(66,161,245,1.0)',
+								borderColor: 'rgba(66,161,245,1.0)',
+								pointBackgroundColor: 'rgba(66,161,245,1.0)',
+								pointHoverRadius: 7,
+								yAxisID: "right",
+							}
+						},
+						
+					},
+					options: {
+						irradiation: {
+							animation: {
+								duration: 1000,
+							},
+							title: {
+								display: true,
+								fontsize: 24,
+								text: "Irradiação",
+							},
+							labels: {
+								fontStyle: 'bold',
+							},
+							scales: {
+								yAxes: [{
+									beginAtZero: true,
+									position: "left",
+									id: "left"
+								},
+								{
+									beginAtZero: true,
+									position: "right",
+									id: "right"
+								},
+	
+								],
+								xAxes: [{
+									beginAtZero: true,
+									ticks: {
+										callback: function (dataLabel, index) {
+											return index % 4 === 0 ? dataLabel : '';
+										},
+										maxRotation: 0,
+									}
+								}]
+							},
+						},
+						temperature: {
+							animation: {
+								duration: 1000,
+							},
+							title: {
+								display: true,
+								fontsize: 24,
+								text: "Temperatura",
+							},
+							labels: {
+								fontStyle: 'bold',
+							},
+							scales: {
+								yAxes: [{
+									beginAtZero: true,
+									position: "left",
+									id: "left"
+								},
+								{
+									beginAtZero: true,
+									position: "right",
+									id: "right"
+								},
+	
+								],
+								xAxes: [{
+									beginAtZero: true,
+									ticks: {
+										callback: function (dataLabel, index) {
+											return index % 4 === 0 ? dataLabel : '';
+										},
+										maxRotation: 0,
+									}
+								}]
+							},
+						},
+						rainfall: {
+							animation: {
+								duration: 1000,
+							},
+							title: {
+								display: true,
+								fontsize: 24,
+								text: "Precipitação",
+							},
+							labels: {
+								fontStyle: 'bold',
+							},
+							scales: {
+								yAxes: [{
+									beginAtZero: true,
+								}],
+								xAxes: [{
+									beginAtZero: true,
+									ticks: {
+										callback: function (dataLabel, index) {
+											return index % 4 === 0 ? dataLabel : '';
+										},
+										maxRotation: 0,
+									}
+								}]
+							},
+						},
+						windSpeed: {
+							animation: {
+								duration: 1000,
+							},
+							title: {
+								display: true,
+								fontsize: 24,
+								text: "Velocidade do vento",
+							},
+							labels: {
+								fontStyle: 'bold',
+							},
+							scales: {
+								yAxes: [{
+									beginAtZero: true
+								}],
+								xAxes: [{
+									beginAtZero: true,
+									ticks: {
+										callback: function (dataLabel, index) {
+											return index % 4 === 0 ? dataLabel : '';
+										},
+										maxRotation: 0,
+									}
+								}]
+							},
+						},
+						pm1: {
+							animation: {
+								duration: 1000,
+							},
+							title: {
+								display: true,
+								fontsize: 24,
+								text: "Particulados PM1",
+							},
+							labels: {
+								fontStyle: 'bold',
+							},
+							scales: {
+								yAxes: [{
+									beginAtZero: true,
+									position: "left",
+									id: "left"
+								},
+								{
+									beginAtZero: true,
+									position: "right",
+									id: "right"
+								},
+	
+								],
+								xAxes: [{
+									beginAtZero: true,
+									ticks: {
+										callback: function (dataLabel, index) {
+											return index % 4 === 0 ? dataLabel : '';
+										},
+										maxRotation: 0,
+									}
+								}]
+							},
+						},
+						pm2: {
 							animation: {
 								duration: 1000,
 							},
