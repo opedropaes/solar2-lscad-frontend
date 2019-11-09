@@ -26,9 +26,12 @@ export default class Enviromental extends Component {
 			day: 0,
 			monthDay: 'carregando...',
 			period: 'day',
+			dayActive: true,
 			labels: [],
 			data: [],
-			isLoading: true
+			isLoading: true,
+			rightNavigationDisabled: true,
+			leftNavigationDisabled: false
 		};
 
 	}
@@ -410,9 +413,9 @@ export default class Enviromental extends Component {
 							data: res.averageTemperatures,
 							lineTension: 0,
 							label: 'Média diária (°C)',
-							backgroundColor: 'rgba(66, 134, 244, 1.0)',
-							borderColor: 'rgba(66, 134, 244, 1.0)',
-							pointBackgroundColor: 'rgba(66, 134, 244, 0.7)',
+							backgroundColor: 'rgba(66,161,245,1.0)',
+							borderColor: 'rgba(66,161,245,1.0)',
+							pointBackgroundColor: 'rgba(66,161,245,1.0)',
 							pointHoverRadius: 7
 						},
 						higherTemperatures: {
@@ -745,13 +748,16 @@ export default class Enviromental extends Component {
 				let higherPM2Concentration = [];
 
 				irradiations.map(item => {
-					higherIrradiations.push(item.higherIrradiationDay + ": " + item.higherIrradiation );
+					// higherIrradiations.push(item.higherIrradiationDay + ": " + item.higherIrradiation);
+					higherIrradiations.push(item.higherIrradiation);
 					averageIrradiations.push(item.averageIrradiation);
 				});
 
 				temperatures.map(item => {
-					lowerTemperature.push(item.lowerTemperatureDay + ": " + item.lowerTemperature);
-					higherTemperature.push(item.higherTemperatureDay + ": " + item.higherTemperature);
+					// lowerTemperature.push(item.lowerTemperatureDay + ": " + item.lowerTemperature);
+					lowerTemperature.push(item.lowerTemperature);
+					// higherTemperature.push(item.higherTemperatureDay + ": " + item.higherTemperature);
+					higherTemperature.push(item.higherTemperature);
 					averageTemperature.push(item.averageTemperature);
 				});
 
@@ -762,10 +768,10 @@ export default class Enviromental extends Component {
 				});
 
 				rainfalls.map(item => {
-					higherAccumulateRainfall.push(item.higherAccumulateRainfallDay + ": " + item.higherAccumulateRainfallDay + ": " + item.higherAccumulateRainfall);
+					higherAccumulateRainfall.push(item.higherAccumulateRainfall);
 					accumulateRainfall.push(item.accumulateRainfall);
 				});
-
+				
 				PM1Array.map(item => {
 					higherPM1Concentration.push(item.higherPM1ConcentrationDay + ": " + item.higherPM1Concentration);
 					averagePM1.push(item.averagePM1);
@@ -805,7 +811,8 @@ export default class Enviromental extends Component {
 								backgroundColor: 'rgba(255,48,48, 0)',
 								borderColor: 'rgba(255,48,48, 1.0)',
 								pointBackgroundColor: 'rgba(255,48,48, 0.7)',
-								pointHoverRadius: 7
+								pointHoverRadius: 7,
+								yAxisID: "right"
 							},
 						},
 						temperatures: {
@@ -813,9 +820,9 @@ export default class Enviromental extends Component {
 								data: averageTemperature,
 								lineTension: 0,
 								label: 'Média (°C)',
-								backgroundColor: 'rgba(66, 134, 244, 1.0)',
-								borderColor: 'rgba(66, 134, 244, 1.0)',
-								pointBackgroundColor: 'rgba(66, 134, 244, 0.7)',
+								backgroundColor: 'rgba(66,161,245,1.0)',
+								borderColor: 'rgba(66,161,245,1.0)',
+								pointBackgroundColor: 'rgba(66,161,245,1.0)',
 								pointHoverRadius: 7
 							},
 							lowerTemperature: {
@@ -849,16 +856,16 @@ export default class Enviromental extends Component {
 								lineTension: 0,
 								borderWidth: 3,
 								label: 'Média (km/h)',
-								backgroundColor: 'rgba(255,166,0, 0)',
-								borderColor: 'rgba(255,166,0,1.0)',
-								pointBackgroundColor: 'rgba(255,166,0, 0.7)',
+								backgroundColor: 'rgba(66,161,245,1.0)',
+								borderColor: 'rgba(66,161,245,1.0)',
+								pointBackgroundColor: 'rgba(66,161,245,1.0)',
 								pointHoverRadius: 7
 							},
 							higherWindSpeed: {
 								type: 'line',
 								data: higherWindSpeed,
 								lineTension: 0,
-								label: 'Maior temperatura (km/h)',
+								label: 'Maior velocidade (km/h)',
 								borderWidth: 3,
 								backgroundColor: 'rgba(255,48,48, 0)',
 								borderColor: 'rgba(255,48,48, 1.0)',
@@ -885,10 +892,11 @@ export default class Enviromental extends Component {
 								lineTension: 0,
 								borderWidth: 3,
 								label: 'Total (mm/m³)',
-								backgroundColor: 'rgba(255,166,0, 0)',
-								borderColor: 'rgba(255,166,0,1.0)',
-								pointBackgroundColor: 'rgba(255,166,0, 0.7)',
-								pointHoverRadius: 7
+								backgroundColor: 'rgba(66,161,245,1.0)',
+								borderColor: 'rgba(66,161,245,1.0)',
+								pointBackgroundColor: 'rgba(66,161,245,1.0)',
+								pointHoverRadius: 7,
+								yAxisID: "left"
 							}
 						},
 						PM1: {
@@ -908,11 +916,10 @@ export default class Enviromental extends Component {
 								data: averagePM1,
 								lineTension: 0,
 								label: 'Média (μg/m³)',
-								backgroundColor: 'rgba(255,48,48, 0)',
+								backgroundColor: 'rgba(255,48,48,0)',
 								borderColor: 'rgba(255,48,48, 1.0)',
 								pointBackgroundColor: 'rgba(255,48,48, 0.7)',
 								pointHoverRadius: 7,
-								yAxisID: "left"
 							},
 							accPM1: {
 								data: accPM1,
@@ -927,7 +934,6 @@ export default class Enviromental extends Component {
 						},
 						PM2: {
 							higherPM2Concentration: {
-								type: 'line',
 								data: higherPM2Concentration,
 								lineTension: 0,
 								label: 'Concentração (#/m³)',
@@ -946,7 +952,6 @@ export default class Enviromental extends Component {
 								borderColor: 'rgba(255,48,48, 1.0)',
 								pointBackgroundColor: 'rgba(255,48,48, 0.7)',
 								pointHoverRadius: 7,
-								yAxisID: "left"
 							},
 							accPM2: {
 								data: accPM2,
@@ -989,12 +994,6 @@ export default class Enviromental extends Component {
 								],
 								xAxes: [{
 									beginAtZero: true,
-									ticks: {
-										callback: function (dataLabel, index) {
-											return index % 4 === 0 ? dataLabel : '';
-										},
-										maxRotation: 0,
-									}
 								}]
 							},
 						},
@@ -1025,12 +1024,6 @@ export default class Enviromental extends Component {
 								],
 								xAxes: [{
 									beginAtZero: true,
-									ticks: {
-										callback: function (dataLabel, index) {
-											return index % 4 === 0 ? dataLabel : '';
-										},
-										maxRotation: 0,
-									}
 								}]
 							},
 						},
@@ -1049,15 +1042,17 @@ export default class Enviromental extends Component {
 							scales: {
 								yAxes: [{
 									beginAtZero: true,
-								}],
+									position: "left",
+									id: "left"
+								},
+								{
+									beginAtZero: true,
+									position: "right",
+									id: "right"
+								},
+								],
 								xAxes: [{
 									beginAtZero: true,
-									ticks: {
-										callback: function (dataLabel, index) {
-											return index % 4 === 0 ? dataLabel : '';
-										},
-										maxRotation: 0,
-									}
 								}]
 							},
 						},
@@ -1075,16 +1070,18 @@ export default class Enviromental extends Component {
 							},
 							scales: {
 								yAxes: [{
-									beginAtZero: true
-								}],
+									beginAtZero: true,
+									position: "left",
+									id: "left"
+								},
+								{
+									beginAtZero: true,
+									position: "right",
+									id: "right"
+								},
+								],
 								xAxes: [{
 									beginAtZero: true,
-									ticks: {
-										callback: function (dataLabel, index) {
-											return index % 4 === 0 ? dataLabel : '';
-										},
-										maxRotation: 0,
-									}
 								}]
 							},
 						},
@@ -1111,16 +1108,9 @@ export default class Enviromental extends Component {
 									position: "right",
 									id: "right"
 								},
-	
 								],
 								xAxes: [{
 									beginAtZero: true,
-									ticks: {
-										callback: function (dataLabel, index) {
-											return index % 4 === 0 ? dataLabel : '';
-										},
-										maxRotation: 0,
-									}
 								}]
 							},
 						},
@@ -1147,16 +1137,9 @@ export default class Enviromental extends Component {
 									position: "right",
 									id: "right"
 								},
-	
 								],
 								xAxes: [{
 									beginAtZero: true,
-									ticks: {
-										callback: function (dataLabel, index) {
-											return index % 4 === 0 ? dataLabel : '';
-										},
-										maxRotation: 0,
-									}
 								}]
 							},
 						},
@@ -1180,7 +1163,7 @@ export default class Enviromental extends Component {
 		let year = this.state.year;
 
 		if (this.state.period == "day") {
-			if (year >= 2018 && month >= 1 && day >= 1) {
+			if (year >= 2018 && month >= 9 && day >= 1) {
 
 				if (day > 1) {
 					day--;
@@ -1193,15 +1176,20 @@ export default class Enviromental extends Component {
 					year--;
 				}
 
+				if (year == 2018 && month == 9 && day == 1) {
+					this.setState({ leftNavigationDisabled: true });
+				}
+	
 				this.setState({
 					day,
 					month,
-					year
+					year,
+					rightNavigationDisabled: false
 				});
-
+		
 			}
 		} else if (this.state.period == "month") {
-			if (year >= 2018 && month >= 1) {
+			if (year >= 2018 && month >= 9) {
 
 				if (month > 1) {
 					month--;
@@ -1209,17 +1197,34 @@ export default class Enviromental extends Component {
 					month = 12;
 					year--;
 				}
-
+	
 				this.setState({
 					month,
-					year
+					year,
+					rightNavigationDisabled: false
 				});
+
+				if (year == 2018 && month == 9) {
+					this.setState({ leftNavigationDisabled: true });
+				}
+		
+			} 
+		} else if (this.state.period == "year") {
+			if (year > 2018) {
+				year--;
+				this.setState({
+					year,
+					rightNavigationDisabled: false
+				});
+
+				if (year == 2018){
+					this.setState({ leftNavigationDisabled: true })
+				}
 
 			}
 		}
 
 		this._isUpdated = false;
-
 
 	}
 
@@ -1233,7 +1238,7 @@ export default class Enviromental extends Component {
 			if (year < this.actualYear ||
 				(year == this.actualYear && month < this.actualMonth) ||
 				(year == this.actualYear && month == this.actualMonth && day < this.actualDay)) {
-
+	
 				if (day == 31 && month == 12) {
 					day = 1;
 					month = 1;
@@ -1244,43 +1249,55 @@ export default class Enviromental extends Component {
 				} else {
 					day++;
 				}
-
+	
 				this.setState({
 					day,
 					month,
-					year
+					year,
+					leftNavigationDisabled: false
 				});
 
-			}
+				if (year == this.actualYear && month == this.actualMonth && day == this.actualDay) {
+					this.setState({ rightNavigationDisabled: true })
+				}
+		
+			} 
 		} else if (this.state.period == "month") {
 			if (year < this.actualYear ||
 				(year == this.actualYear && month < this.actualMonth)) {
-
+	
 				if (month == 12) {
 					month = 1;
 					year++;
 				} else {
 					month++;
 				}
-
+	
 				this.setState({
 					month,
-					year
+					year,
+					leftNavigationDisabled: false
 				});
 
+				if (month == this.actualMonth && year == this.actualYear) {
+					this.setState({ rightNavigationDisabled: true })
+				}
+		
+			} 
+		} else if (this.state.period == "year") {
+			if (year < this.actualYear) {
+				year++;
+				this.setState({ 
+					year,
+					leftNavigationDisabled: false
+				});
+				if (year == this.actualYear) {
+					this.setState({ rightNavigationDisabled: true })
+				}
 			}
 		}
 
 		this._isUpdated = false;
-
-	}
-
-	handleMonthRendering = () => {
-
-		let date = dateFormater(this.actualDay, this.actualMonth, this.actualYear);
-		this._isMounted = true;
-		this.fetchApiResponse(date, 'month');
-		this.setState({ monthActive: true });
 
 	}
 
@@ -1289,7 +1306,43 @@ export default class Enviromental extends Component {
 		let date = dateFormater(this.actualDay, this.actualMonth, this.actualYear);
 		this._isMounted = true;
 		this.fetchApiResponse(date, 'day');
-		this.setState({ monthActive: false });
+		this.setState({ 
+			dayActive: true,
+			monthActive: false,
+			yearActive: false,
+			leftNavigationDisabled: false,
+			rightNavigationDisabled: true
+		});
+
+	}
+
+	handleMonthRendering = () => {
+
+		let date = dateFormater(this.actualDay, this.actualMonth, this.actualYear);
+		this._isMounted = true;
+		this.fetchApiResponse(date, 'month');
+		this.setState({
+			dayActive: false,
+			monthActive: true,
+			yearActive: false,
+			leftNavigationDisabled: false,
+			rightNavigationDisabled: true
+		});
+
+	}
+
+	handleYearRendering = () => {
+
+		let date = dateFormater(this.actualDay, this.actualMonth, this.actualYear);
+		this._isMounted = true;
+		this.fetchApiResponse(date, 'year');
+		this.setState({
+			dayActive: false,
+			monthActive: false,
+			yearActive: true,
+			leftNavigationDisabled: false,
+			rightNavigationDisabled: true
+		 });
 
 	}
 
@@ -1371,10 +1424,16 @@ export default class Enviromental extends Component {
 										date={this.state.monthDay}
 										handlePrevDateNavigation={this.decrementDate}
 										handleNextDateNavigation={this.incrementDate}
+										yearActive={this.state.yearActive}
 										monthActive={this.state.monthActive}
+										dayActive={this.state.dayActive}
 										month="allowed"
+										year="allowed"
+										handleYearRendering={this.handleYearRendering}
 										handleMonthRendering={this.handleMonthRendering}
 										handleDayRendering={this.handleDayRendering}
+										leftNavigationDisabled={this.state.leftNavigationDisabled}
+										rightNavigationDisabled={this.state.rightNavigationDisabled}
 									/>
 									<div className="row m-4 px-0 py-0" id="row-chart">
 										<div className="col-md-6 container-fluid pb-3 pt-0 py-0 mx-auto my-auto" id="canvas-container-1">
@@ -1446,10 +1505,14 @@ export default class Enviromental extends Component {
 										date={this.state.monthDay}
 										handlePrevDateNavigation={this.decrementDate}
 										handleNextDateNavigation={this.incrementDate}
+										yearActive={this.state.yearActive}
 										monthActive={this.state.monthActive}
-										month="allowed"
+										dayActive={this.state.dayActive}
+										handleYearRendering={this.handleYearRendering}
 										handleMonthRendering={this.handleMonthRendering}
 										handleDayRendering={this.handleDayRendering}
+										leftNavigationDisabled={this.state.leftNavigationDisabled}
+										rightNavigationDisabled={this.state.rightNavigationDisabled}
 									/>
 									<div className="row m-4 px-0 py-0" id="row-chart">
 										<div className="col-md-10 container-fluid pb-3 pt-0 py-0 mx-auto my-auto" id="canvas-container-1">
@@ -1482,10 +1545,16 @@ export default class Enviromental extends Component {
 										date={this.state.monthDay}
 										handlePrevDateNavigation={this.decrementDate}
 										handleNextDateNavigation={this.incrementDate}
+										yearActive={this.state.yearActive}
 										monthActive={this.state.monthActive}
+										dayActive={this.state.dayActive}
 										month="allowed"
+										year="allowed"
+										handleYearRendering={this.handleYearRendering}
 										handleMonthRendering={this.handleMonthRendering}
 										handleDayRendering={this.handleDayRendering}
+										leftNavigationDisabled={this.state.leftNavigationDisabled}
+										rightNavigationDisabled={this.state.rightNavigationDisabled}
 									/>
 									<div className="row m-4 px-0 py-0" id="row-chart">
 										<div className="col-md-6 container-fluid pb-3 pt-0 py-0 mx-auto my-auto" id="canvas-container-1">
@@ -1545,10 +1614,14 @@ export default class Enviromental extends Component {
 										date={this.state.monthDay}
 										handlePrevDateNavigation={this.decrementDate}
 										handleNextDateNavigation={this.incrementDate}
+										yearActive={this.state.yearActive}
 										monthActive={this.state.monthActive}
-										month="allowed"
+										dayActive={this.state.dayActive}
+										handleYearRendering={this.handleYearRendering}
 										handleMonthRendering={this.handleMonthRendering}
 										handleDayRendering={this.handleDayRendering}
+										leftNavigationDisabled={this.state.leftNavigationDisabled}
+										rightNavigationDisabled={this.state.rightNavigationDisabled}
 									/>
 									<div className="row m-4 px-0 py-0" id="row-chart">
 										<div className="col-md-6 container-fluid pb-3 pt-0 py-0 mx-auto my-auto" id="canvas-container-1">
@@ -1572,6 +1645,167 @@ export default class Enviromental extends Component {
 											/>
 										</div>
 										<div className="col-md-6 container-fluid pb-3 pt-0 py-0 mx-auto my-auto" id="canvas-container-5">
+											<BarChart
+												data={{ labels: [], datasets: [] }}
+											/>
+										</div>
+										<div className="col-md-6 container-fluid pb-3 pt-0 py-0 mx-auto my-auto" id="canvas-container-6">
+											<BarChart
+												data={{ labels: [], datasets: [] }}
+											/>
+										</div>
+									</div>
+
+								</main>
+							</div>
+						</div>
+						<Footer />
+					</React.Fragment>
+				);
+			}
+		}
+
+		else if (this.state.period === "year") {
+
+			if (!this.state.isLoading && this.state.labels != undefined) {
+				return (
+					<React.Fragment>
+						<Header logged={true} fixed={false} marginBottom={true} />
+						<div className="row">
+							<div className="col-11 mx-auto">
+								<main className="col-lg-12 mx-auto p-0" role="main" id="main">
+									<TitleBar text="Ambientais - Campo Grande" theme="environmental" />
+									<Navigator
+										date={this.state.monthDay}
+										handlePrevDateNavigation={this.decrementDate}
+										handleNextDateNavigation={this.incrementDate}
+										yearActive={this.state.yearActive}
+										monthActive={this.state.monthActive}
+										dayActive={this.state.dayActive}
+										month="allowed"
+										year="allowed"
+										handleYearRendering={this.handleYearRendering}
+										handleMonthRendering={this.handleMonthRendering}
+										handleDayRendering={this.handleDayRendering}
+										leftNavigationDisabled={this.state.leftNavigationDisabled}
+										rightNavigationDisabled={this.state.rightNavigationDisabled}
+									/>
+									<div className="row m-4 px-0 py-0" id="row-chart">
+										<div className="col-md-6 container-fluid pb-3 pt-0 py-0 mx-auto my-auto" id="canvas-container-1">
+											<BarChart
+												data={{ labels: this.state.labels, datasets: [this.state.data.irradiations.higherIrradiations, this.state.data.irradiations.averageIrradiations] }}
+												options={this.state.options.irradiation}
+											/>
+										</div>
+										<div className="col-md-6 container-fluid pb-3 pt-0 py-0 mx-auto my-auto" id="canvas-container-2">
+											<BarChart
+												data={{ labels: this.state.labels, datasets: [this.state.data.temperatures.higherTemperature, this.state.data.temperatures.lowerTemperature, this.state.data.temperatures.averageTemperature] }}
+												options={this.state.options.temperature}
+											/>
+										</div>
+										<div className="col-md-6 container-fluid pb-3 pt-0 py-0 mx-auto my-auto" id="canvas-container-4">
+											<BarChart
+												data={{ labels: this.state.labels, datasets: [this.state.data.windSpeeds.higherWindSpeed, this.state.data.windSpeeds.averageWindSpeed] }}
+												options={this.state.options.windSpeed}
+											/>
+										</div>
+										<div className="col-md-6 container-fluid pb-3 pt-0 py-0 mx-auto my-auto" id="canvas-container-5">
+											<BarChart
+												data={{ labels: this.state.labels, datasets: [this.state.data.rainfalls.higherAccumulateRainfall, this.state.data.rainfalls.accumulateRainfall] }}
+												options={this.state.options.rainfall}
+											/>
+										</div>
+										<div className="col-md-6 container-fluid pb-3 pt-0 py-0 mx-auto my-auto" id="canvas-container-6">
+											<BarChart
+												data={{ labels: this.state.labels, datasets: [this.state.data.PM1.higherPM1Concentration, this.state.data.PM1.accPM1] }}
+												options={this.state.options.pm1}
+											/>
+										</div>
+										<div className="col-md-6 container-fluid pb-3 pt-0 py-0 mx-auto my-auto" id="canvas-container-7">
+											<BarChart
+												data={{ labels: this.state.labels, datasets: [this.state.data.PM1.averagePM1] }}
+												options={this.state.options.pm1}
+											/>
+										</div>
+										<div className="col-md-6 container-fluid pb-3 pt-0 py-0 mx-auto my-auto" id="canvas-container-8">
+											<BarChart
+												data={{ labels: this.state.labels, datasets: [this.state.data.PM2.higherPM2Concentration, this.state.data.PM2.accPM2] }}
+												options={this.state.options.pm2}
+											/>
+										</div>
+										<div className="col-md-6 container-fluid pb-3 pt-0 py-0 mx-auto my-auto" id="canvas-container-9">
+											<BarChart
+												data={{ labels: this.state.labels, datasets: [this.state.data.PM2.averagePM2] }}
+												options={this.state.options.pm2}
+											/>
+										</div>
+									</div>
+
+								</main>
+							</div>
+						</div>
+						<Footer />
+					</React.Fragment>
+				);
+
+			} else {
+				return (
+					<React.Fragment>
+						<Header logged={true} fixed={false} marginBottom={true} />
+						<div className="row">
+							<div className="col-11 mx-auto">
+								<main className="col-lg-12 mx-auto p-0" role="main" id="main">
+									<TitleBar text="Ambientais - Campo Grande" theme="environmental" />
+									<Navigator
+										date={this.state.monthDay}
+										handlePrevDateNavigation={this.decrementDate}
+										handleNextDateNavigation={this.incrementDate}
+										yearActive={this.state.yearActive}
+										monthActive={this.state.monthActive}
+										dayActive={this.state.dayActive}
+										handleYearRendering={this.handleYearRendering}
+										handleMonthRendering={this.handleMonthRendering}
+										handleDayRendering={this.handleDayRendering}
+										leftNavigationDisabled={this.state.leftNavigationDisabled}
+										rightNavigationDisabled={this.state.rightNavigationDisabled}
+									/>
+									<div className="row m-4 px-0 py-0" id="row-chart">
+										<div className="col-md-6 container-fluid pb-3 pt-0 py-0 mx-auto my-auto" id="canvas-container-1">
+											<BarChart
+												data={{ labels: [], datasets: [] }}
+											/>
+										</div>
+										<div className="col-md-6 container-fluid pb-3 pt-0 py-0 mx-auto my-auto" id="canvas-container-2">
+											<BarChart
+												data={{ labels: [], datasets: [] }}
+											/>
+										</div>
+										<div className="col-md-6 container-fluid pb-3 pt-0 py-0 mx-auto my-auto" id="canvas-container-3">
+											<BarChart
+												data={{ labels: [], datasets: [] }}
+											/>
+										</div>
+										<div className="col-md-6 container-fluid pb-3 pt-0 py-0 mx-auto my-auto" id="canvas-container-4">
+											<BarChart
+												data={{ labels: [], datasets: [] }}
+											/>
+										</div>
+										<div className="col-md-6 container-fluid pb-3 pt-0 py-0 mx-auto my-auto" id="canvas-container-5">
+											<BarChart
+												data={{ labels: [], datasets: [] }}
+											/>
+										</div>
+										<div className="col-md-6 container-fluid pb-3 pt-0 py-0 mx-auto my-auto" id="canvas-container-6">
+											<BarChart
+												data={{ labels: [], datasets: [] }}
+											/>
+										</div>
+										<div className="col-md-6 container-fluid pb-3 pt-0 py-0 mx-auto my-auto" id="canvas-container-6">
+											<BarChart
+												data={{ labels: [], datasets: [] }}
+											/>
+										</div>
+										<div className="col-md-6 container-fluid pb-3 pt-0 py-0 mx-auto my-auto" id="canvas-container-6">
 											<BarChart
 												data={{ labels: [], datasets: [] }}
 											/>
