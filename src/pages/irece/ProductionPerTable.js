@@ -16,6 +16,8 @@ import api from '../../services/api';
 import dateFormater from '../../utils/dateFormater';
 import howManyDaysThisMonth from '../../utils/daysInMonthDefiner';
 
+import sadsun from '../imgs/sadsun.png'
+
 export default class ProductionPerTable extends Component {
 
 	constructor(props) {
@@ -25,10 +27,14 @@ export default class ProductionPerTable extends Component {
 			day: 0,
 			monthDay: 'carregando...',
 			period: 'day',
+			dayActive: true,
 			labels: [],
 			data: [],
-			isLoading: true
+			isLoading: true,
+			rightNavigationDisabled: true,
+			leftNavigationDisabled: false
 		};
+
 
 	}
 
@@ -43,7 +49,7 @@ export default class ProductionPerTable extends Component {
 
 		let date = dateFormater(this.actualDay, this.actualMonth, this.actualYear);
 		this._isMounted = true;
-		this.fetchApiResponse(date, 'day');
+		this.fetchApiResponse(date, this.state.period);
 
 	}
 
@@ -55,24 +61,25 @@ export default class ProductionPerTable extends Component {
 
 		let apiResponse = await api.get(path + '/' + date + '/' + period);
 		let { table } = apiResponse.data
-
-		let newStateObject = await this.refreshState(apiResponse.data, table, period);
-
-		if (this._isMounted || !this._isUpdated) {
-			this.setState({
-				table,
-				day: newStateObject.day,
-				month: newStateObject.month,
-				year: newStateObject.year,
-				monthDay: newStateObject.monthDay,
-				period: newStateObject.period,
-				labels: newStateObject.interval,
-				data: newStateObject.data,
-				options: newStateObject.options,
-				isLoading: (!newStateObject.interval.length)
-			});
-
-		}
+ 
+		this.refreshState(apiResponse.data, table, period)
+			.then(newStateObject => {
+				if (this._isMounted || !this._isUpdated) {
+					this.setState({
+						table,
+						day: newStateObject.day,
+						month: newStateObject.month,
+						year: newStateObject.year,
+						monthDay: newStateObject.monthDay,
+						period: newStateObject.period,
+						labels: newStateObject.interval,
+						data: newStateObject.data,
+						options: newStateObject.options,
+						isLoading: (!newStateObject.interval.length)
+					});
+		
+				}
+			})
 
 	}
 
@@ -98,7 +105,7 @@ export default class ProductionPerTable extends Component {
 						production: {
 							data: res.production,
 							lineTension: 0,
-							label: tablesLabel[res.table - 1],
+							label: 'Produção (kWh) - ' + tablesLabel[res.table - 1],
 							backgroundColor: 'rgba(66,161,245,0)',
 							borderColor: 'rgba(66,161,245,1.0)',
 							pointBackgroundColor: 'rgba(66,161,245,1.0)',
@@ -420,9 +427,7 @@ export default class ProductionPerTable extends Component {
 
 				})
 			}
-		}
-
-		else if (res.period == "month") {
+		} else if (res.period == "month") {
 			if (table < 6) {
 				return ({
 					day: this.actualDay,
@@ -635,6 +640,476 @@ export default class ProductionPerTable extends Component {
 
 				})
 			}
+		} else if (res.period == "year") {
+			
+			if (table >= 1 && table <= 5) {
+				return ({
+					day: this.actualDay,
+					month: this.actualMonth,
+					year: res.year,
+					monthDay: res.year,
+					period: res.period,
+					interval: res.yearInterval,
+					data: {
+						averageProductions: {
+							data: res.averageProductions,
+							lineTension: 0,
+							label: 'Média #1: p-Si (kWh)',
+							backgroundColor: 'rgba(66,161,245,1.0)',
+							borderColor: 'rgba(66,161,245,1.0)',
+							pointBackgroundColor: 'rgba(66,161,245,1.0)',
+							borderWidth: 3,
+							yAxisID: "performance",
+						},
+						capacityFactorAverages: {
+							data: res.capacityFactorAverages,
+							lineTension: 0,
+							label: 'Percentual de PR',
+							borderColor: 'rgba(255,48,48,1.0)',
+							backgroundColor: 'rgba(255,48,48,0)',
+							borderWidth: 3,
+							yAxisID: "capacidade",
+							type: 'line'
+						},
+						higherAverages: {
+							data: res.higherAverages,
+							lineTension: 0,
+							label: 'Maior potência (kW)',
+							backgroundColor: 'rgba(66,161,245,1.0)',
+							borderColor: 'rgba(66,161,245,1.0)',
+							pointBackgroundColor: 'rgba(66,161,245,1.0)',
+							yAxisID: "performance",
+						},
+						higherAverageDays: {
+							data: res.higherAverageDays,
+							lineTension: 0,
+							label: 'Dia',
+							borderColor: 'rgba(255,48,48,1.0)',
+							backgroundColor: 'rgba(255,48,48,0)',
+							borderWidth: 3,
+							yAxisID: "capacidade",
+							type: 'line'
+						},
+						performancesAverages: {
+							data: res.performancesAverages,
+							lineTension: 0,
+							label: 'Média de PR',
+							borderColor: 'rgba(255,48,48,1.0)',
+							backgroundColor: 'rgba(255,48,48,0)',
+							borderWidth: 3,
+							yAxisID: "capacidade",
+							type: 'line'
+						},
+						totalProductionAverages: {
+							data: res.totalProductionAverages,
+							lineTension: 0,
+							label: 'Produção total',
+							backgroundColor: 'rgba(66,161,245,1.0)',
+							borderColor: 'rgba(66,161,245,1.0)',
+							pointBackgroundColor: 'rgba(66,161,245,1.0)',
+							yAxisID: "performance",
+						}
+					},
+					options: {
+						production: {
+							animation: {
+								duration: 1000,
+							},
+							title: {
+								display: true,
+								fontsize: 24,
+								text: "Produção",
+							},
+							labels: {
+								fontStyle: 'bold',
+							},
+							scales: {
+								yAxes: [{
+		
+									beginAtZero: true,
+									position: "left",
+									id: "performance"
+								},
+								{
+									beginAtZero: false,
+									position: "right",
+									id: "capacidade"
+								}
+		
+								],
+								xAxes: [{
+									beginAtZero: true,
+									ticks: {
+										callback: function (dataLabel, index) {
+											return index % 4 === 0 ? dataLabel : '';
+										},
+										maxRotation: 0,
+									}
+								}]
+							},
+						},
+						power: {
+							animation: {
+								duration: 1000,
+							},
+							title: {
+								display: true,
+								fontsize: 24,
+								text: "Potência média alcançada",
+							},
+							labels: {
+								fontStyle: 'bold',
+							},
+							scales: {
+								yAxes: [{
+		
+									beginAtZero: true,
+									position: "left",
+									id: "performance"
+								},
+								{
+									beginAtZero: false,
+									position: "right",
+									id: "capacidade"
+								}
+		
+								],
+								xAxes: [{
+									beginAtZero: true,
+									ticks: {
+										callback: function (dataLabel, index) {
+											return index % 4 === 0 ? dataLabel : '';
+										},
+										maxRotation: 0,
+									}
+								}]
+							},
+						},
+						performance: {
+							animation: {
+								duration: 1000,
+							},
+							title: {
+								display: true,
+								fontsize: 24,
+								text: "Produção total vs. Performance ratio média",
+							},
+							labels: {
+								fontStyle: 'bold',
+							},
+							scales: {
+								yAxes: [{
+		
+									beginAtZero: true,
+									position: "left",
+									id: "performance"
+								},
+								{
+									beginAtZero: false,
+									position: "right",
+									id: "capacidade"
+								}
+		
+								],
+								xAxes: [{
+									beginAtZero: true,
+									ticks: {
+										callback: function (dataLabel, index) {
+											return index % 4 === 0 ? dataLabel : '';
+										},
+										maxRotation: 0,
+									}
+								}]
+							},
+						},
+					},
+	
+	
+				})
+			} else {
+
+				const { table1, table2, table3, table4, table5, table6, yearInterval, year, period } = res
+				let table1AverageProduction = [];
+				let table1HigherAverageProduction = [];	
+				let table2AverageProduction = [];
+				let table2HigherAverageProduction = [];
+				let table3AverageProduction = [];
+				let table3HigherAverageProduction = [];
+				let table4AverageProduction = [];
+				let table4HigherAverageProduction = [];
+				let table5AverageProduction = [];
+				let table5HigherAverageProduction = [];
+				let table6AverageProduction = [];
+				let table6HigherAverageProduction = [];
+
+				table1AverageProduction = table1.map(item => item.averageProduction);
+				table1HigherAverageProduction = table1.map(item => item.higherAverageProduction);
+				table2AverageProduction = table2.map(item => item.averageProduction);
+				table2HigherAverageProduction = table2.map(item => item.higherAverageProduction);
+				table3AverageProduction = table3.map(item => item.averageProduction);
+				table3HigherAverageProduction = table3.map(item => item.higherAverageProduction);
+				table4AverageProduction = table4.map(item => item.averageProduction);
+				table4HigherAverageProduction = table4.map(item => item.higherAverageProduction);
+				table5AverageProduction = table5.map(item => item.averageProduction);
+				table5HigherAverageProduction = table5.map(item => item.higherAverageProduction);
+				table6AverageProduction = table6.map(item => item.averageProduction);
+				table6HigherAverageProduction = table6.map(item => item.higherAverageProduction);
+				
+				let items = {
+					table: 6,
+					day: this.actualDay,
+					month: this.actualMonth,
+					year: year,
+					monthDay: year,
+					period: period,
+					interval: yearInterval,
+					data: {
+						table1: {
+							averageProduction: {
+								data: table1AverageProduction,
+								lineTension: 0,
+								label: 'Média: ' + tablesLabel[0] + ' (kW)',
+								backgroundColor: 'rgba(66,161,245,1.0)',
+								borderColor: 'rgba(66,161,245,1.0)',
+								pointBackgroundColor: 'rgba(66,161,245,1.0)',
+								borderWidth: 3,
+								yAxisID: "right",
+							},
+							higherAverageProduction: {
+								data: table1HigherAverageProduction,
+								lineTension: 0,
+								label: 'Pico de produção: ' + tablesLabel[0] + ' (kW)',
+								borderColor: 'rgba(255,48,48,1.0)',
+								backgroundColor: 'rgba(255,48,48,0)',
+								borderWidth: 3,
+								yAxisID: "left",
+								type: 'line'
+							}
+						},
+						table2: {
+							averageProduction: {
+								data: table2AverageProduction,
+								lineTension: 0,
+								label: 'Média: ' + tablesLabel[1] + ' (kW)',
+								backgroundColor: 'rgba(66,161,245,1.0)',
+								borderColor: 'rgba(66,161,245,1.0)',
+								pointBackgroundColor: 'rgba(66,161,245,1.0)',
+								borderWidth: 3,
+								yAxisID: "right",
+							},
+							higherAverageProduction: {
+								data: table2HigherAverageProduction,
+								lineTension: 0,
+								label: 'Pico de produção: ' + tablesLabel[1] + ' (kW)',
+								borderColor: 'rgba(255,48,48,1.0)',
+								backgroundColor: 'rgba(255,48,48,0)',
+								borderWidth: 3,
+								yAxisID: "left",
+								type: 'line'
+							}
+						},
+						table3: {
+							averageProduction: {
+								data: table3AverageProduction,
+								lineTension: 0,
+								label: 'Média: ' + tablesLabel[2] + ' (kW)',
+								backgroundColor: 'rgba(66,161,245,1.0)',
+								borderColor: 'rgba(66,161,245,1.0)',
+								pointBackgroundColor: 'rgba(66,161,245,1.0)',
+								borderWidth: 3,
+								yAxisID: "right",
+							},
+							higherAverageProduction: {
+								data: table3HigherAverageProduction,
+								lineTension: 0,
+								label: 'Pico de produção: ' + tablesLabel[2] + ' (kW)',
+								borderColor: 'rgba(255,48,48,1.0)',
+								backgroundColor: 'rgba(255,48,48,0)',
+								borderWidth: 3,
+								yAxisID: "left",
+								type: 'line'
+							}
+						},
+						table4: {
+							averageProduction: {
+								data: table4AverageProduction,
+								lineTension: 0,
+								label: 'Média: ' + tablesLabel[3] + ' (kW)',
+								backgroundColor: 'rgba(66,161,245,1.0)',
+								borderColor: 'rgba(66,161,245,1.0)',
+								pointBackgroundColor: 'rgba(66,161,245,1.0)',
+								borderWidth: 3,
+								yAxisID: "right",
+							},
+							higherAverageProduction: {
+								data: table4HigherAverageProduction,
+								lineTension: 0,
+								label: 'Pico de produção: ' + tablesLabel[3] + ' (kW)',
+								borderColor: 'rgba(255,48,48,1.0)',
+								backgroundColor: 'rgba(255,48,48,0)',
+								borderWidth: 3,
+								yAxisID: "left",
+								type: 'line'
+							}
+						},
+						table5: {
+							averageProduction: {
+								data: table5AverageProduction,
+								lineTension: 0,
+								label: 'Média: ' + tablesLabel[4] + ' (kW)',
+								backgroundColor: 'rgba(66,161,245,1.0)',
+								borderColor: 'rgba(66,161,245,1.0)',
+								pointBackgroundColor: 'rgba(66,161,245,1.0)',
+								borderWidth: 3,
+								yAxisID: "right",
+							},
+							higherAverageProduction: {
+								data: table5HigherAverageProduction,
+								lineTension: 0,
+								label: 'Pico de produção: ' + tablesLabel[4] + ' (kW)',
+								borderColor: 'rgba(255,48,48,1.0)',
+								backgroundColor: 'rgba(255,48,48,0)',
+								borderWidth: 3,
+								yAxisID: "left",
+								type: 'line'
+							}
+						},
+						table6: {
+							averageProduction: {
+								data: table6AverageProduction,
+								lineTension: 0,
+								label: 'Média ' + tablesLabel[5] + ' (kW)',
+								backgroundColor: 'rgba(66,161,245,1.0)',
+								borderColor: 'rgba(66,161,245,1.0)',
+								pointBackgroundColor: 'rgba(66,161,245,1.0)',
+								borderWidth: 3,
+								yAxisID: "right",
+							},
+							higherAverageProduction: {
+								data: table6HigherAverageProduction,
+								lineTension: 0,
+								label: 'Pico de Produção ' + tablesLabel[5] + ' (kW)',
+								borderColor: 'rgba(255,48,48,1.0)',
+								backgroundColor: 'rgba(255,48,48,0)',
+								borderWidth: 3,
+								yAxisID: "left",
+								type: 'line'
+							}
+						},
+						comparison: {
+							table1: {
+								data: table1AverageProduction,
+								lineTension: 0,
+								label: 'Potência média produziada ' + tablesLabel[0] + ' (kWh)',
+								backgroundColor: 'rgba(255,48,48, 0)',
+								borderColor: 'rgba(255,48,48, 1.0)',
+								pointBackgroundColor: 'rgba(255,48,48, 0.7)',
+								borderWidth: 3
+							},
+							table2: {
+								data: table2AverageProduction,
+								lineTension: 0,
+								label: 'Potência média produziada ' + tablesLabel[1] + ' (kWh)',
+								backgroundColor: 'rgba(255,166,0,0)',
+								borderColor: 'rgba(255,166,0,1.0)',
+								pointBackgroundColor: 'rgba(255,166,0,0.7)',
+								borderWidth: 3
+	
+							},
+							table3: {
+								data: table3AverageProduction,
+								lineTension: 0,
+								label: 'Potência média produziada ' + tablesLabel[2] + ' (kWh)',
+								backgroundColor: 'rgba(66, 134, 244, 0)',
+								borderColor: 'rgba(66, 134, 244, 1.0)',
+								pointBackgroundColor: 'rgba(66, 134, 244, 0.7)',
+								borderWidth: 3
+	
+							},
+							table4: {
+								data: table4AverageProduction,
+								lineTension: 0,
+								label: 'Potência média produziada ' + tablesLabel[3] + ' (kWh)',
+								backgroundColor: 'rgba(50,172,92, 0)',
+								borderColor: 'rgba(50,172,92, 1.0)',
+								pointBackgroundColor: 'rgba(50,172,92, 0.7)',
+								borderWidth: 3
+	
+							},
+							table5: {
+								data: table5AverageProduction,
+								lineTension: 0,
+								label: 'Potência média produziada ' + tablesLabel[4] + ' (kWh)',
+								backgroundColor: 'rgba(255, 0, 140, 0)',
+								borderColor: 'rgba(255, 0, 140, 1.0)',
+								pointBackgroundColor: 'rgba(255, 0, 140, 0.7)',
+								borderWidth: 3
+	
+							}
+						}
+					},
+					options: {
+						comparisonOptions: {
+							animation: {
+								duration: 1000,
+							},
+							title: {
+								display: true,
+								fontsize: 24,
+								text: "Produção",
+							},
+							labels: {
+								fontStyle: 'bold',
+							},
+							scales: {
+								yAxes: [{
+	
+									beginAtZero: true,
+									position: "left",
+									id: "performance"
+								}],
+								xAxes: [{
+									beginAtZero: true
+								}]
+							},
+						},
+						defaultOptions: {
+							animation: {
+								duration: 1000,
+							},
+							title: {
+								display: true,
+								fontsize: 24,
+								text: "Produção",
+							},
+							labels: {
+								fontStyle: 'bold',
+							},
+							scales: {
+								yAxes: [{
+		
+									beginAtZero: true,
+									position: "left",
+									id: "left"
+								},
+								{
+									beginAtZero: false,
+									position: "right",
+									id: "right"
+								}
+		
+								],
+								xAxes: [{
+									beginAtZero: true
+								}]
+							},
+						}
+						
+					},
+				}
+
+				return (items)
+			}
 		}
 	}
 
@@ -645,7 +1120,7 @@ export default class ProductionPerTable extends Component {
 		let year = this.state.year;
 
 		if (this.state.period == "day") {
-			if (year >= 2018 && month >= 1 && day >= 1) {
+			if (year >= 2018 && month >= 9 && day >= 1) {
 
 				if (day > 1) {
 					day--;
@@ -658,15 +1133,20 @@ export default class ProductionPerTable extends Component {
 					year--;
 				}
 
+				if (year == 2018 && month == 9 && day == 1) {
+					this.setState({ leftNavigationDisabled: true });
+				}
+	
 				this.setState({
 					day,
 					month,
-					year
+					year,
+					rightNavigationDisabled: false
 				});
-
+		
 			}
 		} else if (this.state.period == "month") {
-			if (year >= 2018 && month >= 1) {
+			if (year >= 2018 && month >= 9) {
 
 				if (month > 1) {
 					month--;
@@ -674,17 +1154,34 @@ export default class ProductionPerTable extends Component {
 					month = 12;
 					year--;
 				}
-
+	
 				this.setState({
 					month,
-					year
+					year,
+					rightNavigationDisabled: false
 				});
+
+				if (year == 2018 && month == 9) {
+					this.setState({ leftNavigationDisabled: true });
+				}
+		
+			} 
+		} else if (this.state.period == "year") {
+			if (year > 2018) {
+				year--;
+				this.setState({
+					year,
+					rightNavigationDisabled: false
+				});
+
+				if (year == 2018){
+					this.setState({ leftNavigationDisabled: true })
+				}
 
 			}
 		}
 
 		this._isUpdated = false;
-
 
 	}
 
@@ -698,7 +1195,7 @@ export default class ProductionPerTable extends Component {
 			if (year < this.actualYear ||
 				(year == this.actualYear && month < this.actualMonth) ||
 				(year == this.actualYear && month == this.actualMonth && day < this.actualDay)) {
-
+	
 				if (day == 31 && month == 12) {
 					day = 1;
 					month = 1;
@@ -709,43 +1206,55 @@ export default class ProductionPerTable extends Component {
 				} else {
 					day++;
 				}
-
+	
 				this.setState({
 					day,
 					month,
-					year
+					year,
+					leftNavigationDisabled: false
 				});
 
-			}
+				if (year == this.actualYear && month == this.actualMonth && day == this.actualDay) {
+					this.setState({ rightNavigationDisabled: true })
+				}
+		
+			} 
 		} else if (this.state.period == "month") {
 			if (year < this.actualYear ||
 				(year == this.actualYear && month < this.actualMonth)) {
-
+	
 				if (month == 12) {
 					month = 1;
 					year++;
 				} else {
 					month++;
 				}
-
+	
 				this.setState({
 					month,
-					year
+					year,
+					leftNavigationDisabled: false
 				});
 
+				if (month == this.actualMonth && year == this.actualYear) {
+					this.setState({ rightNavigationDisabled: true })
+				}
+		
+			} 
+		} else if (this.state.period == "year") {
+			if (year < this.actualYear) {
+				year++;
+				this.setState({ 
+					year,
+					leftNavigationDisabled: false
+				});
+				if (year == this.actualYear) {
+					this.setState({ rightNavigationDisabled: true })
+				}
 			}
 		}
 
 		this._isUpdated = false;
-
-	}
-
-	handleMonthRendering = () => {
-
-		let date = dateFormater(this.actualDay, this.actualMonth, this.actualYear);
-		this._isMounted = true;
-		this.fetchApiResponse(date, 'month');
-		this.setState({ monthActive: true });
 
 	}
 
@@ -754,7 +1263,43 @@ export default class ProductionPerTable extends Component {
 		let date = dateFormater(this.actualDay, this.actualMonth, this.actualYear);
 		this._isMounted = true;
 		this.fetchApiResponse(date, 'day');
-		this.setState({ monthActive: false });
+		this.setState({ 
+			dayActive: true,
+			monthActive: false,
+			yearActive: false,
+			leftNavigationDisabled: false,
+			rightNavigationDisabled: true
+		});
+
+	}
+
+	handleMonthRendering = () => {
+
+		let date = dateFormater(this.actualDay, this.actualMonth, this.actualYear);
+		this._isMounted = true;
+		this.fetchApiResponse(date, 'month');
+		this.setState({
+			dayActive: false,
+			monthActive: true,
+			yearActive: false,
+			leftNavigationDisabled: false,
+			rightNavigationDisabled: true
+		});
+
+	}
+
+	handleYearRendering = () => {
+
+		let date = dateFormater(this.actualDay, this.actualMonth, this.actualYear);
+		this._isMounted = true;
+		this.fetchApiResponse(date, 'year');
+		this.setState({
+			dayActive: false,
+			monthActive: false,
+			yearActive: true,
+			leftNavigationDisabled: false,
+			rightNavigationDisabled: true
+		 });
 
 	}
 
@@ -791,10 +1336,16 @@ export default class ProductionPerTable extends Component {
 										date={this.state.monthDay}
 										handlePrevDateNavigation={this.decrementDate}
 										handleNextDateNavigation={this.incrementDate}
+										yearActive={this.state.yearActive}
 										monthActive={this.state.monthActive}
+										dayActive={this.state.dayActive}
 										month="allowed"
+										year="allowed"
+										handleYearRendering={this.handleYearRendering}										
 										handleMonthRendering={this.handleMonthRendering}
 										handleDayRendering={this.handleDayRendering}
+										leftNavigationDisabled={this.state.leftNavigationDisabled}
+										rightNavigationDisabled={this.state.rightNavigationDisabled}
 									/>
 
 									<IndividualProductionCharts
@@ -829,10 +1380,16 @@ export default class ProductionPerTable extends Component {
 										date={this.state.monthDay}
 										handlePrevDateNavigation={this.decrementDate}
 										handleNextDateNavigation={this.incrementDate}
+										yearActive={this.state.yearActive}
 										monthActive={this.state.monthActive}
+										dayActive={this.state.dayActive}
 										month="allowed"
+										year="allowed"
+										handleYearRendering={this.handleYearRendering}										
 										handleMonthRendering={this.handleMonthRendering}
 										handleDayRendering={this.handleDayRendering}
+										leftNavigationDisabled={this.state.leftNavigationDisabled}
+										rightNavigationDisabled={this.state.rightNavigationDisabled}
 									/>
 
 									<TotalProductionsChart
@@ -870,10 +1427,16 @@ export default class ProductionPerTable extends Component {
 										date={this.state.monthDay}
 										handlePrevDateNavigation={this.decrementDate}
 										handleNextDateNavigation={this.incrementDate}
+										yearActive={this.state.yearActive}
 										monthActive={this.state.monthActive}
+										dayActive={this.state.dayActive}
 										month="allowed"
+										year="allowed"
+										handleYearRendering={this.handleYearRendering}										
 										handleMonthRendering={this.handleMonthRendering}
 										handleDayRendering={this.handleDayRendering}
+										leftNavigationDisabled={this.state.leftNavigationDisabled}
+										rightNavigationDisabled={this.state.rightNavigationDisabled}
 									/>
 
 									<div className="row m-4 px-0 py-0" id="row-chart">
@@ -922,10 +1485,14 @@ export default class ProductionPerTable extends Component {
 										date={this.state.monthDay}
 										handlePrevDateNavigation={this.decrementDate}
 										handleNextDateNavigation={this.incrementDate}
+										yearActive={this.state.yearActive}
 										monthActive={this.state.monthActive}
-										month="allowed"
+										dayActive={this.state.dayActive}
+										handleYearRendering={this.handleYearRendering}										
 										handleMonthRendering={this.handleMonthRendering}
 										handleDayRendering={this.handleDayRendering}
+										leftNavigationDisabled={this.state.leftNavigationDisabled}
+										rightNavigationDisabled={this.state.rightNavigationDisabled}
 									/>
 
 									<div className="row m-4 px-0 py-0" id="row-chart">
@@ -974,9 +1541,260 @@ export default class ProductionPerTable extends Component {
 					</React.Fragment>
 				)
 			}
-		}
+		} else if (this.state.period == "year" && !this.state.isLoading) {
 
-		else if (this.state.isLoading) {
+			
+			if (this.state.table < 6) {
+				if (!this.state.isLoading && this.state.labels != undefined) {
+					return (
+						<React.Fragment>
+							<Header logged={true} fixed={false} marginBottom={true} />
+							<div className="row">
+								<div className="col-11 mx-auto">
+									<main className="col-lg-12 mx-auto p-0" role="main" id="main">
+	
+										<TitleBar text="Produção - Irecê" theme="production" />
+										<Navigator
+											date={this.state.monthDay}
+											handlePrevDateNavigation={this.decrementDate}
+											handleNextDateNavigation={this.incrementDate}
+											yearActive={this.state.yearActive}
+											monthActive={this.state.monthActive}
+											dayActive={this.state.dayActive}
+											month="allowed"
+											year="allowed"
+											handleYearRendering={this.handleYearRendering}
+											handleMonthRendering={this.handleMonthRendering}
+											handleDayRendering={this.handleDayRendering}
+											leftNavigationDisabled={this.state.leftNavigationDisabled}
+											rightNavigationDisabled={this.state.rightNavigationDisabled}
+										/>
+										<div className="row m-4 px-0 py-0" id="row-chart">
+											<div className="col-md-10 container-fluid pb-3 pt-0 py-0 mx-auto my-auto" id="canvas-container-1">
+												<BarChart
+													data={{ labels: this.state.labels, datasets: [this.state.data.capacityFactorAverages, this.state.data.averageProductions] }}
+													options={this.state.options.production}
+												/>
+											</div>
+											<div className="col-md-5 container-fluid pb-3 pt-0 py-0 mx-auto my-auto" id="canvas-container-2">
+												<BarChart
+													data={{ labels: this.state.labels, datasets: [this.state.data.higherAverageDays, this.state.data.higherAverages] }}
+													options={this.state.options.power}
+												/>
+											</div>
+											<div className="col-md-5 container-fluid pb-3 pt-0 py-0 mx-auto my-auto" id="canvas-container-3">
+												<BarChart
+													data={{ labels: this.state.labels, datasets: [this.state.data.performancesAverages, this.state.data.totalProductionAverages] }}
+													options={this.state.options.performance}
+												/>
+											</div>
+										</div>
+	
+									</main>
+								</div>
+							</div>
+							<Footer />
+						</React.Fragment>
+					);
+	
+				} else {
+					return (
+						<React.Fragment>
+							<Header logged={true} fixed={false} marginBottom={true} />
+							<div className="row">
+								<div className="col-11 mx-auto">
+									<main className="col-lg-12 mx-auto p-0" role="main" id="main">
+	
+										<TitleBar text="Produção - Campo Grande" theme="production" />
+										<Navigator
+											date={this.state.monthDay}
+											handlePrevDateNavigation={this.decrementDate}
+											handleNextDateNavigation={this.incrementDate}
+											yearActive={this.state.yearActive}
+											monthActive={this.state.monthActive}
+											dayActive={this.state.dayActive}
+											month="allowed"
+											year="allowed"
+											handleYearRendering={this.handleYearRendering}			
+											handleMonthRendering={this.handleMonthRendering}
+											handleDayRendering={this.handleDayRendering}
+											leftNavigationDisabled={this.state.leftNavigationDisabled}
+											rightNavigationDisabled={this.state.rightNavigationDisabled}
+										/>
+	
+										<div className="row m-4 px-0 py-0" id="row-chart">
+											<div className="col-md-6 container-fluid pb-3 pt-0 py-0 mx-auto my-auto" id="canvas-container-1">
+												<LineChart
+													data={{ labels: [], datasets: [] }}
+												/>
+											</div>
+											<div className="col-md-6 container-fluid pb-3 pt-0 py-0 mx-auto my-auto" id="canvas-container-2">
+												<LineChart
+													data={{ labels: [], datasets: [] }}
+												/>
+											</div>
+											<div className="col-md-6 container-fluid pb-3 pt-0 py-0 mx-auto my-auto" id="canvas-container-3">
+												<LineChart
+													data={{ labels: [], datasets: [] }}
+												/>
+											</div>
+											<div className="col-md-6 container-fluid pb-3 pt-0 py-0 mx-auto my-auto" id="canvas-container-4">
+												<LineChart
+													data={{ labels: [], datasets: [] }}
+												/>
+											</div>
+										</div>
+	
+									</main>
+								</div>
+							</div>
+							<Footer />
+						</React.Fragment>
+					)
+				}
+			} else {
+
+				if (!this.state.isLoading && this.state.labels != undefined) {
+					return (
+						<React.Fragment>
+							<Header logged={true} fixed={false} marginBottom={true} />
+							<div className="row">
+								<div className="col-11 mx-auto">
+									<main className="col-lg-12 mx-auto p-0" role="main" id="main">
+	
+										<TitleBar text="Produção - Irecê" theme="production" />
+										<Navigator
+											date={this.state.monthDay}
+											handlePrevDateNavigation={this.decrementDate}
+											handleNextDateNavigation={this.incrementDate}
+											yearActive={this.state.yearActive}
+											monthActive={this.state.monthActive}
+											dayActive={this.state.dayActive}
+											month="allowed"
+											year="allowed"
+											handleYearRendering={this.handleYearRendering}
+											handleMonthRendering={this.handleMonthRendering}
+											handleDayRendering={this.handleDayRendering}
+											leftNavigationDisabled={this.state.leftNavigationDisabled}
+											rightNavigationDisabled={this.state.rightNavigationDisabled}
+										/>
+										<div className="row m-4 px-0 py-0" id="row-chart">
+										<div className="col-md-10 container-fluid pb-3 pt-0 py-0 mx-auto my-auto" id="canvas-container-0">
+												<LineChart
+													data={{ 
+														labels: this.state.labels,
+														datasets: [
+															this.state.data.comparison.table1,
+															this.state.data.comparison.table2,
+															this.state.data.comparison.table3,
+															this.state.data.comparison.table4,
+															this.state.data.comparison.table5,
+														] }}
+													options={this.state.options.comparisonOptions}
+												/>
+											</div>
+											<div className="col-md-5 container-fluid pb-3 pt-0 py-0 mx-auto my-auto" id="canvas-container-1">
+												<BarChart
+													data={{ labels: this.state.labels, datasets: [this.state.data.table1.higherAverageProduction, this.state.data.table1.averageProduction] }}
+													options={this.state.options.defaultOptions}
+												/>
+											</div>
+											<div className="col-md-5 container-fluid pb-3 pt-0 py-0 mx-auto my-auto" id="canvas-container-2">
+												<BarChart
+													data={{ labels: this.state.labels, datasets: [this.state.data.table2.higherAverageProduction, this.state.data.table2.averageProduction] }}
+													options={this.state.options.defaultOptions}
+												/>
+											</div>
+											<div className="col-md-5 container-fluid pb-3 pt-0 py-0 mx-auto my-auto" id="canvas-container-3">
+												<BarChart
+													data={{ labels: this.state.labels, datasets: [this.state.data.table3.higherAverageProduction, this.state.data.table3.averageProduction] }}
+													options={this.state.options.defaultOptions}
+												/>
+											</div>
+											<div className="col-md-5 container-fluid pb-3 pt-0 py-0 mx-auto my-auto" id="canvas-container-4">
+												<BarChart
+													data={{ labels: this.state.labels, datasets: [this.state.data.table4.higherAverageProduction, this.state.data.table4.averageProduction] }}
+													options={this.state.options.defaultOptions}
+												/>
+											</div>
+											<div className="col-md-5 container-fluid pb-3 pt-0 py-0 mx-auto my-auto" id="canvas-container-5">
+												<BarChart
+													data={{ labels: this.state.labels, datasets: [this.state.data.table5.higherAverageProduction, this.state.data.table5.averageProduction] }}
+													options={this.state.options.defaultOptions}
+												/>
+											</div>
+											<div className="col-md-5 container-fluid pb-3 pt-0 py-0 mx-auto my-auto" id="canvas-container-6">
+												<BarChart
+													data={{ labels: this.state.labels, datasets: [this.state.data.table6.higherAverageProduction, this.state.data.table6.averageProduction] }}
+													options={this.state.options.defaultOptions}
+												/>
+											</div>
+										</div>
+	
+									</main>
+								</div>
+							</div>
+							<Footer />
+						</React.Fragment>
+					);
+	
+				} else {
+					return (
+						<React.Fragment>
+							<Header logged={true} fixed={false} marginBottom={true} />
+							<div className="row">
+								<div className="col-11 mx-auto">
+									<main className="col-lg-12 mx-auto p-0" role="main" id="main">
+	
+										<TitleBar text="Produção - Campo Grande" theme="production" />
+										<Navigator
+											date={this.state.monthDay}
+											handlePrevDateNavigation={this.decrementDate}
+											handleNextDateNavigation={this.incrementDate}
+											yearActive={this.state.yearActive}
+											monthActive={this.state.monthActive}
+											dayActive={this.state.dayActive}
+											month="allowed"
+											year="allowed"
+											handleYearRendering={this.handleYearRendering}			
+											handleMonthRendering={this.handleMonthRendering}
+											handleDayRendering={this.handleDayRendering}
+											leftNavigationDisabled={this.state.leftNavigationDisabled}
+											rightNavigationDisabled={this.state.rightNavigationDisabled}
+										/>
+	
+										<div className="row m-4 px-0 py-0" id="row-chart">
+											<div className="col-md-6 container-fluid pb-3 pt-0 py-0 mx-auto my-auto" id="canvas-container-1">
+												<LineChart
+													data={{ labels: [], datasets: [] }}
+												/>
+											</div>
+											<div className="col-md-6 container-fluid pb-3 pt-0 py-0 mx-auto my-auto" id="canvas-container-2">
+												<LineChart
+													data={{ labels: [], datasets: [] }}
+												/>
+											</div>
+											<div className="col-md-6 container-fluid pb-3 pt-0 py-0 mx-auto my-auto" id="canvas-container-3">
+												<LineChart
+													data={{ labels: [], datasets: [] }}
+												/>
+											</div>
+											<div className="col-md-6 container-fluid pb-3 pt-0 py-0 mx-auto my-auto" id="canvas-container-4">
+												<LineChart
+													data={{ labels: [], datasets: [] }}
+												/>
+											</div>
+										</div>
+	
+									</main>
+								</div>
+							</div>
+							<Footer />
+						</React.Fragment>
+					)
+				}
+			}
+		} else {
 			return (
 				<React.Fragment>
 					<Header logged={true} fixed={false} marginBottom={true} />
@@ -989,23 +1807,27 @@ export default class ProductionPerTable extends Component {
 									date={this.state.monthDay}
 									handlePrevDateNavigation={this.decrementDate}
 									handleNextDateNavigation={this.incrementDate}
+									yearActive={this.state.yearActive}
 									monthActive={this.state.monthActive}
+									dayActive={this.state.dayActive}
+									year="allowed"
 									month="allowed"
+									handleYearRendering={this.handleYearRendering}										
 									handleMonthRendering={this.handleMonthRendering}
 									handleDayRendering={this.handleDayRendering}
+									leftNavigationDisabled={this.state.leftNavigationDisabled}
+									rightNavigationDisabled={this.state.rightNavigationDisabled}
 								/>
 
-								<div className="row m-4 px-0 py-0" id="row-chart">
-									<div className="col-md-6 container-fluid pb-3 pt-0 py-0 mx-auto my-auto" id="canvas-container-1">
-										<LineChart
-											data={{ labels: [], datasets: [] }}
-										/>
-									</div>
-									<div className="col-md-6 container-fluid pb-3 pt-0 py-0 mx-auto my-auto" id="canvas-container-2">
-										<LineChart
-											data={{ labels: [], datasets: [] }}
-										/>
-									</div>
+								<div className="row m-4 px-0 py-0" id="sun-img">
+									<img src={sadsun} className="bd-placeholder-img mx-auto mb-2 mt-3" alt="Sol escondido atrás de nuvem" width="265" height="240" focusable="false" aria-label="Placeholder: 140x140"></img>
+									
+								</div>
+								<div className="row mx-auto text-muted" id="text-sun-1">
+									<h3 className="mx-auto">Opa! Parece que não existem dados para esta data.</h3>
+								</div>
+								<div className="row mx-auto mb-5 text-muted" id="text-sun-2">
+									<h5 className="mx-auto mb-5">Navegue para outras datas para visualiar mais gráficos.</h5>
 								</div>
 
 							</main>
