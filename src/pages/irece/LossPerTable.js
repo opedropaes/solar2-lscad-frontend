@@ -226,7 +226,7 @@ export default class LossPerTable extends Component {
 						table1: {
 							data: res.realProductionTable1,
 							lineTension: 0,
-							borderWidth: 1,
+							borderWidth: 3,
 							borderHoverRadius: 7,
 							label: tablesLabel[0],
 							backgroundColor: tablesBackgroundColor[0],
@@ -236,7 +236,7 @@ export default class LossPerTable extends Component {
 						table2: {
 							data: res.realProductionTable2,
 							lineTension: 0,
-							borderWidth: 1,
+							borderWidth: 3,
 							borderHoverRadius: 7,
 							label: tablesLabel[1],
 							backgroundColor: tablesBackgroundColor[1],
@@ -246,7 +246,7 @@ export default class LossPerTable extends Component {
 						table3: {
 							data: res.realProductionTable3,
 							lineTension: 0,
-							borderWidth: 1,
+							borderWidth: 3,
 							borderHoverRadius: 7,
 							label: tablesLabel[2],
 							backgroundColor: tablesBackgroundColor[2],
@@ -256,7 +256,7 @@ export default class LossPerTable extends Component {
 						table4: {
 							data: res.realProductionTable4,
 							lineTension: 0,
-							borderWidth: 1,
+							borderWidth: 3,
 							borderHoverRadius: 7,
 							label: tablesLabel[3],
 							backgroundColor: tablesBackgroundColor[3],
@@ -266,7 +266,7 @@ export default class LossPerTable extends Component {
 						table5: {
 							data: res.realProductionTable5,
 							lineTension: 0,
-							borderWidth: 1,
+							borderWidth: 3,
 							borderHoverRadius: 7,
 							label: tablesLabel[4],
 							backgroundColor: tablesBackgroundColor[4],
@@ -278,7 +278,7 @@ export default class LossPerTable extends Component {
 						table1: {
 							data: res.lossPercentageTable1,
 							lineTension: 0,
-							borderWidth: 1,
+							borderWidth: 3,
 							borderHoverRadius: 7,
 							label: tablesLabel[0],
 							backgroundColor: tablesBackgroundColor[0],
@@ -288,7 +288,7 @@ export default class LossPerTable extends Component {
 						table2: {
 							data: res.lossPercentageTable2,
 							lineTension: 0,
-							borderWidth: 1,
+							borderWidth: 3,
 							borderHoverRadius: 7,
 							label: tablesLabel[1],
 							backgroundColor: tablesBackgroundColor[1],
@@ -298,7 +298,7 @@ export default class LossPerTable extends Component {
 						table3: {
 							data: res.lossPercentageTable3,
 							lineTension: 0,
-							borderWidth: 1,
+							borderWidth: 3,
 							borderHoverRadius: 7,
 							label: tablesLabel[2],
 							backgroundColor: tablesBackgroundColor[2],
@@ -308,7 +308,7 @@ export default class LossPerTable extends Component {
 						table4: {
 							data: res.lossPercentageTable4,
 							lineTension: 0,
-							borderWidth: 1,
+							borderWidth: 3,
 							borderHoverRadius: 7,
 							label: tablesLabel[3],
 							backgroundColor: tablesBackgroundColor[3],
@@ -318,7 +318,7 @@ export default class LossPerTable extends Component {
 						table5: {
 							data: res.lossPercentageTable5,
 							lineTension: 0,
-							borderWidth: 1,
+							borderWidth: 3,
 							borderHoverRadius: 7,
 							label: tablesLabel[4],
 							backgroundColor: tablesBackgroundColor[4],
@@ -601,7 +601,7 @@ export default class LossPerTable extends Component {
 							<div className="col-11 mx-auto">
 								<main className="col-lg-12 mx-auto " role="main" id="main">
 
-									<TitleBar text={"Perdas: Mesa " + this.state.table} theme="losses" />
+									<TitleBar text={"Perdas totais"} theme="losses" />
 									<Navigator date={this.state.yearMonth} handlePrevDateNavigation={this.decrementDate} handleNextDateNavigation={this.incrementDate} />
 
 									<div className="row m-4 px-0 py-0" id="row-chart">

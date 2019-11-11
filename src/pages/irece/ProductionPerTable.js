@@ -1488,6 +1488,8 @@ export default class ProductionPerTable extends Component {
 										yearActive={this.state.yearActive}
 										monthActive={this.state.monthActive}
 										dayActive={this.state.dayActive}
+										month="allowed"
+										year="allowed"
 										handleYearRendering={this.handleYearRendering}										
 										handleMonthRendering={this.handleMonthRendering}
 										handleDayRendering={this.handleDayRendering}
