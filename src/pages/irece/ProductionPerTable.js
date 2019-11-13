@@ -641,6 +641,8 @@ export default class ProductionPerTable extends Component {
 				})
 			}
 		} else if (res.period == "year") {
+
+			let { table } = res;
 			
 			if (table >= 1 && table <= 5) {
 				return ({
@@ -827,7 +829,6 @@ export default class ProductionPerTable extends Component {
 	
 				})
 			} else {
-
 				const { table1, table2, table3, table4, table5, table6, yearInterval, year, period } = res
 				let table1AverageProduction = [];
 				let table1HigherAverageProduction = [];	
