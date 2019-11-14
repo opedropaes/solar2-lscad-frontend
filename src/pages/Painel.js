@@ -40,7 +40,7 @@ export default class Painel extends Component {
 												<Card
 													id="ambientais"
 													title="Dados Ambientais"
-													text="Estação solarimétrica em desenvolvimento"
+													text="Monitorar dados ambientais de Campo Grande"
 													link="/campo-grande/ambientais"
 													buttonText="Monitorar agora"
 													buttonActive={true}
