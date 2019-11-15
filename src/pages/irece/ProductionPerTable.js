@@ -1608,7 +1608,7 @@ export default class ProductionPerTable extends Component {
 								<div className="col-11 mx-auto">
 									<main className="col-lg-12 mx-auto p-0" role="main" id="main">
 	
-										<TitleBar text="Produção - Campo Grande" theme="production" />
+										<TitleBar text="Produção - Irecê" theme="production" />
 										<Navigator
 											date={this.state.monthDay}
 											handlePrevDateNavigation={this.decrementDate}
@@ -1749,7 +1749,7 @@ export default class ProductionPerTable extends Component {
 								<div className="col-11 mx-auto">
 									<main className="col-lg-12 mx-auto p-0" role="main" id="main">
 	
-										<TitleBar text="Produção - Campo Grande" theme="production" />
+										<TitleBar text="Produção - Irecê" theme="production" />
 										<Navigator
 											date={this.state.monthDay}
 											handlePrevDateNavigation={this.decrementDate}
