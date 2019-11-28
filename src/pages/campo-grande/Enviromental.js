@@ -59,7 +59,7 @@ export default class Enviromental extends Component {
 		this.refreshState(apiResponse.data, period)
 			.then(async (newStateObject) => {
 				let toDonwload = {}
-				
+
 				if (period === "day") {
 					toDonwload = this.formatCSV(newStateObject.toDonwload);
 				}
@@ -301,7 +301,7 @@ export default class Enviromental extends Component {
 								yAxes: [{
 									beginAtZero: true,
 								},
-	
+
 								],
 								xAxes: [{
 									beginAtZero: true,
@@ -337,7 +337,7 @@ export default class Enviromental extends Component {
 									position: "right",
 									id: "right"
 								},
-	
+
 								],
 								xAxes: [{
 									beginAtZero: true,
@@ -365,7 +365,7 @@ export default class Enviromental extends Component {
 							tooltips: {
 								enabled: true,
 								callbacks: {
-									label: function(tooltipItem, data) {
+									label: function (tooltipItem, data) {
 										return data.datasets[tooltipItem.datasetIndex].label + ' : ' + data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
 									}
 								}
@@ -529,7 +529,7 @@ export default class Enviromental extends Component {
 									position: "right",
 									id: "right"
 								},
-	
+
 								],
 								xAxes: [{
 									beginAtZero: true,
@@ -565,7 +565,7 @@ export default class Enviromental extends Component {
 									position: "right",
 									id: "right"
 								},
-	
+
 								],
 								xAxes: [{
 									beginAtZero: true,
@@ -655,7 +655,7 @@ export default class Enviromental extends Component {
 									position: "right",
 									id: "right"
 								},
-	
+
 								],
 								xAxes: [{
 									beginAtZero: true,
@@ -691,7 +691,7 @@ export default class Enviromental extends Component {
 									position: "right",
 									id: "right"
 								},
-	
+
 								],
 								xAxes: [{
 									beginAtZero: true,
@@ -728,7 +728,7 @@ export default class Enviromental extends Component {
 
 				let higherIrradiations = [];
 				let averageIrradiations = [];
-				
+
 				let lowerTemperature = [];
 				let higherTemperature = [];
 				let averageTemperature = [];
@@ -771,7 +771,7 @@ export default class Enviromental extends Component {
 					higherAccumulateRainfall.push(item.higherAccumulateRainfall);
 					accumulateRainfall.push(item.accumulateRainfall);
 				});
-				
+
 				PM1Array.map(item => {
 					higherPM1Concentration.push(item.higherPM1ConcentrationDay + ": " + item.higherPM1Concentration);
 					averagePM1.push(item.averagePM1);
@@ -964,7 +964,7 @@ export default class Enviromental extends Component {
 								yAxisID: "right",
 							}
 						},
-						
+
 					},
 					options: {
 						irradiation: {
@@ -990,7 +990,7 @@ export default class Enviromental extends Component {
 									position: "right",
 									id: "right"
 								},
-	
+
 								],
 								xAxes: [{
 									beginAtZero: true,
@@ -1020,7 +1020,7 @@ export default class Enviromental extends Component {
 									position: "right",
 									id: "right"
 								},
-	
+
 								],
 								xAxes: [{
 									beginAtZero: true,
@@ -1179,14 +1179,14 @@ export default class Enviromental extends Component {
 				if (year == 2018 && month == 9 && day == 1) {
 					this.setState({ leftNavigationDisabled: true });
 				}
-	
+
 				this.setState({
 					day,
 					month,
 					year,
 					rightNavigationDisabled: false
 				});
-		
+
 			}
 		} else if (this.state.period == "month") {
 			if (year >= 2018 && month >= 9) {
@@ -1197,7 +1197,7 @@ export default class Enviromental extends Component {
 					month = 12;
 					year--;
 				}
-	
+
 				this.setState({
 					month,
 					year,
@@ -1207,8 +1207,8 @@ export default class Enviromental extends Component {
 				if (year == 2018 && month == 9) {
 					this.setState({ leftNavigationDisabled: true });
 				}
-		
-			} 
+
+			}
 		} else if (this.state.period == "year") {
 			if (year > 2018) {
 				year--;
@@ -1217,7 +1217,7 @@ export default class Enviromental extends Component {
 					rightNavigationDisabled: false
 				});
 
-				if (year == 2018){
+				if (year == 2018) {
 					this.setState({ leftNavigationDisabled: true })
 				}
 
@@ -1238,7 +1238,7 @@ export default class Enviromental extends Component {
 			if (year < this.actualYear ||
 				(year == this.actualYear && month < this.actualMonth) ||
 				(year == this.actualYear && month == this.actualMonth && day < this.actualDay)) {
-	
+
 				if (day == 31 && month == 12) {
 					day = 1;
 					month = 1;
@@ -1249,7 +1249,7 @@ export default class Enviromental extends Component {
 				} else {
 					day++;
 				}
-	
+
 				this.setState({
 					day,
 					month,
@@ -1260,19 +1260,19 @@ export default class Enviromental extends Component {
 				if (year == this.actualYear && month == this.actualMonth && day == this.actualDay) {
 					this.setState({ rightNavigationDisabled: true })
 				}
-		
-			} 
+
+			}
 		} else if (this.state.period == "month") {
 			if (year < this.actualYear ||
 				(year == this.actualYear && month < this.actualMonth)) {
-	
+
 				if (month == 12) {
 					month = 1;
 					year++;
 				} else {
 					month++;
 				}
-	
+
 				this.setState({
 					month,
 					year,
@@ -1282,12 +1282,12 @@ export default class Enviromental extends Component {
 				if (month == this.actualMonth && year == this.actualYear) {
 					this.setState({ rightNavigationDisabled: true })
 				}
-		
-			} 
+
+			}
 		} else if (this.state.period == "year") {
 			if (year < this.actualYear) {
 				year++;
-				this.setState({ 
+				this.setState({
 					year,
 					leftNavigationDisabled: false
 				});
@@ -1306,7 +1306,7 @@ export default class Enviromental extends Component {
 		let date = dateFormater(this.actualDay, this.actualMonth, this.actualYear);
 		this._isMounted = true;
 		this.fetchApiResponse(date, 'day');
-		this.setState({ 
+		this.setState({
 			dayActive: true,
 			monthActive: false,
 			yearActive: false,
@@ -1342,7 +1342,7 @@ export default class Enviromental extends Component {
 			yearActive: true,
 			leftNavigationDisabled: false,
 			rightNavigationDisabled: true
-		 });
+		});
 
 	}
 
@@ -1457,18 +1457,6 @@ export default class Enviromental extends Component {
 										<div className="col-md-6 container-fluid pb-3 pt-0 py-0 mx-auto my-auto" id="canvas-container-3">
 											<BarChart
 												data={{ labels: this.state.quarterLabels, datasets: [this.state.data.table7, this.state.data.table3] }}
-												options={this.state.options.particulateOptions}
-											/>
-										</div>
-										<div className="col-md-6 container-fluid pb-3 pt-0 py-0 mx-auto my-auto" id="canvas-container-4">
-											<BarChart
-												data={{ labels: this.state.quarterLabels, datasets: [this.state.data.table8, this.state.data.table4] }}
-												options={this.state.options.particulateOptions}
-											/>
-										</div>
-										<div className="col-md-6 container-fluid pb-3 pt-0 py-0 mx-auto my-auto" id="canvas-container-5">
-											<BarChart
-												data={{ labels: this.state.quarterLabels, datasets: [this.state.data.table9, this.state.data.table5] }}
 												options={this.state.options.particulateOptions}
 											/>
 										</div>

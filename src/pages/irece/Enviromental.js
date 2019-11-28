@@ -53,26 +53,26 @@ export default class Enviromental extends Component {
 	fetchApiResponse = async (date, period) => {
 
 		let apiResponse = await api.get('/irece/ambientais/' + date + '/' + period);
-		
+
 		this.refreshState(apiResponse.data, period)
-		.then(async (newStateObject) => {
+			.then(async (newStateObject) => {
 
-			if (this._isMounted || !this._isUpdated) {
-				this.setState({
-					day: newStateObject.day,
-					month: newStateObject.month,
-					year: newStateObject.year,
-					monthDay: newStateObject.monthDay,
-					period: newStateObject.period,
-					labels: newStateObject.interval,
-					data: newStateObject.data,
-					dataForTable: newStateObject.dataForTable || [0],
-					options: newStateObject.options,
-					isLoading: (!newStateObject.interval.length)
-				});
+				if (this._isMounted || !this._isUpdated) {
+					this.setState({
+						day: newStateObject.day,
+						month: newStateObject.month,
+						year: newStateObject.year,
+						monthDay: newStateObject.monthDay,
+						period: newStateObject.period,
+						labels: newStateObject.interval,
+						data: newStateObject.data,
+						dataForTable: newStateObject.dataForTable || [0],
+						options: newStateObject.options,
+						isLoading: (!newStateObject.interval.length)
+					});
 
-			}
-		})
+				}
+			})
 
 	}
 
@@ -81,7 +81,7 @@ export default class Enviromental extends Component {
 		return new Promise((resolve, reject) => {
 			if (period === "day") {
 				let differentDay = (this.currentDay != res.day || this.currentMonth != res.month || this.currentYear != res.year);
-	
+
 				let head = [
 					(differentDay) ? 'Temperatura média' : 'Temperatura atual',
 					(differentDay) ? 'Umidade média relativa do ar' : 'Umidade relativa do ar',
@@ -89,7 +89,7 @@ export default class Enviromental extends Component {
 					(differentDay) ? 'Velocidade do vento média' : 'Velocidade do vento atual',
 					(differentDay) ? 'Pressão atmosférica média' : 'Pressão atmosférica atual'
 				]
-		
+
 				let temperatureSum = res.temperature.reduce((acc, cur) => acc + cur);
 				let temperatureAverage = temperatureSum / res.temperature.length;
 				let humiditySum = res.humidity.reduce((acc, cur) => acc + cur);
@@ -98,12 +98,12 @@ export default class Enviromental extends Component {
 				let windSpeedAverage = windSpeedSum / res.windSpeed.length;
 				let atmPressureSum = res.atmPressure.reduce((acc, cur) => acc + cur);
 				let atmPressureAverage = atmPressureSum / res.atmPressure.length;
-		
+
 				let windSpeed = res.windSpeed.pop() || 0
 				let atmPressure = res.atmPressure.pop() || 0
 				let temperature = res.temperature.pop() || 0
 				let humidity = res.humidity.pop() || 0
-		
+
 				let body = [[
 					(differentDay) ? parseFloat(temperatureAverage).toFixed(1) + " °C" : parseFloat(temperature).toFixed(1) + " °C",
 					(differentDay) ? parseFloat(humidityAverage).toFixed(1) + " %" : parseFloat(humidity).toFixed(1) + " %",
@@ -111,13 +111,13 @@ export default class Enviromental extends Component {
 					(differentDay) ? parseFloat(windSpeedAverage).toFixed(1) + " km/h" : parseFloat(windSpeed).toFixed(1) + " km/h",
 					(differentDay) ? parseInt(atmPressureAverage) + " atm" : parseInt(atmPressure) + " atm"
 				]]
-		
+
 				let dataForTable = {
 					head,
 					body
 				}
-		
-				resolve ({
+
+				resolve({
 					day: res.day,
 					month: res.month,
 					year: res.year,
@@ -161,7 +161,7 @@ export default class Enviromental extends Component {
 								position: "left",
 								id: "performance"
 							},
-		
+
 							],
 							xAxes: [{
 								beginAtZero: true,
@@ -174,9 +174,9 @@ export default class Enviromental extends Component {
 							}]
 						},
 					}
-		
+
 				})
-			}	
+			}
 			else if (period === "month") {
 
 				let items = {
@@ -284,7 +284,7 @@ export default class Enviromental extends Component {
 									position: "right",
 									id: "right"
 								},
-	
+
 								],
 								xAxes: [{
 									beginAtZero: true,
@@ -320,7 +320,7 @@ export default class Enviromental extends Component {
 									position: "right",
 									id: "right"
 								},
-	
+
 								],
 								xAxes: [{
 									beginAtZero: true,
@@ -417,7 +417,7 @@ export default class Enviromental extends Component {
 
 				let accumulateRainfall = [];
 				let higherAccumulateRainfall = [];
-				
+
 				irradiations.map(item => {
 					// higherIrradiations.push(item.higherIrradiationDay + ": " + item.higherIrradiation);
 					higherIrradiations.push(item.higherIrradiation);
