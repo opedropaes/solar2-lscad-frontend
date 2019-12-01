@@ -843,17 +843,17 @@ export default class ProductionPerTable extends Component {
 
 				console.log(res)
 
-				table1AverageProduction = table1.map(item => item.averageProduction);
+				table1AverageProduction = table1.map(item => parseFloat((item.total).toFixed(2)));
 				table1HigherAverageProduction = table1.map(item => item.higherAverageProduction);
-				table2AverageProduction = table2.map(item => item.averageProduction);
+				table2AverageProduction = table2.map(item => parseFloat((item.total).toFixed(2)));
 				table2HigherAverageProduction = table2.map(item => item.higherAverageProduction);
-				table3AverageProduction = table3.map(item => item.averageProduction);
+				table3AverageProduction = table3.map(item => parseFloat((item.total).toFixed(2)));
 				table3HigherAverageProduction = table3.map(item => item.higherAverageProduction);
-				table4AverageProduction = table4.map(item => item.averageProduction);
+				table4AverageProduction = table4.map(item => parseFloat((item.total).toFixed(2)));
 				table4HigherAverageProduction = table4.map(item => item.higherAverageProduction);
-				table5AverageProduction = table5.map(item => item.averageProduction);
+				table5AverageProduction = table5.map(item => parseFloat((item.total).toFixed(2)));
 				table5HigherAverageProduction = table5.map(item => item.higherAverageProduction);
-				table6AverageProduction = table6.map(item => item.total);
+				table6AverageProduction = table6.map(item => parseFloat((item.total).toFixed(2)));
 				table6HigherAverageProduction = table6.map(item => item.higherAverageProduction);
 				
 				let items = {
@@ -869,7 +869,7 @@ export default class ProductionPerTable extends Component {
 							averageProduction: {
 								data: table1AverageProduction,
 								lineTension: 0,
-								label: 'Média: ' + tablesLabel[0] + ' (kW)',
+								label: 'Total: ' + tablesLabel[0] + ' (kWh)',
 								backgroundColor: 'rgba(66,161,245,1.0)',
 								borderColor: 'rgba(66,161,245,1.0)',
 								pointBackgroundColor: 'rgba(66,161,245,1.0)',
@@ -879,7 +879,7 @@ export default class ProductionPerTable extends Component {
 							higherAverageProduction: {
 								data: table1HigherAverageProduction,
 								lineTension: 0,
-								label: 'Pico de produção: ' + tablesLabel[0] + ' (kW)',
+								label: 'Pico de produção: ' + tablesLabel[0] + ' (kWh)',
 								borderColor: 'rgba(255,48,48,1.0)',
 								backgroundColor: 'rgba(255,48,48,0)',
 								borderWidth: 3,
@@ -891,7 +891,7 @@ export default class ProductionPerTable extends Component {
 							averageProduction: {
 								data: table2AverageProduction,
 								lineTension: 0,
-								label: 'Média: ' + tablesLabel[1] + ' (kW)',
+								label: 'Total: ' + tablesLabel[1] + ' (kWh)',
 								backgroundColor: 'rgba(66,161,245,1.0)',
 								borderColor: 'rgba(66,161,245,1.0)',
 								pointBackgroundColor: 'rgba(66,161,245,1.0)',
@@ -901,7 +901,7 @@ export default class ProductionPerTable extends Component {
 							higherAverageProduction: {
 								data: table2HigherAverageProduction,
 								lineTension: 0,
-								label: 'Pico de produção: ' + tablesLabel[1] + ' (kW)',
+								label: 'Pico de produção: ' + tablesLabel[1] + ' (kWh)',
 								borderColor: 'rgba(255,48,48,1.0)',
 								backgroundColor: 'rgba(255,48,48,0)',
 								borderWidth: 3,
@@ -913,7 +913,7 @@ export default class ProductionPerTable extends Component {
 							averageProduction: {
 								data: table3AverageProduction,
 								lineTension: 0,
-								label: 'Média: ' + tablesLabel[2] + ' (kW)',
+								label: 'Total: ' + tablesLabel[2] + ' (kWh)',
 								backgroundColor: 'rgba(66,161,245,1.0)',
 								borderColor: 'rgba(66,161,245,1.0)',
 								pointBackgroundColor: 'rgba(66,161,245,1.0)',
@@ -923,7 +923,7 @@ export default class ProductionPerTable extends Component {
 							higherAverageProduction: {
 								data: table3HigherAverageProduction,
 								lineTension: 0,
-								label: 'Pico de produção: ' + tablesLabel[2] + ' (kW)',
+								label: 'Pico de produção: ' + tablesLabel[2] + ' (kWh)',
 								borderColor: 'rgba(255,48,48,1.0)',
 								backgroundColor: 'rgba(255,48,48,0)',
 								borderWidth: 3,
@@ -935,7 +935,7 @@ export default class ProductionPerTable extends Component {
 							averageProduction: {
 								data: table4AverageProduction,
 								lineTension: 0,
-								label: 'Média: ' + tablesLabel[3] + ' (kW)',
+								label: 'Total: ' + tablesLabel[3] + ' (kWh)',
 								backgroundColor: 'rgba(66,161,245,1.0)',
 								borderColor: 'rgba(66,161,245,1.0)',
 								pointBackgroundColor: 'rgba(66,161,245,1.0)',
@@ -945,7 +945,7 @@ export default class ProductionPerTable extends Component {
 							higherAverageProduction: {
 								data: table4HigherAverageProduction,
 								lineTension: 0,
-								label: 'Pico de produção: ' + tablesLabel[3] + ' (kW)',
+								label: 'Pico de produção: ' + tablesLabel[3] + ' (kWh)',
 								borderColor: 'rgba(255,48,48,1.0)',
 								backgroundColor: 'rgba(255,48,48,0)',
 								borderWidth: 3,
@@ -957,7 +957,7 @@ export default class ProductionPerTable extends Component {
 							averageProduction: {
 								data: table5AverageProduction,
 								lineTension: 0,
-								label: 'Média: ' + tablesLabel[4] + ' (kW)',
+								label: 'Total: ' + tablesLabel[4] + ' (kWh)',
 								backgroundColor: 'rgba(66,161,245,1.0)',
 								borderColor: 'rgba(66,161,245,1.0)',
 								pointBackgroundColor: 'rgba(66,161,245,1.0)',
@@ -967,7 +967,7 @@ export default class ProductionPerTable extends Component {
 							higherAverageProduction: {
 								data: table5HigherAverageProduction,
 								lineTension: 0,
-								label: 'Pico de produção: ' + tablesLabel[4] + ' (kW)',
+								label: 'Pico de produção: ' + tablesLabel[4] + ' (kWh)',
 								borderColor: 'rgba(255,48,48,1.0)',
 								backgroundColor: 'rgba(255,48,48,0)',
 								borderWidth: 3,
@@ -979,7 +979,7 @@ export default class ProductionPerTable extends Component {
 							averageProduction: {
 								data: table6AverageProduction,
 								lineTension: 0,
-								label: 'Média ' + tablesLabel[5] + ' (kW)',
+								label: 'Total ' + tablesLabel[5] + ' (kWh)',
 								backgroundColor: 'rgba(66,161,245,1.0)',
 								borderColor: 'rgba(66,161,245,1.0)',
 								pointBackgroundColor: 'rgba(66,161,245,1.0)',
@@ -989,7 +989,7 @@ export default class ProductionPerTable extends Component {
 							higherAverageProduction: {
 								data: table6HigherAverageProduction,
 								lineTension: 0,
-								label: 'Pico de Produção ' + tablesLabel[5] + ' (kW)',
+								label: 'Pico de Produção ' + tablesLabel[5] + ' (kWh)',
 								borderColor: 'rgba(255,48,48,1.0)',
 								backgroundColor: 'rgba(255,48,48,0)',
 								borderWidth: 3,
@@ -1001,7 +1001,7 @@ export default class ProductionPerTable extends Component {
 							table1: {
 								data: table1AverageProduction,
 								lineTension: 0,
-								label: 'Potência média produziada ' + tablesLabel[0] + ' (kWh)',
+								label: 'Potência total produziada ' + tablesLabel[0] + ' (kWh)',
 								backgroundColor: 'rgba(255,48,48, 0)',
 								borderColor: 'rgba(255,48,48, 1.0)',
 								pointBackgroundColor: 'rgba(255,48,48, 0.7)',
@@ -1010,7 +1010,7 @@ export default class ProductionPerTable extends Component {
 							table2: {
 								data: table2AverageProduction,
 								lineTension: 0,
-								label: 'Potência média produziada ' + tablesLabel[1] + ' (kWh)',
+								label: 'Potência total produziada ' + tablesLabel[1] + ' (kWh)',
 								backgroundColor: 'rgba(255,166,0,0)',
 								borderColor: 'rgba(255,166,0,1.0)',
 								pointBackgroundColor: 'rgba(255,166,0,0.7)',
@@ -1020,7 +1020,7 @@ export default class ProductionPerTable extends Component {
 							table3: {
 								data: table3AverageProduction,
 								lineTension: 0,
-								label: 'Potência média produziada ' + tablesLabel[2] + ' (kWh)',
+								label: 'Potência total produziada ' + tablesLabel[2] + ' (kWh)',
 								backgroundColor: 'rgba(66, 134, 244, 0)',
 								borderColor: 'rgba(66, 134, 244, 1.0)',
 								pointBackgroundColor: 'rgba(66, 134, 244, 0.7)',
@@ -1030,7 +1030,7 @@ export default class ProductionPerTable extends Component {
 							table4: {
 								data: table4AverageProduction,
 								lineTension: 0,
-								label: 'Potência média produziada ' + tablesLabel[3] + ' (kWh)',
+								label: 'Potência total produziada ' + tablesLabel[3] + ' (kWh)',
 								backgroundColor: 'rgba(50,172,92, 0)',
 								borderColor: 'rgba(50,172,92, 1.0)',
 								pointBackgroundColor: 'rgba(50,172,92, 0.7)',
@@ -1040,7 +1040,7 @@ export default class ProductionPerTable extends Component {
 							table5: {
 								data: table5AverageProduction,
 								lineTension: 0,
-								label: 'Potência média produziada ' + tablesLabel[4] + ' (kWh)',
+								label: 'Potência total produziada ' + tablesLabel[4] + ' (kWh)',
 								backgroundColor: 'rgba(255, 0, 140, 0)',
 								borderColor: 'rgba(255, 0, 140, 1.0)',
 								pointBackgroundColor: 'rgba(255, 0, 140, 0.7)',
@@ -1585,7 +1585,7 @@ export default class ProductionPerTable extends Component {
 												Total produzido esse ano: <h5>{(totalProductionThisYear).toFixed(3)} kWh</h5>
 												<br></br>
 												Com esta mesa, foram salvos <h5>R${(savedPrice).toFixed(2)}</h5>
-												<small>com tarifa de R$0,66874564</small>
+												<small>com tarifa de R$0,66874564 kWh</small>
 											</div>
 											<div className="col-md-5 container-fluid pb-3 pt-0 py-0 mx-auto my-auto" id="canvas-container-2">
 												<BarChart
@@ -1666,6 +1666,16 @@ export default class ProductionPerTable extends Component {
 			} else {
 
 				if (!this.state.isLoading && this.state.labels != undefined) {
+
+					let totalProductionThisYearTable1 = this.state.data.comparison.table1.data.reduce((acc, cur) => parseFloat(acc) + parseFloat(cur));
+					let totalProductionThisYearTable2 = this.state.data.comparison.table2.data.reduce((acc, cur) => parseFloat(acc) + parseFloat(cur));
+					let totalProductionThisYearTable3 = this.state.data.comparison.table3.data.reduce((acc, cur) => parseFloat(acc) + parseFloat(cur));
+					let totalProductionThisYearTable4 = this.state.data.comparison.table4.data.reduce((acc, cur) => parseFloat(acc) + parseFloat(cur));
+					let totalProductionThisYearTable5 = this.state.data.comparison.table5.data.reduce((acc, cur) => parseFloat(acc) + parseFloat(cur));
+					let totalProductionThisYear = (totalProductionThisYearTable1 + totalProductionThisYearTable2 + totalProductionThisYearTable3 + totalProductionThisYearTable4 + totalProductionThisYearTable5).toFixed(3);
+
+					let savedPrice = (totalProductionThisYear * 0.66874564).toFixed(2);
+
 					return (
 						<React.Fragment>
 							<Header logged={true} fixed={false} marginBottom={true} />
@@ -1690,7 +1700,7 @@ export default class ProductionPerTable extends Component {
 											rightNavigationDisabled={this.state.rightNavigationDisabled}
 										/>
 										<div className="row m-4 px-0 py-0" id="row-chart">
-										<div className="col-md-10 container-fluid pb-3 pt-0 py-0 mx-auto my-auto" id="canvas-container-0">
+										<div className="col-md-8 container-fluid pb-3 pt-0 py-0 mx-auto my-auto" id="canvas-container-0">
 												<LineChart
 													data={{ 
 														labels: this.state.labels,
@@ -1703,6 +1713,12 @@ export default class ProductionPerTable extends Component {
 														] }}
 													options={this.state.options.comparisonOptions}
 												/>
+											</div>
+											<div className="col-md-4 container-fluid pb-3 pt-0 py-0 mx-auto my-auto text-center" id="canvas-container-0">
+												Total produzido esse ano: <h5>{totalProductionThisYear} kWh</h5>
+												<br></br>
+												Foram salvos <h5>R${savedPrice}</h5>
+												<small>com tarifa de R$0,66874564 kWh</small>
 											</div>
 											<div className="col-md-5 container-fluid pb-3 pt-0 py-0 mx-auto my-auto" id="canvas-container-1">
 												<BarChart

@@ -957,7 +957,7 @@ export default class Production extends Component {
 											Total produzido esse ano: <h5>{(totalProductionThisYear).toFixed(3)} kWh</h5>
 											<br></br>
 											Foram salvos <h5>R${(savedPrice).toFixed(2)}</h5> 
-											<small>com tarifa de R$0,53561</small>
+											<small>com tarifa de R$0,53561 kWh</small>
 										</div>
 										<div className="col-md-6 container-fluid pb-3 pt-0 py-0 mx-auto my-auto" id="canvas-container-2">
 											<BarChart
