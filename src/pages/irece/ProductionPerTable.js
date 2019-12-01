@@ -236,7 +236,6 @@ export default class ProductionPerTable extends Component {
 			}
 
 			else if (table == 6) {
-
 				return ({
 					day: res.day || this.actualDay,
 					month: res.month || this.actualMonth,
@@ -653,10 +652,10 @@ export default class ProductionPerTable extends Component {
 					period: res.period,
 					interval: res.yearInterval,
 					data: {
-						averageProductions: {
-							data: res.averageProductions,
+						totalProductions: {
+							data: res.productionsSum,
 							lineTension: 0,
-							label: 'Média #1: p-Si (kWh)',
+							label: `Produção mensal ${tablesLabel[res.table-1]} (kWh)`,
 							backgroundColor: 'rgba(66,161,245,1.0)',
 							borderColor: 'rgba(66,161,245,1.0)',
 							pointBackgroundColor: 'rgba(66,161,245,1.0)',
@@ -826,7 +825,6 @@ export default class ProductionPerTable extends Component {
 						},
 					},
 	
-	
 				})
 			} else {
 				const { table1, table2, table3, table4, table5, table6, yearInterval, year, period } = res
@@ -843,6 +841,8 @@ export default class ProductionPerTable extends Component {
 				let table6AverageProduction = [];
 				let table6HigherAverageProduction = [];
 
+				console.log(res)
+
 				table1AverageProduction = table1.map(item => item.averageProduction);
 				table1HigherAverageProduction = table1.map(item => item.higherAverageProduction);
 				table2AverageProduction = table2.map(item => item.averageProduction);
@@ -853,7 +853,7 @@ export default class ProductionPerTable extends Component {
 				table4HigherAverageProduction = table4.map(item => item.higherAverageProduction);
 				table5AverageProduction = table5.map(item => item.averageProduction);
 				table5HigherAverageProduction = table5.map(item => item.higherAverageProduction);
-				table6AverageProduction = table6.map(item => item.averageProduction);
+				table6AverageProduction = table6.map(item => item.total);
 				table6HigherAverageProduction = table6.map(item => item.higherAverageProduction);
 				
 				let items = {
@@ -1549,6 +1549,8 @@ export default class ProductionPerTable extends Component {
 			
 			if (this.state.table < 6) {
 				if (!this.state.isLoading && this.state.labels != undefined) {
+					let totalProductionThisYear = this.state.data.totalProductions.data.reduce((acc, cur) => parseFloat(cur) + parseFloat(acc));
+					let savedPrice = totalProductionThisYear * 0.66874564;
 					return (
 						<React.Fragment>
 							<Header logged={true} fixed={false} marginBottom={true} />
@@ -1573,11 +1575,17 @@ export default class ProductionPerTable extends Component {
 											rightNavigationDisabled={this.state.rightNavigationDisabled}
 										/>
 										<div className="row m-4 px-0 py-0" id="row-chart">
-											<div className="col-md-10 container-fluid pb-3 pt-0 py-0 mx-auto my-auto" id="canvas-container-1">
+											<div className="col-md-8 container-fluid pb-3 pt-0 py-0 mx-auto my-auto" id="canvas-container-1">
 												<BarChart
-													data={{ labels: this.state.labels, datasets: [this.state.data.capacityFactorAverages, this.state.data.averageProductions] }}
+													data={{ labels: this.state.labels, datasets: [this.state.data.capacityFactorAverages, this.state.data.totalProductions] }}
 													options={this.state.options.production}
 												/>
+											</div>
+											<div className="col-md-4 container-fluid pb-3 pt-0 py-0 mx-auto my-auto text-center" id="canvas-container-0">
+												Total produzido esse ano: <h5>{(totalProductionThisYear).toFixed(3)} kWh</h5>
+												<br></br>
+												Com esta mesa, foram salvos <h5>R${(savedPrice).toFixed(2)}</h5>
+												<small>com tarifa de R$0,66874564</small>
 											</div>
 											<div className="col-md-5 container-fluid pb-3 pt-0 py-0 mx-auto my-auto" id="canvas-container-2">
 												<BarChart
