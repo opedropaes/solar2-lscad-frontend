@@ -770,6 +770,11 @@ export default class LossPerTable extends Component {
 										/>
 
 										<div className="row m-4 px-0 py-0" id="row-chart">
+											<ul className="text-left col-lg-12 pb-2 border-bottom">
+												<li key="modelo1" className="ml-3">
+													<h6>Perdas por modelo de predição estatística:</h6>
+												</li>
+											</ul>
 											<div className="col-md-6 container-fluid pb-3 pt-0 py-0 mx-auto my-auto" id="canvas-container-1">
 												<LineChart
 													data={{ labels: this.state.labels, datasets: [this.state.data.table1, this.state.data.table2] }}

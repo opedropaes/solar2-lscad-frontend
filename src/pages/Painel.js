@@ -64,10 +64,10 @@ export default class Painel extends Component {
 												<Card
 													id="perdas"
 													title="Perdas"
-													text="Sistema de perdas em desenvolvimento"
-													link="#"
+													text="Monitorar dados de perdas de Campo Grande"
+													link="/campo-grande/perdas"
 													buttonText="Monitorar agora"
-													buttonActive={false}
+													buttonActive={true}
 													theme="loss"
 												/>
 											</div>
