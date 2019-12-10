@@ -335,7 +335,7 @@ export default class Loss extends Component {
 										<div className="col-md-4 container-fluid pb-3 pt-0 py-0 mx-auto my-auto text-center" id="canvas-container-0">
 											Perdas totais neste dia: <h5>{(this.state.data.totalLosses).toFixed(3)} kW</h5>
 											<br></br>
-											Média de perdas neste dia: <h5>{(this.state.data.lossesAverage).toFixed(3)}</h5>
+											Média de perdas neste dia: <h5>{(this.state.data.lossesAverage).toFixed(3)} kW</h5>
 										</div>
 									</div>									
 								</main>

@@ -898,7 +898,8 @@ export default class LossPerTable extends Component {
 		}
 
 		else if (this.props.location.pathname === "/irece/perdas/mesas/perdas-totais") {
-			if (!this.state.isLoading) {
+			console.log(this.state)
+			if (!this.state.isLoading || this.state.labels.length == 1) {
 				return (
 					<React.Fragment>
 						<Header logged={true} fixed={false} marginBottom={true} ufv="irece" />
