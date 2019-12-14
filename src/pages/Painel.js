@@ -80,9 +80,9 @@ export default class Painel extends Component {
 													id="robo"
 													title="Status do Robô"
 													text="Monitoramento de status do robô em desenvolvimento"
-													link="#"
+													link="/dispositivo"
 													buttonText="Monitorar agora"
-													buttonActive={false}
+													buttonActive={true}
 													theme="robot"
 												/>
 											</div>

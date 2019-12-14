@@ -21,6 +21,8 @@ import IreceEnviromental from './pages/irece/Enviromental';
 import IreceLoss from './pages/irece/Loss';
 import IreceLossTable from './pages/irece/LossPerTable';
 
+import DeviceDashboard from './pages/DeviceDashboard';
+
 const PrivateRoute = ({ component: Component, ...rest }) => (
 	<Route 
 		{ ...rest }
@@ -54,6 +56,7 @@ const App = () => {
         <PrivateRoute path="/irece/ambientais" component={IreceEnviromental} />
         <PrivateRoute path="/irece/perdas/mesas" exact component={IreceLoss} />
         <PrivateRoute path="/irece/perdas/mesas/:table" exact component={IreceLossTable} />
+		<PrivateRoute path="/dispositivo" exact component={DeviceDashboard} />
         
         <PrivateRoute path="/campo-grande" render={() => (
           <Redirect to={"/campo-grande/painel"} />
