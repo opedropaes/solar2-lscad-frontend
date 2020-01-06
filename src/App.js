@@ -14,6 +14,7 @@ import Panel from './pages/Painel';
 import CampoGrandeProduction from './pages/campo-grande/Production';
 import CampoGrandeEnviromental from './pages/campo-grande/Enviromental';
 import CampoGrandeLoss from './pages/campo-grande/Loss';
+import RobotMonitoring from './pages/campo-grande/Robot';
 
 import IreceProduction from './pages/irece/Productions';
 import IreceProductionTable from './pages/irece/ProductionPerTable';
@@ -49,6 +50,7 @@ const App = () => {
         <PrivateRoute path="/campo-grande/producao" component={CampoGrandeProduction} />
         <PrivateRoute path="/campo-grande/ambientais" exact component={CampoGrandeEnviromental} />
         <PrivateRoute path="/campo-grande/perdas" component={CampoGrandeLoss} />
+		<PrivateRoute path="/campo-grande/monitoramento" component={RobotMonitoring} />
         <PrivateRoute path="/irece/producao" exact component={IreceProduction} />
 		<PrivateRoute path="/irece/producao/mesas/:table" exact component={IreceProductionTable} />
         <PrivateRoute path="/irece/ambientais" component={IreceEnviromental} />

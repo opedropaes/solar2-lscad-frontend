@@ -79,10 +79,10 @@ export default class Painel extends Component {
 												<Card
 													id="robo"
 													title="Status do Robô"
-													text="Monitoramento de status do robô em desenvolvimento"
-													link="#"
+													text="Monitoramento de status do robô em fase de testes"
+													link="/campo-grande/monitoramento"
 													buttonText="Monitorar agora"
-													buttonActive={false}
+													buttonActive={true}
 													theme="robot"
 												/>
 											</div>

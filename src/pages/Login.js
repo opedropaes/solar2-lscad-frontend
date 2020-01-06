@@ -43,36 +43,44 @@ class Login extends Component {
 		};
 
 		let cognitoUser = new CognitoUser(userData);
-
+		
 		cognitoUser.authenticateUser(authenticationDetails, {
 			onSuccess: (result) => {
 
-				sessionStorage.removeItem('accessToken');
-				let accessToken = result.getAccessToken().getJwtToken();
-				sessionStorage.setItem('accessToken', accessToken);
+				if (cognitoUser != null) {
+					cognitoUser.getSession((err, result) => {
+						if (result) {
+							
+							sessionStorage.removeItem('accessToken');
+							let accessToken = result.getAccessToken().getJwtToken();
+							sessionStorage.setItem('accessToken', accessToken);
 
-				AWS.config.region = _config.region;
+							AWS.config.region = _config.region;
 
-				AWS.config.credentials = new AWS.CognitoIdentityCredentials({
-					IdentityPoolId: 'us-east-1:52bffe11-4e2e-4b34-8d21-4ea948340b2c',
-					Logins: {
-						'cognito-idp.us-east-1.amazonaws.com/us-east-1_mM4mx5nCj': result.getIdToken().getJwtToken()
-					}
-				});
+							AWS.config.credentials = new AWS.CognitoIdentityCredentials({
+								IdentityPoolId: 'us-east-1:52bffe11-4e2e-4b34-8d21-4ea948340b2c',
+								Logins: {
+									'cognito-idp.us-east-1.amazonaws.com/us-east-1_mM4mx5nCj': result.getIdToken().getJwtToken()
+								}
+							});
 
-				AWS.config.credentials.refresh((error) => {
-					if (error) {
-						this.setState({ loading: false });
-					} else {
-
-						this.setState({ logged: true });
-						this.props.history.push({
-							pathname: "/painel",
-							state: { logged: true },
-							length: 1
-						})
-					}
-				});
+							//call refresh method in order to authenticate user and get new temp credentials
+							AWS.config.credentials.refresh((error) => {
+								if (error) {
+									this.setState({ loading: false });
+								} else {
+									this.setState({ logged: true });
+									this.props.history.push({
+										pathname: "/painel",
+										state: { logged: true },
+										length: 1
+									})
+								}
+							});
+						}
+					});
+				}
+				
 			},
 
 			onFailure: (err) => {
