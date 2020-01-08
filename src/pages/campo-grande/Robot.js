@@ -10,20 +10,23 @@ import sendMessageToTopicByLambdaInvoking from '../../utils/mqttTopicMessageSend
 export default class Robot extends Component {
 	
 	activate = async () => {
-		sendMessageToTopicByLambdaInvoking("activate")
-			.then(response => {
-				const { Status } = response;
-				
-				if (Status === 202) {
-					alert("Dispositivo acionado.");
-				} else {
-					// response.err: "UserIsNotAdmin" 
-					alert("Usuário não autorizado para realizar acionamento.");
-				}
-			})
-			.catch(err => {
-				console.log(err);
-			})
+		return new Promise((resolve, reject) => {
+			sendMessageToTopicByLambdaInvoking("activate")
+				.then(response => {
+					const { Status } = response;
+
+					if (Status === 202) {
+						// this.confirmationModal("Sucesso!", "Dispositivo acionado.");
+						resolve({ title: "Sucesso!", message: "Dispositivo acionado." })
+					} else {
+						// response.err: "UserIsNotAdmin" 
+						this.confirmationModal("Ops...", "Usuário não autorizado para realizar acionamento.");
+					}
+				})
+				.catch(err => {
+					console.log(err);
+				})
+		})
 		
 	}
 
@@ -33,15 +36,38 @@ export default class Robot extends Component {
 				const { Status } = response;
 
 				if (Status === 202) {
-					alert("Dispositivo desativado.");
+					this.confirmationModal("Sucesso!", "Dispositivo desativado.");
 				} else {
 					// response.err: "UserIsNotAdmin" 
-					alert("Usuário não autorizado para realizar desligamento.");
+					this.confirmationModal("Ops...", "Usuário não autorizado para realizar desligamento.");
 				}
 			})
 			.catch(err => {
 				console.log(err);
 			})
+	}
+
+	confirmationModal(title, message) {
+		return (
+			<div class="modal" tabindex="-1" role="dialog">
+				<div class="modal-dialog" role="document">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title">{title}</h5>
+							<button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+								<span aria-hidden="true">&times;</span>
+							</button>
+						</div>
+						<div class="modal-body">
+							<p>{message}</p>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		)
 	}
 
 	render() {
@@ -67,7 +93,7 @@ export default class Robot extends Component {
 								<div className="mx-auto col-lg-3">
 									<div className="row p-3 mx-auto">
 										<div className="col-lg-12 mx-auto my-2" id="painel-cards-wrapper">
-											<button className="btn btn-success mx-auto btn-block py-4" onClick={this.activate} ><strong>Ativar robô</strong></button>
+											<button className="btn btn-success mx-auto btn-block py-4" onClick={this.activate().then(res => this.confirmationModal(res.title, res.message))} ><strong>Ativar robô</strong></button>
 										</div>
 									</div>
 
