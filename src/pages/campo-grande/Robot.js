@@ -12,7 +12,17 @@ export default class Robot extends Component {
 	activate = async () => {
 		sendMessageToTopicByLambdaInvoking("activate")
 			.then(response => {
-				alert("Dispositivo acionado.");
+				const { Status } = response;
+				
+				if (Status === 202) {
+					alert("Dispositivo acionado.");
+				} else {
+					// response.err: "UserIsNotAdmin" 
+					alert("Usuário não autorizado para realizar acionamento.");
+				}
+			})
+			.catch(err => {
+				console.log(err);
 			})
 		
 	}
@@ -20,7 +30,17 @@ export default class Robot extends Component {
 	deactivate = async () => {
 		sendMessageToTopicByLambdaInvoking("deactivate")
 			.then(response => {
-				alert("Dispositivo desativado.");
+				const { Status } = response;
+
+				if (Status === 202) {
+					alert("Dispositivo desativado.");
+				} else {
+					// response.err: "UserIsNotAdmin" 
+					alert("Usuário não autorizado para realizar desligamento.");
+				}
+			})
+			.catch(err => {
+				console.log(err);
 			})
 	}
 

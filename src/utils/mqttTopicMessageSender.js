@@ -1,3 +1,4 @@
+/* eslint-disable eqeqeq */
 import AWS from 'aws-sdk';
 import { CognitoUserPool } from 'amazon-cognito-identity-js';
 import _config from '../services/_config';
@@ -36,7 +37,7 @@ const verifyUser = async () => {
 							reject(err);
 						}
 						else {
-							userAttributes = attributes
+							userAttributes = attributes;
 						}
 					});
 
@@ -45,7 +46,6 @@ const verifyUser = async () => {
 						if (error) console.log("Error on refresh -> " + error);
 						else resolve(userAttributes);
 					});
-
 				}
 			});
 		})
@@ -59,76 +59,83 @@ const verifyUser = async () => {
  * @param {String} message Accepts "activate" or "deactivate" 
  */
 const sendMessageToTopicByLambdaInvoking = async (message) => {
-
-	verifyUser().then(async response => {
-
-		let userAttributes = response
-		
-		if (response != undefined) {
-
-			clearTimeout(cognitoConnectionTimeout); // Cessa tentativas de reconexão
-
-			const adminList = {
-				"Pedro Mihael": true,
-				"RICARDO RIBEIRO DOS SANTOS": true,
-				"Thiago de Santana Finelon Pereira": true,
-				"Guilherme Gloriano de Souza": true
-			}
-			
-			let adminAttributes = userAttributes.filter(attribute => attribute.Name === "name" && adminList[attribute.Value])
-			let isAdmin = adminAttributes.length > 0 ? true : false;
-
-			if (isAdmin) {
-
-				let lambdaClient = new AWS.Lambda();
-				
-				if (message === "activate") {
-					let params = {
-						FunctionName: "ui_robot_activation",
-						InvokeArgs: "true"
-					}
-
-					let lambdaInvoking = new Promise((resolve, reject) => {
-						lambdaClient.invokeAsync(params, (err, data) => {
-							if (err) {
-								console.log("Error on invoking function -> ", err, err.stack);
-								reject(err)
-							} else {
-								resolve(data);
-							}
-						})
-					});
 	
-					let lambdaConfimationResponse = await lambdaInvoking;
-					return lambdaConfimationResponse;
+	return new Promise((resolve, reject) => {
+		verifyUser().then(async response => {
 
-				} else if (message === "deactivate") {
-					let params = {
-						FunctionName: "ui_robot_deactivation",
-						InvokeArgs: "false"
-					}
+			let userAttributes = response;
 
-					let lambdaInvoking = new Promise((resolve, reject) => {
-						lambdaClient.invokeAsync(params, (err, data) => {
-							if (err) {
-								console.log("Error on invoking function -> ", err, err.stack);
-								reject(err)
-							} else {
-								resolve(data);
-							}
-						})
-					});
+			if (userAttributes != undefined) {
 
-					let lambdaConfimationResponse = await lambdaInvoking;
-					return lambdaConfimationResponse;
+				clearTimeout(cognitoConnectionTimeout); // Cessa tentativas de reconexão
+
+				const adminList = {
+					"Pedro Mihael": true,
+					"RICARDO RIBEIRO DOS SANTOS": true,
+					"Thiago de Santana Finelon Pereira": true,
+					"Guilherme Gloriano de Souza": true
 				}
 
+				let adminAttributes = userAttributes.filter(attribute => attribute.Name === "name" && adminList[attribute.Value])
+				let isAdmin = adminAttributes.length > 0 ? true : false;
+
+				if (isAdmin) {
+
+					let lambdaClient = new AWS.Lambda();
+
+					if (message === "activate") {
+						let params = {
+							FunctionName: "ui_robot_activation",
+							InvokeArgs: "true"
+						}
+
+						let lambdaInvoking = new Promise((resolve, reject) => {
+							lambdaClient.invokeAsync(params, (err, data) => {
+								if (err) {
+									console.log("Error on invoking function -> ", err, err.stack);
+									reject(err)
+								} else {
+									resolve(data);
+								}
+							})
+						});
+
+						let lambdaConfimationResponse = await lambdaInvoking;
+						resolve(lambdaConfimationResponse);
+
+					} else if (message === "deactivate") {
+						let params = {
+							FunctionName: "ui_robot_deactivation",
+							InvokeArgs: "false"
+						}
+
+						let lambdaInvoking = new Promise((resolve, reject) => {
+							lambdaClient.invokeAsync(params, (err, data) => {
+								if (err) {
+									console.log("Error on invoking function -> ", err, err.stack);
+									reject(err)
+								} else {
+									resolve(data);
+								}
+							})
+						});
+
+						let lambdaConfimationResponse = await lambdaInvoking;
+						resolve(lambdaConfimationResponse);
+					}
+
+				}
+
+				else {
+					resolve({ err: "UserIsNotAdmin", Status: 301 });
+				}
 			}
-		}
-		else {
-			cognitoConnectionTimeout(message);
-		}
-	});
+
+			else {
+				cognitoConnectionTimeout(message);
+			}
+		});
+	})
 	
 }
 
