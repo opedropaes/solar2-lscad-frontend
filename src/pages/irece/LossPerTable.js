@@ -608,7 +608,7 @@ export default class LossPerTable extends Component {
 		let year = this.state.year;
 
 		if (this.state.period == "month") {
-			if (year >= 2018 && month >= 9) {
+			if ((year == 2018 && month >= 9) || year > 2018) {
 
 				if (month > 1) {
 					month--;

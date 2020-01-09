@@ -1163,7 +1163,7 @@ export default class Enviromental extends Component {
 		let year = this.state.year;
 
 		if (this.state.period == "day") {
-			if (year >= 2018 && month >= 9 && day >= 1) {
+			if ((year == 2018 && month >= 9 && day >= 1) || year > 2018) {
 
 				if (day > 1) {
 					day--;
@@ -1189,7 +1189,7 @@ export default class Enviromental extends Component {
 
 			}
 		} else if (this.state.period == "month") {
-			if (year >= 2018 && month >= 9) {
+			if ((year == 2018 && month >= 9) || year > 2018) {
 
 				if (month > 1) {
 					month--;
