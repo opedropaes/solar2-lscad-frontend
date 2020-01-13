@@ -89,7 +89,7 @@ export default class Loss extends Component {
 				data: {
 					losses: {
 						data: res.loss,
-						label: 'Média (kW)',
+						label: 'Média (W)',
 						borderColor: 'rgba(255,48,48, 1.0)',
 						backgroundColor: 'rgba(255,48,48, 0.7)',
 						lineTension: 0,
@@ -334,9 +334,9 @@ export default class Loss extends Component {
 											/>
 										</div>
 										<div className="col-md-4 container-fluid pb-3 pt-0 py-0 mx-auto my-auto text-center" id="canvas-container-0">
-											Perdas totais neste dia: <h5>{(this.state.data.totalLosses).toFixed(3)} kW</h5>
+											Perdas totais neste dia: <h5>{(this.state.data.totalLosses).toFixed(3)} W</h5>
 											<br></br>
-											Média de perdas neste dia: <h5>{(this.state.data.lossesAverage).toFixed(3)} kW</h5>
+											Média de perdas neste dia: <h5>{(this.state.data.lossesAverage).toFixed(3)} W</h5>
 										</div>
 									</div>									
 								</main>
