@@ -1547,7 +1547,7 @@ export default class Enviromental extends Component {
 									<div className="row m-4 px-0 py-0" id="row-chart">
 										<div className="col-md-6 container-fluid pb-3 pt-0 py-0 mx-auto my-auto" id="canvas-container-1">
 											<BarChart
-												data={{ labels: this.state.labels, datasets: [this.state.data.averageIrradiations, this.state.data.higherIrradiations] }}
+												data={{ labels: this.state.labels, datasets: [this.state.data.averageIrradiations] }}
 												options={this.state.options.irradiationOptions}
 											/>
 										</div>
