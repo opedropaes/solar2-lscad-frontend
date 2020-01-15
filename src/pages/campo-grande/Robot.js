@@ -6,7 +6,6 @@ import '../../pages/styles/Home.css';
 
 import sendMessageToTopicByLambdaInvoking from '../../utils/mqttTopicMessageSender';
 
-
 export default class Robot extends Component {
 	
 	activate = async () => {
