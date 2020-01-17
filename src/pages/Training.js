@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import Header from '../components/HeaderWrapper';
 import Footer from '../components/FooterWrapper';
 import FormButton from '../components/FormButton';
+import DynamoDBTables from '../components/DynamoDBTables';
 import verifyUser from '../services/userVerification';
 import listTables from '../services/listDynamoTables';
 
@@ -17,15 +18,34 @@ export default class Training extends Component {
 		}
 	}
 
-	_isMounted = false;
-	_isUpdated = true;
-
 	async componentDidMount() {
 		const { AWS } = await verifyUser();
 		const tables = await listTables(AWS);
-		this._isMounted = true;
 		this.refreshStatus({ tables });
-		console.log(this.state)
+		this.getFunctionConfiguration();
+	}
+
+	getFunctionConfiguration = async () => {
+		const { AWS } = await verifyUser();
+		const lambdaClient = new AWS.Lambda();
+
+		const params = {
+			FunctionName: 'dev-prediction-me-treinamento',
+			Qualifier: '1'
+		};
+
+		const functionConfigurationRequest = await lambdaClient.getFunction(params, (err, data) => {
+			if (err) {
+				console.info(err.stack);
+				return err.stack;
+			} else {
+				return data;
+			}
+		});
+
+		// const functionConfigurationResponse = await functionConfigurationRequest;
+
+		// console.log(functionConfigurationResponse)
 	}
 
 	refreshStatus = newStatusParameters => {
@@ -33,14 +53,117 @@ export default class Training extends Component {
 		this.setState({ tables });
 	}
 
-	configure = async () => {
-		// Receber dados do formulario
-		let response = await this.configureTrainingWithEnvironmentalVariables(/** variables */);
-		return response;
+	handleSubmit = e => {
+
+		e.preventDefault();
+
+		const beginDate = document.getElementById('begin-date').value;
+		const endDate = document.getElementById('end-date').value;
+
+		const modelID = document.getElementById('id-modelo').value;
+		const technology = document.getElementById('id-tecnologia').value;
+
+		const stationSelector = document.getElementById('tabela-estacao');
+		const station = stationSelector.options[stationSelector.selectedIndex].value;
+
+		const inverterSelector = document.getElementById('tabela-inversor');
+		const inverter = inverterSelector.options[inverterSelector.selectedIndex].value;
+
+		const modelTableSelector = document.getElementById('tabela-modelo');
+		const modelTable = modelTableSelector.options[modelTableSelector.selectedIndex].value;
+
+		const firstIndependentVariableSelector = document.getElementById('variavel-ind-1');
+		const firstIndependentVariable = firstIndependentVariableSelector.options[firstIndependentVariableSelector.selectedIndex].value;
+
+		const secondIndependentVariableSelector = document.getElementById('variavel-ind-2');
+		const secondIndependentVariable = secondIndependentVariableSelector.options[secondIndependentVariableSelector.selectedIndex].value;
+
+		const independentVariables = `${firstIndependentVariable}:${secondIndependentVariable}`;
+
+		const dependentVariableSelector = document.getElementById('variavel-dep');
+		const dependentVariable = dependentVariableSelector.options[dependentVariableSelector.selectedIndex].value;
+
+		const powerVariableSelector = document.getElementById('var-pot');
+		const powerVariable = powerVariableSelector.options[powerVariableSelector.selectedIndex].value;
+
+		const irradiationVariableSelector = document.getElementById('var-pot');
+		const irradiationVariable = irradiationVariableSelector.options[irradiationVariableSelector.selectedIndex].value;
+
+		const powerAndIrradiationVariables = `${powerVariable}:${irradiationVariable}`;
+
+		const params = { beginDate, endDate, modelID, technology, station, inverter, modelTable, independentVariables, dependentVariable, powerAndIrradiationVariables };
+
+		this.configure(params);
+		// dar um jeito de pegar os atributos de cada tabela conforme o usuario escolher a tabela no formulario.
+
+	}
+
+	configure = async (params) => {
+
+		const { beginDate, endDate, modelID, technology, station, inverter, modelTable, independentVariables, dependentVariable, powerAndIrradiationVariables } = params;
+
+		if (beginDate <= endDate) {
+			const environmentalVariables = {
+				'DATA_F': endDate,
+				'DATA_I': beginDate,
+				'ID_MODELO': modelID,
+				'ID_TECNOLOGIA': technology,
+				'TABELA_AMBIENTAL': station,
+				'TABELA_INVERSOR': inverter,
+				'TABELA_MODELO': modelTable,
+				'VARIAVEIS_IND': independentVariables,
+				'VARIAVEL_DEP': dependentVariable,
+				'VARS_POT_IRRAD': powerAndIrradiationVariables,
+			};
+
+
+
+			// let response = await this.configureTrainingWithEnvironmentalVariables(environmentalVariables);
+
+			// if (response) {
+			// 	alert("Variáveis configuradas com sucesso.");
+			// } else {
+			// 	alert("Falha ao configurar variáveis. Verifique os campos e tente novamente.");
+			// }
+
+			// return response;
+		}
+
+		else {
+			alert("Data inicial não pode ser maior que data final!");
+			return { err: "incompatibleDates" };
+		}
+
 	}
 
 	configureTrainingWithEnvironmentalVariables = async variables => {
-		// configurar com variables
+		const { AWS } = await verifyUser();
+		const lambdaClient = new AWS.Lambda();
+
+		const params = {
+			FunctionName: 'dev-prediction-me-treinamento',
+			Environment: {
+				Variables: { ...variables }
+			}
+		};
+
+		const lambdaConfigurationInvoking = await lambdaClient.updateFunctionConfiguration(params, (err, data) => {
+			if (err) {
+				console.info(err.stack);
+				return err;
+			} else {
+				return data;
+			}
+		});
+
+		const lambdaConfigurationResponse = await lambdaConfigurationInvoking;
+
+		console.log(lambdaConfigurationResponse)
+
+		if (lambdaConfigurationResponse.httpResponse) {
+			return true;
+		} else return false;
+
 	}
 
 	renderTables = () => {
@@ -49,24 +172,6 @@ export default class Training extends Component {
 				<option value={table}>{table}</option>
 			)
 		})
-	}
-
-	async UNSAFE_componentWillUpdate(newProps, newState) {
-
-		if (!this._isUpdated) {
-			const { AWS } = await verifyUser();
-			const tables = await listTables(AWS);
-			this.refreshStatus({ tables });	
-		}
-
-	}
-
-	componentDidUpdate() {
-		this._isUpdated = true;
-	}
-
-	componentWillUnmount() {
-		this._isMounted = false;
 	}
 
 	render() {
@@ -81,12 +186,19 @@ export default class Training extends Component {
 									<h4 className="card-title mt-4">Configuração do treinamento</h4>
 								</div>
 								<div className="card-body col-lg-12 mx-auto">
-									<form className="pl-0 form-group" onSubmit={this.configure}>
+									<form className="pl-0 form-group" onSubmit={this.handleSubmit}>
 
-										<div className="form-group">
-											<label htmlFor="date">Dados referentes ao dia:</label>
-											<input type="number" name="date" id="date" className="form-control" placeholder="aaaammdd" required
-												onInput={(e) => this.setState({ date: e.target.value })} />
+										<div className="row flex-row">
+											<div className="form-group col-lg-6">
+												<label htmlFor="begin-date">Data de inicio do treinamento</label>
+												<input type="number" name="begin-date" id="begin-date" className="form-control" placeholder="aaaammdd" required
+													onInput={(e) => this.setState({ beginDate: e.target.value })} />
+											</div>
+											<div className="form-group col-lg-6">
+												<label htmlFor="end-date">Data de finalização do treinamento</label>
+												<input type="number" name="end-date" id="end-date" className="form-control" placeholder="aaaammdd" required
+													onInput={(e) => this.setState({ endDate: e.target.value })} />
+											</div>
 										</div>
 
 										<div className="row flex-row">
@@ -116,38 +228,75 @@ export default class Training extends Component {
 											<div className="form-group col-lg-6">
 												<label htmlFor="tabela-estacao">Tabela com dados ambientais</label>
 												<select name="tabela-estacao" id="tabela-estacao" className="form-control" required>
-													<option defaultValue value="1" className="text-muted">selecione</option>
-													<ul>
-													{ this.renderTables() }
-													</ul>
+													<option defaultValue value="none" className="text-muted">selecione</option>
+													<DynamoDBTables tables={this.state.tables} />
 												</select>
 											</div>
 											<div className="form-group col-lg-6">
 												<label htmlFor="tabela-inversor">Tabela com dados de produção</label>
 												<select name="tabela-inversor" id="tabela-inversor" className="form-control" required>
-													<option defaultValue value="1" className="text-muted">selecione</option>
-													{/* adicionar map que renderiza uma option pra cada tabela */}
+													<option defaultValue value="none" className="text-muted">selecione</option>
+													<DynamoDBTables tables={this.state.tables} />
 												</select>
 											</div>
 										</div>
 
 										<div className="row flex-row">
-											<div className="form-group col-lg-6">
+											<div className="form-group col-lg-12">
 												<label htmlFor="tabela-modelo">Tabela com dados do modelo</label>
 												<select name="tabela-modelo" id="tabela-modelo" className="form-control" required>
-													<option defaultValue value="1" className="text-muted">selecione</option>
-													{/* adicionar map que renderiza uma option pra cada tabela */}
-												</select>
-											</div>
-											<div className="form-group col-lg-6">
-												<label htmlFor="tabela-sujidade">Tabela para dados de sujidade</label>
-												<select name="tabela-sujidade" id="tabela-sujidade" className="form-control" required>
-													<option defaultValue value="1" className="text-muted">selecione</option>
-													{/* adicionar map que renderiza uma option pra cada tabela */}
+													<option defaultValue value="none" className="text-muted">selecione</option>
+													<DynamoDBTables tables={this.state.tables} />
 												</select>
 											</div>
 										</div>
+
+										<div className="row flex-row">
+											<h6 className="form-group col-lg-12">Variáveis independentes</h6>
+											<div className="form-group col-lg-6" name="variavel-ind">
+												<select name="variavel-ind-1" id="variavel-ind-1" className="form-control" required>
+													<option defaultValue value="none" className="text-muted">selecione</option>
+													{/* <DynamoDBTables tables={this.state.tables} /> */}
+												</select>
+											</div>
+											<div className="form-group col-lg-6" name="variavel-ind">
+												<select name="variavel-ind-2" id="variavel-ind-2" className="form-control" required>
+													<option defaultValue value="none" className="text-muted">selecione</option>
+													{/* <DynamoDBTables tables={this.state.tables} /> */}
+												</select>
+											</div>
+										</div>
+
+										<div className="row flex-row">
+											<div className="form-group col-lg-12">
+												<label htmlFor="variavel-dep">Variavel Dependente</label>
+												<select name="variavel-dep" id="variavel-dep" className="form-control" required>
+													<option defaultValue value="none" className="text-muted">selecione</option>
+													{/* <DynamoDBTables tables={this.state.tables} /> */}
+												</select>
+											</div>
+										</div>
+
+										<div className="row flex-row">
+											<h6 className="form-group col-lg-12">Variáveis de potẽncia e irradiação</h6>
+											<div className="form-group col-lg-6" name="var-pot-irr">
+												<select id="var-pot" className="form-control" required>
+													<option defaultValue value="none" className="text-muted">potência</option>
+													{/* <DynamoDBTables tables={this.state.tables} /> */}
+												</select>
+											</div>
+											<div className="form-group col-lg-6" name="var-pot-irr">
+												<select id="var-irr" className="form-control" required>
+													<option defaultValue value="none" className="text-muted">irradiação</option>
+													{/* <DynamoDBTables tables={this.state.tables} /> */}
+												</select>
+											</div>
+										</div>
+
 										<FormButton loading={this.state.loading} label="Configurar" />
+										<div className="text-center">
+											<span><small>Em desenvolvimento</small></span>
+										</div>
 									</form>
 								</div>
 							</div>
