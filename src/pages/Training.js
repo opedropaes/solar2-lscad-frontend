@@ -1,8 +1,10 @@
+/* eslint-disable array-callback-return */
 import React, { Component } from 'react';
 import Header from '../components/HeaderWrapper';
 import Footer from '../components/FooterWrapper';
 import FormButton from '../components/FormButton';
 import DynamoDBTables from '../components/DynamoDBTables';
+import DynamoDBAttributes from '../components/DynamoDBAttributes';
 import verifyUser from '../services/userVerification';
 import listTables from '../services/listDynamoTables';
 
@@ -14,7 +16,11 @@ export default class Training extends Component {
 		super(props);
 		this.state = {
 			date: 0,
-			tables: []
+			tables: [],
+			selecting: 'none',
+			powerVariables: ['selecione uma tabela antes'],
+			envVariables: ['selecione uma tabela antes'],
+			modelVariables: ['selecione uma tabela antes']
 		}
 	}
 
@@ -92,6 +98,8 @@ export default class Training extends Component {
 		const powerAndIrradiationVariables = `${powerVariable}:${irradiationVariable}`;
 
 		const params = { beginDate, endDate, modelID, technology, station, inverter, modelTable, independentVariables, dependentVariable, powerAndIrradiationVariables };
+
+		this.setState({ beginDate, endDate, modelID, technology, station, inverter, modelTable, independentVariables, dependentVariable, powerAndIrradiationVariables });
 
 		this.configure(params);
 		// dar um jeito de pegar os atributos de cada tabela conforme o usuario escolher a tabela no formulario.
@@ -174,6 +182,55 @@ export default class Training extends Component {
 		})
 	}
 
+	getTableAttributes = async () => {
+
+		const { selecting, powerVariables, envVariables } = this.state;
+		const { AWS } = await verifyUser();
+
+		const dynamoClient = AWS.DynamoDB();
+
+		let tableToDescribe = "";
+
+		if (selecting === "tabela-estacao") {
+			tableToDescribe = this.state.station;
+		} else if (selecting === "tabela-inversor") {
+			tableToDescribe = this.state.inverter;
+		} else if (selecting === "tabela-modelo") {
+			tableToDescribe = this.state.modelTable;
+		}
+
+		const params = { TableName: tableToDescribe };
+
+		const dynamoRequest = new Promise ((resolve, reject) => {
+			dynamoClient.describeTable(params, (err, data) => {
+				if (err) {
+					console.log(err.stack);
+					reject(err);
+				} else {
+					resolve(data);
+				}
+			});
+		});
+
+		dynamoRequest.then(response => {
+			
+			let attributes = [];
+			
+			response.Table.AttributeDefinitions.map(att => {
+				attributes.push(att.AttributeName);
+			})
+			
+			if (selecting === "tabela-estacao") {
+				this.setState({ envVariables: attributes });
+			} else if (selecting === "tabela-inversor") {
+				this.setState({ powerVariables: attributes });
+			} else if (selecting === "tabela-modelo") {
+				this.setState({ modelVariables: attributes });
+			}	
+		});
+
+	}
+
 	render() {
 		return (
 			<React.Fragment>
@@ -227,14 +284,14 @@ export default class Training extends Component {
 										<div className="row flex-row">
 											<div className="form-group col-lg-6">
 												<label htmlFor="tabela-estacao">Tabela com dados ambientais</label>
-												<select name="tabela-estacao" id="tabela-estacao" className="form-control" required>
+												<select name="tabela-estacao" id="tabela-estacao" className="form-control" onChange={this.getTableAttributes} onMouseOver={ this.setState({ selecting: "tabela-estacao" }) } required>
 													<option defaultValue value="none" className="text-muted">selecione</option>
 													<DynamoDBTables tables={this.state.tables} />
 												</select>
 											</div>
 											<div className="form-group col-lg-6">
 												<label htmlFor="tabela-inversor">Tabela com dados de produção</label>
-												<select name="tabela-inversor" id="tabela-inversor" className="form-control" required>
+												<select name="tabela-inversor" id="tabela-inversor" className="form-control" onChange={this.getTableAttributes} onMouseOver={ this.setState({ selecting: "tabela-inversor" }) }  required>
 													<option defaultValue value="none" className="text-muted">selecione</option>
 													<DynamoDBTables tables={this.state.tables} />
 												</select>
@@ -244,7 +301,7 @@ export default class Training extends Component {
 										<div className="row flex-row">
 											<div className="form-group col-lg-12">
 												<label htmlFor="tabela-modelo">Tabela com dados do modelo</label>
-												<select name="tabela-modelo" id="tabela-modelo" className="form-control" required>
+												<select name="tabela-modelo" id="tabela-modelo" className="form-control" onChange={this.getTableAttributes} onMouseOver={ this.setState({ selecting: "tabela-modelo" }) }  required>
 													<option defaultValue value="none" className="text-muted">selecione</option>
 													<DynamoDBTables tables={this.state.tables} />
 												</select>
@@ -256,13 +313,13 @@ export default class Training extends Component {
 											<div className="form-group col-lg-6" name="variavel-ind">
 												<select name="variavel-ind-1" id="variavel-ind-1" className="form-control" required>
 													<option defaultValue value="none" className="text-muted">selecione</option>
-													{/* <DynamoDBTables tables={this.state.tables} /> */}
+													<DynamoDBAttributes attributes={this.state.powerVariables} />
 												</select>
 											</div>
 											<div className="form-group col-lg-6" name="variavel-ind">
 												<select name="variavel-ind-2" id="variavel-ind-2" className="form-control" required>
 													<option defaultValue value="none" className="text-muted">selecione</option>
-													{/* <DynamoDBTables tables={this.state.tables} /> */}
+													<DynamoDBAttributes attributes={this.state.envVariables} />
 												</select>
 											</div>
 										</div>
@@ -272,7 +329,7 @@ export default class Training extends Component {
 												<label htmlFor="variavel-dep">Variavel Dependente</label>
 												<select name="variavel-dep" id="variavel-dep" className="form-control" required>
 													<option defaultValue value="none" className="text-muted">selecione</option>
-													{/* <DynamoDBTables tables={this.state.tables} /> */}
+													<DynamoDBAttributes attributes={this.state.powerVariables} />
 												</select>
 											</div>
 										</div>
@@ -282,13 +339,13 @@ export default class Training extends Component {
 											<div className="form-group col-lg-6" name="var-pot-irr">
 												<select id="var-pot" className="form-control" required>
 													<option defaultValue value="none" className="text-muted">potência</option>
-													{/* <DynamoDBTables tables={this.state.tables} /> */}
+													<DynamoDBAttributes attributes={this.state.powerVariables} />
 												</select>
 											</div>
 											<div className="form-group col-lg-6" name="var-pot-irr">
 												<select id="var-irr" className="form-control" required>
 													<option defaultValue value="none" className="text-muted">irradiação</option>
-													{/* <DynamoDBTables tables={this.state.tables} /> */}
+													<DynamoDBAttributes attributes={this.state.envVariables} />
 												</select>
 											</div>
 										</div>

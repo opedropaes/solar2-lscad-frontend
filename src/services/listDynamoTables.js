@@ -17,14 +17,3 @@ const listTables = async (AWSClient) => {
 }
 
 export default listTables;
-
-/* response-type:
-	  data = {
-	   TableNames: [
-		  "Forum",
-		  "ProductCatalog",
-		  "Reply",
-		  "Thread"
-	   ]
-	  }
-*/
