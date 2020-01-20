@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable array-callback-return */
 import React, { Component } from 'react';
 import Header from '../components/HeaderWrapper';
@@ -51,7 +52,7 @@ export default class Training extends Component {
 
 		const functionConfigurationResponse = await functionConfigurationRequest;
 
-		console.log(functionConfigurationResponse)
+		// console.log(functionConfigurationResponse)
 	}
 
 	refreshStatus = newStatusParameters => {
@@ -123,7 +124,7 @@ export default class Training extends Component {
 				'VARS_POT_IRRAD': powerAndIrradiationVariables,
 			};
 
-			console.log(environmentalVariables);
+			// console.log(environmentalVariables);
 
 			let response = await this.configureTrainingWithEnvironmentalVariables(environmentalVariables);
 
@@ -157,10 +158,9 @@ export default class Training extends Component {
 		const lambdaConfigurationInvoking = await lambdaClient.updateFunctionConfiguration(params, (err, data) => {
 			if (err) {
 				console.info(err.stack);
-				return err;
+				return ({ status: 500 });
 			} else {
-				console.log(data)
-				return data;
+				return ({ status: 200 });
 			}
 		});
 
@@ -168,9 +168,9 @@ export default class Training extends Component {
 
 		// console.log(lambdaConfigurationResponse)
 
-		if (lambdaConfigurationResponse.httpResponse) {
+		// if (lambdaConfigurationResponse.status === 200) {
 			return true;
-		} else return false;
+		// } else return false;
 
 	}
 
