@@ -7,6 +7,7 @@ import DynamoDBTables from '../components/DynamoDBTables';
 import DynamoDBAttributes from '../components/DynamoDBAttributes';
 import verifyUser from '../services/userVerification';
 import listTables from '../services/listDynamoTables';
+import getTableAttributes from '../utils/tablesAttributes';
 
 import '../pages/styles/Home.css';
 
@@ -33,7 +34,7 @@ export default class Training extends Component {
 
 	getFunctionConfiguration = async () => {
 		const { AWS } = await verifyUser();
-		const lambdaClient = new AWS.Lambda();
+		const lambdaClient = new AWS.Lambda({apiVersion: '2015-03-31'});
 
 		const params = {
 			FunctionName: 'dev-prediction-me-treinamento',
@@ -42,16 +43,15 @@ export default class Training extends Component {
 
 		const functionConfigurationRequest = await lambdaClient.getFunction(params, (err, data) => {
 			if (err) {
-				console.info(err.stack);
 				return err.stack;
 			} else {
 				return data;
 			}
 		});
 
-		// const functionConfigurationResponse = await functionConfigurationRequest;
+		const functionConfigurationResponse = await functionConfigurationRequest;
 
-		// console.log(functionConfigurationResponse)
+		console.log(functionConfigurationResponse)
 	}
 
 	refreshStatus = newStatusParameters => {
@@ -92,7 +92,7 @@ export default class Training extends Component {
 		const powerVariableSelector = document.getElementById('var-pot');
 		const powerVariable = powerVariableSelector.options[powerVariableSelector.selectedIndex].value;
 
-		const irradiationVariableSelector = document.getElementById('var-pot');
+		const irradiationVariableSelector = document.getElementById('var-irr');
 		const irradiationVariable = irradiationVariableSelector.options[irradiationVariableSelector.selectedIndex].value;
 
 		const powerAndIrradiationVariables = `${powerVariable}:${irradiationVariable}`;
@@ -102,7 +102,6 @@ export default class Training extends Component {
 		this.setState({ beginDate, endDate, modelID, technology, station, inverter, modelTable, independentVariables, dependentVariable, powerAndIrradiationVariables });
 
 		this.configure(params);
-		// dar um jeito de pegar os atributos de cada tabela conforme o usuario escolher a tabela no formulario.
 
 	}
 
@@ -124,17 +123,17 @@ export default class Training extends Component {
 				'VARS_POT_IRRAD': powerAndIrradiationVariables,
 			};
 
+			console.log(environmentalVariables);
 
+			let response = await this.configureTrainingWithEnvironmentalVariables(environmentalVariables);
 
-			// let response = await this.configureTrainingWithEnvironmentalVariables(environmentalVariables);
+			if (response) {
+				alert("Variáveis configuradas com sucesso.");
+			} else {
+				alert("Falha ao configurar variáveis. Verifique os campos e tente novamente.");
+			}
 
-			// if (response) {
-			// 	alert("Variáveis configuradas com sucesso.");
-			// } else {
-			// 	alert("Falha ao configurar variáveis. Verifique os campos e tente novamente.");
-			// }
-
-			// return response;
+			return response;
 		}
 
 		else {
@@ -146,7 +145,7 @@ export default class Training extends Component {
 
 	configureTrainingWithEnvironmentalVariables = async variables => {
 		const { AWS } = await verifyUser();
-		const lambdaClient = new AWS.Lambda();
+		const lambdaClient = new AWS.Lambda({apiVersion: '2015-03-31'});
 
 		const params = {
 			FunctionName: 'dev-prediction-me-treinamento',
@@ -160,13 +159,14 @@ export default class Training extends Component {
 				console.info(err.stack);
 				return err;
 			} else {
+				console.log(data)
 				return data;
 			}
 		});
 
 		const lambdaConfigurationResponse = await lambdaConfigurationInvoking;
 
-		console.log(lambdaConfigurationResponse)
+		// console.log(lambdaConfigurationResponse)
 
 		if (lambdaConfigurationResponse.httpResponse) {
 			return true;
@@ -182,53 +182,63 @@ export default class Training extends Component {
 		})
 	}
 
+	setTableToGetAttributes = (selecting) => {
+		return new Promise((resolve, reject) => {
+			if (selecting === "tabela-estacao") {
+				let stationSelectElement = document.getElementById("tabela-estacao");
+				stationSelectElement.addEventListener('change', () => {
+					let stationTable = stationSelectElement.options[stationSelectElement.selectedIndex].value;
+					resolve(stationTable);
+				})
+			} else if (selecting === "tabela-inversor") {
+				let inverterSelectElement = document.getElementById("tabela-inversor");
+				inverterSelectElement.addEventListener('change', () => {
+					let inverterTable = inverterSelectElement.options[inverterSelectElement.selectedIndex].value;
+					resolve(inverterTable);
+				})
+			} else if (selecting === "tabela-modelo") {
+				let modelSelectElement = document.getElementById("tabela-modelo");
+				modelSelectElement.addEventListener('change', () => {
+					let modelTable = modelSelectElement.options[modelSelectElement.selectedIndex].value;
+					resolve(modelTable);
+				})
+			}
+		})
+	}
+
 	getTableAttributes = async () => {
 
-		const { selecting, powerVariables, envVariables } = this.state;
-		const { AWS } = await verifyUser();
+		const { selecting } = this.state;
 
-		const dynamoClient = AWS.DynamoDB();
-
-		let tableToDescribe = "";
-
-		if (selecting === "tabela-estacao") {
-			tableToDescribe = this.state.station;
-		} else if (selecting === "tabela-inversor") {
-			tableToDescribe = this.state.inverter;
-		} else if (selecting === "tabela-modelo") {
-			tableToDescribe = this.state.modelTable;
-		}
-
-		const params = { TableName: tableToDescribe };
-
-		const dynamoRequest = new Promise ((resolve, reject) => {
-			dynamoClient.describeTable(params, (err, data) => {
-				if (err) {
-					console.log(err.stack);
-					reject(err);
-				} else {
-					resolve(data);
-				}
-			});
-		});
-
-		dynamoRequest.then(response => {
+		this.setTableToGetAttributes(selecting).then(response => {
 			
-			let attributes = [];
-			
-			response.Table.AttributeDefinitions.map(att => {
-				attributes.push(att.AttributeName);
-			})
-			
+			const attributes = getTableAttributes(response);
+
 			if (selecting === "tabela-estacao") {
 				this.setState({ envVariables: attributes });
 			} else if (selecting === "tabela-inversor") {
 				this.setState({ powerVariables: attributes });
 			} else if (selecting === "tabela-modelo") {
 				this.setState({ modelVariables: attributes });
-			}	
+			}
+
 		});
 
+	}
+
+	forceRefreshState = (mouseOverSelectionComponent) => {
+		return new Promise((resolve, reject) => {
+			if (mouseOverSelectionComponent === "none") {
+				reject("error on refresh state");
+			} else {
+				this.setState({ selecting: mouseOverSelectionComponent });
+				resolve();
+			}
+		})
+	}
+
+	handleMouseOverTableSelection = (mouseOverSelectionComponent) => {
+		this.forceRefreshState(mouseOverSelectionComponent).then(this.getTableAttributes);
 	}
 
 	render() {
@@ -238,7 +248,7 @@ export default class Training extends Component {
 				<div className="container col-lg-12  p-0" id="inner-box">
 					<main className="col-lg-12 p-5" role="main" id="main">
 						<div className="container-fluid mb-1 mt-5 form-wrapper col-lg-12 col-md-12 col-sm-12">
-							<div className="card col-md-6 mx-auto">
+							<div className="card col-md-10 mx-auto">
 								<div className="card-title mx-auto">
 									<h4 className="card-title mt-4">Configuração do treinamento</h4>
 								</div>
@@ -284,14 +294,20 @@ export default class Training extends Component {
 										<div className="row flex-row">
 											<div className="form-group col-lg-6">
 												<label htmlFor="tabela-estacao">Tabela com dados ambientais</label>
-												<select name="tabela-estacao" id="tabela-estacao" className="form-control" onChange={this.getTableAttributes} onMouseOver={ this.setState({ selecting: "tabela-estacao" }) } required>
+												<select name="tabela-estacao" id="tabela-estacao" className="form-control"
+													// onChange={this.getTableAttributes}
+													onMouseOver={() => this.handleMouseOverTableSelection('tabela-estacao')}
+													required >
 													<option defaultValue value="none" className="text-muted">selecione</option>
 													<DynamoDBTables tables={this.state.tables} />
 												</select>
 											</div>
 											<div className="form-group col-lg-6">
 												<label htmlFor="tabela-inversor">Tabela com dados de produção</label>
-												<select name="tabela-inversor" id="tabela-inversor" className="form-control" onChange={this.getTableAttributes} onMouseOver={ this.setState({ selecting: "tabela-inversor" }) }  required>
+												<select name="tabela-inversor" id="tabela-inversor" className="form-control"
+													// onChange={this.getTableAttributes}
+													onMouseOver={() => this.handleMouseOverTableSelection('tabela-inversor')}
+													required >
 													<option defaultValue value="none" className="text-muted">selecione</option>
 													<DynamoDBTables tables={this.state.tables} />
 												</select>
@@ -301,7 +317,10 @@ export default class Training extends Component {
 										<div className="row flex-row">
 											<div className="form-group col-lg-12">
 												<label htmlFor="tabela-modelo">Tabela com dados do modelo</label>
-												<select name="tabela-modelo" id="tabela-modelo" className="form-control" onChange={this.getTableAttributes} onMouseOver={ this.setState({ selecting: "tabela-modelo" }) }  required>
+												<select name="tabela-modelo" id="tabela-modelo" className="form-control"
+													// onChange={this.getTableAttributes}
+													onMouseOver={() => this.handleMouseOverTableSelection('tabela-modelo')}
+													required >
 													<option defaultValue value="none" className="text-muted">selecione</option>
 													<DynamoDBTables tables={this.state.tables} />
 												</select>
@@ -312,13 +331,13 @@ export default class Training extends Component {
 											<h6 className="form-group col-lg-12">Variáveis independentes</h6>
 											<div className="form-group col-lg-6" name="variavel-ind">
 												<select name="variavel-ind-1" id="variavel-ind-1" className="form-control" required>
-													<option defaultValue value="none" className="text-muted">selecione</option>
-													<DynamoDBAttributes attributes={this.state.powerVariables} />
+													<option defaultValue value="none" className="text-muted">variável ambiental</option>
+													<DynamoDBAttributes attributes={this.state.envVariables} />
 												</select>
 											</div>
 											<div className="form-group col-lg-6" name="variavel-ind">
 												<select name="variavel-ind-2" id="variavel-ind-2" className="form-control" required>
-													<option defaultValue value="none" className="text-muted">selecione</option>
+													<option defaultValue value="none" className="text-muted">variável ambiental</option>
 													<DynamoDBAttributes attributes={this.state.envVariables} />
 												</select>
 											</div>
@@ -335,7 +354,7 @@ export default class Training extends Component {
 										</div>
 
 										<div className="row flex-row">
-											<h6 className="form-group col-lg-12">Variáveis de potẽncia e irradiação</h6>
+											<h6 className="form-group col-lg-12">Variáveis de potência e irradiação</h6>
 											<div className="form-group col-lg-6" name="var-pot-irr">
 												<select id="var-pot" className="form-control" required>
 													<option defaultValue value="none" className="text-muted">potência</option>
