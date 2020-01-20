@@ -22,6 +22,8 @@ import IreceEnviromental from './pages/irece/Enviromental';
 import IreceLoss from './pages/irece/Loss';
 import IreceLossTable from './pages/irece/LossPerTable';
 
+import Training from './pages/Training';
+
 const PrivateRoute = ({ component: Component, ...rest }) => (
 	<Route 
 		{ ...rest }
@@ -46,6 +48,7 @@ const App = () => {
         <Route path="/login" exact component={Login} />
         <Route path="/cadastro" component={SignUp} />
 		<PrivateRoute path="/criar-supervisor" component={CriateSupervisor} />
+		<PrivateRoute path="/treinamento" component={Training} />
         <PrivateRoute path="/painel" exact component={Panel} />
         <PrivateRoute path="/campo-grande/producao" component={CampoGrandeProduction} />
         <PrivateRoute path="/campo-grande/ambientais" exact component={CampoGrandeEnviromental} />
