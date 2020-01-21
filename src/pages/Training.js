@@ -30,29 +30,6 @@ export default class Training extends Component {
 		const { AWS } = await verifyUser();
 		const tables = await listTables(AWS);
 		this.refreshStatus({ tables });
-		this.getFunctionConfiguration();
-	}
-
-	getFunctionConfiguration = async () => {
-		const { AWS } = await verifyUser();
-		const lambdaClient = new AWS.Lambda({apiVersion: '2015-03-31'});
-
-		const params = {
-			FunctionName: 'dev-prediction-me-treinamento',
-			Qualifier: '1'
-		};
-
-		const functionConfigurationRequest = await lambdaClient.getFunction(params, (err, data) => {
-			if (err) {
-				return err.stack;
-			} else {
-				return data;
-			}
-		});
-
-		const functionConfigurationResponse = await functionConfigurationRequest;
-
-		// console.log(functionConfigurationResponse)
 	}
 
 	refreshStatus = newStatusParameters => {
@@ -155,22 +132,22 @@ export default class Training extends Component {
 			}
 		};
 
-		const lambdaConfigurationInvoking = await lambdaClient.updateFunctionConfiguration(params, (err, data) => {
-			if (err) {
-				console.info(err.stack);
-				return ({ status: 500 });
-			} else {
-				return ({ status: 200 });
-			}
-		});
+		const lambdaConfigurationInvoking = new Promise ((resolve, reject) => {
+			lambdaClient.updateFunctionConfiguration(params, (err, data) => {
+				if (err) {
+					console.info(err.stack);
+					resolve({ status: 500 });
+				} else {
+					resolve({ status: 200 });
+				}
+			});
+		})
 
 		const lambdaConfigurationResponse = await lambdaConfigurationInvoking;
 
-		// console.log(lambdaConfigurationResponse)
-
-		// if (lambdaConfigurationResponse.status === 200) {
+		if (lambdaConfigurationResponse.status === 200) {
 			return true;
-		// } else return false;
+		} else return false;
 
 	}
 
