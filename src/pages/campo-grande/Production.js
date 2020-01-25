@@ -200,7 +200,7 @@ export default class Production extends Component {
 					table3: {
 						data: res.capacityFactor,
 						lineTension: 0,
-						label: 'Percentual médio de fator de capacidade',
+						label: 'Fator de capacidade médio diário (%)',
 						backgroundColor: 'rgba(50,172,92,1.0)',
 						borderColor: 'rgba(50,172,92,1.0)',
 						pointBackgroundColor: 'rgba(50,172,92,1.0)'
@@ -290,7 +290,7 @@ export default class Production extends Component {
 					totalProductions: {
 						data: res.productionsSum,
 						lineTension: 0,
-						label: 'Produção mensal #1: p-Si (kWh)',
+						label: 'Produção total por mês #1: p-Si (kWh)',
 						backgroundColor: 'rgba(66,161,245,1.0)',
 						borderColor: 'rgba(66,161,245,1.0)',
 						pointBackgroundColor: 'rgba(66,161,245,1.0)',
@@ -300,7 +300,7 @@ export default class Production extends Component {
 					capacityFactorAverages: {
 						data: res.capacityFactorAverages,
 						lineTension: 0,
-						label: 'Percentual de PR',
+						label: 'Percentual médio de PR',
 						borderColor: 'rgba(255,48,48,1.0)',
 						backgroundColor: 'rgba(255,48,48,0)',
 						borderWidth: 3,
@@ -310,7 +310,7 @@ export default class Production extends Component {
 					higherAverages: {
 						data: res.higherAverages,
 						lineTension: 0,
-						label: 'Maior potência (kW)',
+						label: 'Maior fator de capacidade',
 						backgroundColor: 'rgba(66,161,245,1.0)',
 						borderColor: 'rgba(66,161,245,1.0)',
 						pointBackgroundColor: 'rgba(66,161,245,1.0)',
@@ -319,7 +319,7 @@ export default class Production extends Component {
 					higherAverageDays: {
 						data: res.higherAverageDays,
 						lineTension: 0,
-						label: 'Dia',
+						label: 'Dia com maior fator de capacidade do mês',
 						borderColor: 'rgba(255,48,48,1.0)',
 						backgroundColor: 'rgba(255,48,48,0)',
 						borderWidth: 3,
@@ -354,7 +354,7 @@ export default class Production extends Component {
 						title: {
 							display: true,
 							fontsize: 24,
-							text: "Produção",
+							text: "Produção anual",
 						},
 						labels: {
 							fontStyle: 'bold',
@@ -391,7 +391,7 @@ export default class Production extends Component {
 						title: {
 							display: true,
 							fontsize: 24,
-							text: "Potência média alcançada",
+							text: "Fator de capacidade alcançado",
 						},
 						labels: {
 							fontStyle: 'bold',
