@@ -3,7 +3,6 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@progress/kendo-react-dateinputs": "^3.10.1",
     "amazon-cognito-identity-js": "^3.0.15",
     "aws-sdk": "^2.521.0",
     "bootstrap": "^4.3.1",
@@ -16,6 +15,7 @@
     "material-icons": "^0.3.1",
     "popper.js": "^1.15.0",
     "react": "^16.9.0",
+    "react-calendar": "^2.19.2",
     "react-csv-3": "^1.0.29",
     "react-dom": "^16.9.0",
     "react-router": "^5.0.1",

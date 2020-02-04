@@ -3,11 +3,16 @@ import Spinner from '../components/Spinner';
 import CalendarNav from '../components/CalendarNav';
 
 export default class NavBarDates extends Component {
+
+	now = new Date();
+
 	constructor(props) {
 		super(props);
 		this.state = {
 			date: this.props.date,
-			loading: false
+			loading: false,
+			minDate: new Date(2018, 0, 1),
+			maxDate: new Date(this.now.getFullYear(), this.now.getMonth(), this.now.getDate())
 		};
 	}
 
@@ -53,20 +58,18 @@ export default class NavBarDates extends Component {
 				</div>
 
 				<div className="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-					<div className="modal-dialog modal-dialog-centered" role="document">
-						<div className="modal-content">
-							<div className="modal-header">
-								<h5 className="modal-title" id="exampleModalLongTitle">Modal title</h5>
-								<button type="button" className="close" data-dismiss="modal" aria-label="Close">
-									<span aria-hidden="true">&times;</span>
-								</button>
-							</div>
-							<div className="modal-body">
-								{/* <CalendarNav /> */}
-      						</div>
-							<div className="modal-footer">
-								<button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
-								<button type="button" className="btn btn-primary">Save changes</button>
+					<div className="modal-dialog modal-dialog-centered modal-sm" role="document">
+						<div className="modal-content p-0">
+							<div className="container-fluid p-0">
+								<div className="modal-body p-0 mx-auto">
+									<div className="container-fluid p-0">
+										<div className="row mx-auto">
+											<div className="col-lg-12 p-0">
+												<CalendarNav locale="pt-BR" minDate={this.state.minDate} maxDate={this.state.maxDate} />
+											</div>
+										</div>
+									</div>
+								</div>
 							</div>
 						</div>
 					</div>
