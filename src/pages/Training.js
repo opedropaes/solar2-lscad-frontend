@@ -347,9 +347,6 @@ export default class Training extends Component {
 										</div>
 
 										<FormButton loading={this.state.loading} label="Configurar" />
-										<div className="text-center">
-											<span><small>Em desenvolvimento</small></span>
-										</div>
 									</form>
 								</div>
 							</div>
