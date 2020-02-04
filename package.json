@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@progress/kendo-react-dateinputs": "^3.10.1",
     "amazon-cognito-identity-js": "^3.0.15",
     "aws-sdk": "^2.521.0",
     "bootstrap": "^4.3.1",
