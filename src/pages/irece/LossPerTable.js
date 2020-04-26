@@ -99,9 +99,9 @@ export default class LossPerTable extends Component {
 
 				head = [
 					"Data",
-					"Potência Esperada (kW)",
-					"Potência Produzida (kW)",
-					"Perdas (kW)", "Perdas (%)",
+					"Potência Esperada (kWh)",
+					"Potência Produzida (kWh)",
+					"Perdas (kWh)", "Perdas (%)",
 					"Viabilidade Econômica"
 				]
 
@@ -203,6 +203,7 @@ export default class LossPerTable extends Component {
 					averagesIdealProd,
 					trueViabilities,
 					totalLossPercentages,
+					anualAverageLossPercentage,
 					period
 				} = res;
 
@@ -269,6 +270,15 @@ export default class LossPerTable extends Component {
 						totalLossPercentages: {
 							data: totalLossPercentages.values,
 							label: `Total mensal de perdas (${totalLossPercentages.type})`,
+							borderColor: 'rgba(29, 82, 168, 1.0)',
+							backgroundColor: 'rgba(29, 82, 168, 0)',
+							lineTension: 0,
+							borderWidth: 5,
+							pointBackgroundColor: 'rgba(29, 82, 168, 1.0)',
+						},
+						anualAverageLossPercentage: {
+							data: anualAverageLossPercentage.values,
+							label: `Média anual de perdas (${anualAverageLossPercentage.type})`,
 							borderColor: 'rgba(29, 82, 168, 1.0)',
 							backgroundColor: 'rgba(29, 82, 168, 0)',
 							lineTension: 0,
@@ -371,7 +381,7 @@ export default class LossPerTable extends Component {
 			head = [
 				"Mesa",
 				"Perdas (%)",
-				"Potência Média Produzida (kW)",
+				"Potência Média Produzida (kWh)",
 				"Tecnologia"
 			]
 
@@ -802,12 +812,17 @@ export default class LossPerTable extends Component {
 
 				if (this.state.period === "year") {					
 					let lossPercentage = "Perdas neste mês: 0%";
-					let lossesSum = (this.state.data.totalLossPercentages.data) ?
-										this.state.data.totalLossPercentages.data
-											.reduce((acc, cur) => parseFloat(acc) + parseFloat(cur))
+					// let lossesSum = (this.state.data.totalLossPercentages.data) ?
+					// 					this.state.data.totalLossPercentages.data
+					// 						.reduce((acc, cur) => parseFloat(acc) + parseFloat(cur))
+					// 					: 0;
+
+					let lossesSum = (this.state.data.anualAverageLossPercentage.data) ?
+										this.state.data.anualAverageLossPercentage.data
 										: 0;
-						lossPercentage = "Perdas neste ano: " + parseFloat(lossesSum).toFixed(2) + "%";
-						
+
+					lossPercentage = "Média de perdas neste ano: " + parseFloat(lossesSum).toFixed(2) + "%";
+
 					return (
 						<React.Fragment>
 							<Header logged={true} fixed={false} marginBottom={true} ufv="irece" />

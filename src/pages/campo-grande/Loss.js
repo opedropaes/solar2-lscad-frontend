@@ -89,7 +89,7 @@ export default class Loss extends Component {
 				data: {
 					losses: {
 						data: res.loss,
-						label: 'Média (W)',
+						label: 'Percentual de perdas (%)',
 						borderColor: 'rgba(255,48,48, 1.0)',
 						backgroundColor: 'rgba(255,48,48, 0.7)',
 						lineTension: 0,
@@ -327,17 +327,18 @@ export default class Loss extends Component {
 												<h6>Perdas por modelo de predição por controle:</h6>
 											</li>
 										</ul>
-										<div className="col-md-8 container-fluid pb-3 pt-0 py-0 mx-auto my-auto" id="canvas-container-1">
-											<LineChart
-												data={{ labels: this.state.labels, datasets: [this.state.data.losses] }}
-												options={this.state.options}
-											/>
+										<div className="col-lg-12">
+											<div className="col-md-8 container-fluid pb-3 pt-0 py-0 mx-auto my-auto" id="canvas-container-1">
+												<LineChart
+													data={{ labels: this.state.labels, datasets: [this.state.data.losses] }}
+													options={this.state.options}
+												/>
+											</div>
 										</div>
-										<div className="col-md-4 container-fluid pb-3 pt-0 py-0 mx-auto my-auto text-center" id="canvas-container-0">
-											Perdas totais neste dia: <h5>{(this.state.data.totalLosses).toFixed(3)} W</h5>
-											<br></br>
-											Média de perdas neste dia: <h5>{(this.state.data.lossesAverage).toFixed(3)} W</h5>
+										<div className="col-lg-12 col-md-12 col-sm-12 text-center mb-5 mt-2">
+											<em>Percentual de perdas no exato momento obtido, em comparação com a produção total possível da mesa.</em>
 										</div>
+										
 									</div>									
 								</main>
 							</div>

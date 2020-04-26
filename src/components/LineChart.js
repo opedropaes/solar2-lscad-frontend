@@ -11,7 +11,6 @@ export default class LineChart extends Component {
 	}
 
 	render() {
-
 		return (
 			<React.Fragment>
 				<Line

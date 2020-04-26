@@ -201,7 +201,7 @@ export default class ProductionPerTable extends Component {
 							title: {
 								display: true,
 								fontsize: 24,
-								text: "Potência e performance (kW)",
+								text: "Potência e performance (kWh)",
 							},
 							labels: {
 								fontStyle: 'bold',
@@ -313,7 +313,7 @@ export default class ProductionPerTable extends Component {
 							title: {
 								display: true,
 								fontsize: 24,
-								text: "Potência total (kW)",
+								text: "Potência total (kWh)",
 							},
 							labels: {
 								fontStyle: 'bold',
@@ -344,7 +344,7 @@ export default class ProductionPerTable extends Component {
 							title: {
 								display: true,
 								fontsize: 24,
-								text: "Potências individuais (kW)",
+								text: "Potências individuais (kWh)",
 							},
 							labels: {
 								fontStyle: 'bold',
@@ -464,7 +464,7 @@ export default class ProductionPerTable extends Component {
 						table4: {
 							data: res.productions,
 							lineTension: 0,
-							label: 'Produção total diária (kW)',
+							label: 'Produção total diária (kWh)',
 							backgroundColor: 'rgba(255,48,48,1.0)',
 							borderColor: 'rgba(255,48,48,1.0)',
 							pointBackgroundColor: 'rgba(255,48,48,0.7)',
@@ -675,7 +675,7 @@ export default class ProductionPerTable extends Component {
 						higherAverages: {
 							data: res.higherAverages,
 							lineTension: 0,
-							label: 'Maior potência (kW)',
+							label: 'Maior potência (kWh)',
 							backgroundColor: 'rgba(66,161,245,1.0)',
 							borderColor: 'rgba(66,161,245,1.0)',
 							pointBackgroundColor: 'rgba(66,161,245,1.0)',
